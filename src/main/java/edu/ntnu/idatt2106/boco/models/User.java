@@ -26,7 +26,6 @@ public class User {
   @Size(max = 20)
   private boolean isPerson;
 
-  @NotBlank
   @Size(max = 20)
   private String address;
 
@@ -52,15 +51,12 @@ public class User {
   public User() {
   }
 
-  public User(Long userId, String name, boolean isPerson, String address,  String email, String password, Long imageId, String role ) {
-    this.userId = userId;
+  public User( String name,   String email, String address,String password ) {
     this.name = name;
-    this.isPerson = isPerson;
-    this.address = address;
     this.email = email;
+    this.address = address;
     this.password = password;
-    this.imageId = imageId;
-    this.role = role;
+
   }
 
   public Long getUserId() {
