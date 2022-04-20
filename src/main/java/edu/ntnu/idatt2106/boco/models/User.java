@@ -10,18 +10,25 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "users", 
-    uniqueConstraints = { 
-      @UniqueConstraint(columnNames = "username"),
+    uniqueConstraints = {
       @UniqueConstraint(columnNames = "email") 
     })
 public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  private Long userId;
 
   @NotBlank
   @Size(max = 20)
-  private String username;
+  private String name;
+
+  @NotBlank
+  @Size(max = 20)
+  private boolean isPerson;
+
+  @NotBlank
+  @Size(max = 20)
+  private String address;
 
   @NotBlank
   @Size(max = 50)
@@ -32,35 +39,60 @@ public class User {
   @Size(max = 120)
   private String password;
 
-  @ManyToMany(fetch = FetchType.LAZY)
-  @JoinTable(  name = "user_roles", 
-        joinColumns = @JoinColumn(name = "user_id"), 
-        inverseJoinColumns = @JoinColumn(name = "role_id"))
-  private Set<Role> roles = new HashSet<>();
+  @NotBlank
+  @Size(max = 120)
+  private Long imageId;
+
+  @NotBlank
+  @Size(max = 120)
+  private String role;
+
+
 
   public User() {
   }
 
-  public User(String username, String email, String password) {
-    this.username = username;
+  public User(Long userId, String name, boolean isPerson, String address,  String email, String password, Long imageId, String role ) {
+    this.userId = userId;
+    this.name = name;
+    this.isPerson = isPerson;
+    this.address = address;
     this.email = email;
     this.password = password;
+    this.imageId = imageId;
+    this.role = role;
   }
 
-  public Long getId() {
-    return id;
+  public Long getUserId() {
+    return userId;
   }
 
-  public void setId(Long id) {
-    this.id = id;
+  public void setUserId(Long userId) {
+    this.userId = userId;
   }
 
-  public String getUsername() {
-    return username;
+  public String getName() {
+    return name;
   }
 
-  public void setUsername(String username) {
-    this.username = username;
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public boolean isPerson() {
+    return isPerson;
+  }
+
+  public void setPerson(boolean person) {
+    isPerson = person;
+  }
+
+  public String getAddress() {
+    return address;
+  }
+
+  public void setAddress(String address) {
+    this.address = address;
   }
 
   public String getEmail() {
@@ -79,11 +111,19 @@ public class User {
     this.password = password;
   }
 
-  public Set<Role> getRoles() {
-    return roles;
+  public Long getImageId() {
+    return imageId;
   }
 
-  public void setRoles(Set<Role> roles) {
-    this.roles = roles;
+  public void setImageId(Long imageId) {
+    this.imageId = imageId;
+  }
+
+  public String getRole() {
+    return role;
+  }
+
+  public void setRole(String role) {
+    this.role = role;
   }
 }
