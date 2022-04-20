@@ -28,7 +28,7 @@ import edu.ntnu.idatt2106.boco.payload.request.SignupRequest;
 import edu.ntnu.idatt2106.boco.payload.response.JwtResponse;
 import edu.ntnu.idatt2106.boco.payload.response.MessageResponse;
 import edu.ntnu.idatt2106.boco.repository.RoleRepository;
-import edu.ntnu.idatt2106.boco.repository.RegistrationRepository;
+import edu.ntnu.idatt2106.boco.repository.UserRepository;
 import edu.ntnu.idatt2106.boco.security.jwt.JwtUtils;
 import edu.ntnu.idatt2106.boco.security.services.UserDetailsImpl;
 
@@ -40,7 +40,7 @@ public class AuthController {
   AuthenticationManager authenticationManager;
 
   @Autowired
-  RegistrationRepository userRepository;
+  UserRepository userRepository;
 
   @Autowired
   RoleRepository roleRepository;

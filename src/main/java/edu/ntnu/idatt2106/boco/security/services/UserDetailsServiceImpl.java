@@ -8,12 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import edu.ntnu.idatt2106.boco.models.User;
-import edu.ntnu.idatt2106.boco.repository.RegistrationRepository;
+import edu.ntnu.idatt2106.boco.repository.UserRepository;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
   @Autowired
-  RegistrationRepository userRepository;
+  UserRepository userRepository;
 
   @Override
   @Transactional
