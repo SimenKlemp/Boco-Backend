@@ -1,21 +1,18 @@
 package edu.ntnu.idatt2106.boco.payload.response;
 
-import java.util.List;
-
-public class JwtResponse {
+public class LoginResponse
+{
   private String token;
   private String type = "Bearer";
   private Long id;
-  private String username;
   private String email;
-  private List<String> roles;
+  private String role;
 
-  public JwtResponse(String accessToken, Long id, String username, String email, List<String> roles) {
+  public LoginResponse(String accessToken, Long id, String email, String roles) {
     this.token = accessToken;
     this.id = id;
-    this.username = username;
     this.email = email;
-    this.roles = roles;
+    this.role = role;
   }
 
   public String getAccessToken() {
@@ -50,15 +47,32 @@ public class JwtResponse {
     this.email = email;
   }
 
-  public String getUsername() {
-    return username;
+  public String getRole() {
+    return role;
   }
 
-  public void setUsername(String username) {
-    this.username = username;
+  public String getToken()
+  {
+    return token;
   }
 
-  public List<String> getRoles() {
-    return roles;
+  public void setToken(String token)
+  {
+    this.token = token;
+  }
+
+  public String getType()
+  {
+    return type;
+  }
+
+  public void setType(String type)
+  {
+    this.type = type;
+  }
+
+  public void setRole(String role)
+  {
+    this.role = role;
   }
 }
