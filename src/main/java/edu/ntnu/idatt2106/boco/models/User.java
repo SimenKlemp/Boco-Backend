@@ -1,8 +1,5 @@
 package edu.ntnu.idatt2106.boco.models;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -48,18 +45,14 @@ public class User {
   private String role;
 
 
+  public User() { }
 
-  public User() {
-  }
-
-  public User(Long userId, String name, boolean isPerson, String address,  String email, String password, Long imageId, String role ) {
-    this.userId = userId;
+  public User(String name, boolean isPerson, String address,  String email, String password, String role ) {
     this.name = name;
     this.isPerson = isPerson;
     this.address = address;
     this.email = email;
     this.password = password;
-    this.imageId = imageId;
     this.role = role;
   }
 
