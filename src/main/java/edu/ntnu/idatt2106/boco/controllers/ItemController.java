@@ -1,9 +1,8 @@
 package edu.ntnu.idatt2106.boco.controllers;
 
-import edu.ntnu.idatt2106.boco.models.User;
+
 import edu.ntnu.idatt2106.boco.payload.request.ItemRegisterRequest;
 import edu.ntnu.idatt2106.boco.service.ItemService;
-import edu.ntnu.idatt2106.boco.service.RegistrationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/registration")
+@RequestMapping(value = "/item")
 @EnableAutoConfiguration
 @CrossOrigin
 public class ItemController {
@@ -24,7 +23,7 @@ public class ItemController {
     @Autowired
     private ItemService itemService;
 
-    Logger logger = LoggerFactory.getLogger(RegistrationController.class);
+    Logger logger = LoggerFactory.getLogger(ItemController.class);
 
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.CREATED)
@@ -45,11 +44,13 @@ public class ItemController {
      * A method for retrieving all items a user own
      * @return
      */
+    /*
     @GetMapping("{userId}")
     public List getMyItems(@PathVariable("userId") int userId) {
         logger.info("Hei, jeg har kommet meg inn i get equation metoden");
 
         return itemService.getMyItems(userId);
-
     }
+
+     */
 }

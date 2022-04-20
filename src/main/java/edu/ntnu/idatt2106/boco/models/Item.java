@@ -14,26 +14,32 @@ import javax.validation.constraints.Size;
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "itemId")
     private Long itemId;
 
     @NotBlank
     @Size(max = 20)
+    @Column(name = "address")
     private String address;
 
     @NotBlank
     @Size(max = 20)
+    @Column(name = "price")
     private String price;
 
     @NotBlank
     @Size(max = 20)
+    @Column(name = "description")
     private String description;
 
     @NotBlank
     @Size(max = 20)
+    @Column(name = "category")
     private String category;
 
     @NotBlank
     @Size(max = 20)
+    @Column(name = "title")
     private String title;
 
     @NotBlank
@@ -43,6 +49,7 @@ public class Item {
 
     @NotBlank
     @Size(max = 20)
+    @Column(name = "imageId")
     private Long imageid;
 
     public Item(){

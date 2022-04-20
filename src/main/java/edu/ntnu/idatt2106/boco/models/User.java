@@ -13,35 +13,43 @@ import javax.validation.constraints.Size;
 public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "userId")
   private Long userId;
 
   @NotBlank
   @Size(max = 20)
+  @Column(name = "name")
   private String name;
 
   @NotBlank
   @Size(max = 20)
+  @Column(name = "isPerson")
   private boolean isPerson;
 
   @NotBlank
   @Size(max = 20)
+  @Column(name = "address")
   private String address;
 
   @NotBlank
   @Size(max = 50)
+  @Column(name = "email")
   @Email
   private String email;
 
   @NotBlank
   @Size(max = 120)
+  @Column(name = "password")
   private String password;
 
   @NotBlank
   @Size(max = 120)
+  @Column(name = "imageId")
   private Long imageId;
 
   @NotBlank
   @Size(max = 120)
+  @Column(name = "role")
   private String role;
 
 
