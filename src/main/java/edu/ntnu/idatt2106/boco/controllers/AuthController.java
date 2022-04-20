@@ -1,33 +1,27 @@
 package edu.ntnu.idatt2106.boco.controllers;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import edu.ntnu.idatt2106.boco.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import edu.ntnu.idatt2106.boco.models.ERole;
-import edu.ntnu.idatt2106.boco.models.Role;
 import edu.ntnu.idatt2106.boco.models.User;
 import edu.ntnu.idatt2106.boco.payload.request.LoginRequest;
-import edu.ntnu.idatt2106.boco.payload.request.SignupRequest;
-import edu.ntnu.idatt2106.boco.payload.response.JwtResponse;
+import edu.ntnu.idatt2106.boco.payload.request.RegisterUserRequest;
+import edu.ntnu.idatt2106.boco.payload.response.LoginResponse;
 import edu.ntnu.idatt2106.boco.payload.response.MessageResponse;
-import edu.ntnu.idatt2106.boco.repository.RoleRepository;
 import edu.ntnu.idatt2106.boco.repository.UserRepository;
 import edu.ntnu.idatt2106.boco.security.jwt.JwtUtils;
 import edu.ntnu.idatt2106.boco.security.services.UserDetailsImpl;
@@ -35,7 +29,8 @@ import edu.ntnu.idatt2106.boco.security.services.UserDetailsImpl;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
-public class AuthController {
+public class AuthController
+{
   @Autowired
   AuthenticationManager authenticationManager;
 
@@ -43,16 +38,13 @@ public class AuthController {
   UserRepository userRepository;
 
   @Autowired
-  RoleRepository roleRepository;
-
-  @Autowired
-  PasswordEncoder encoder;
-
-  @Autowired
   JwtUtils jwtUtils;
 
-  @PostMapping("/signin")
-  public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+  @Autowired
+  private UserService userService;
+
+  @PostMapping("/login")
+  public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
 
     Authentication authentication = authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
@@ -61,57 +53,39 @@ public class AuthController {
     String jwt = jwtUtils.generateJwtToken(authentication);
     
     UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();    
-    List<String> roles = userDetails.getAuthorities().stream()
+    String role = userDetails.getAuthorities().stream()
         .map(item -> item.getAuthority())
-        .collect(Collectors.toList());
+        .collect(Collectors.toList()).get(0);
 
-    return ResponseEntity.ok(new JwtResponse(jwt, 
-                         userDetails.getId(), 
-                         userDetails.getUsername(), 
-                         userDetails.getEmail(), 
-                         roles));
+    return ResponseEntity.ok(new LoginResponse(
+            jwt,
+            userDetails.getId(),
+            userDetails.getEmail(),
+            role));
   }
 
-  @PostMapping("/signup")
-  public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-    if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+  @PostMapping("/register")
+  public ResponseEntity<?> register(@Valid @RequestBody RegisterUserRequest request)
+  {
+    if (userService.userExists(request.getEmail()))
+    {
       return ResponseEntity
-          .badRequest()
-          .body(new MessageResponse("Error: Email is already in use!"));
+              .badRequest()
+              .body(new MessageResponse("Error: Email is already in use!"));
     }
 
-    // Create new user's account
-    User user = new User(signUpRequest.getUsername(), 
-               signUpRequest.getEmail(),signUpRequest.getAddress(),
-               encoder.encode(signUpRequest.getPassword()));
+    User user = userService.register(request);
 
-    Set<String> strRoles = signUpRequest.getRole();
-    Set<Role> roles = new HashSet<>();
+    Authentication authentication = authenticationManager.authenticate(
+      new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
 
-    if (strRoles == null) {
-      Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-          .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-      roles.add(userRole);
-    } else {
-      strRoles.forEach(role -> {
-        switch (role) {
-        case "admin":
-          Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-              .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-          roles.add(adminRole);
-          break;
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+    String jwt = jwtUtils.generateJwtToken(authentication);
 
-        default:
-          Role userRole = roleRepository.findByName(ERole.ROLE_USER)
-              .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-          roles.add(userRole);
-        }
-      });
-    }
-
-    user.setRole(roles);
-    userRepository.save(user);
-
-    return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+    return ResponseEntity.ok(new LoginResponse(
+            jwt,
+            user.getUserId(),
+            user.getEmail(),
+            user.getRole()));
   }
 }

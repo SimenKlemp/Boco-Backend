@@ -1,9 +1,6 @@
 package edu.ntnu.idatt2106.boco.security.services;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.*;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,44 +9,42 @@ import org.springframework.security.core.userdetails.UserDetails;
 import edu.ntnu.idatt2106.boco.models.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class UserDetailsImpl implements UserDetails {
+public class UserDetailsImpl implements UserDetails
+{
   private static final long serialVersionUID = 1L;
 
   private Long id;
-
-  private String username;
 
   private String email;
 
   @JsonIgnore
   private String password;
 
-  private Collection<? extends GrantedAuthority> authorities;
+  private GrantedAuthority authority;
 
-  public UserDetailsImpl(Long id, String username, String email, String password,
-      Collection<? extends GrantedAuthority> authorities) {
+  public UserDetailsImpl(Long id, String email, String password, GrantedAuthority authority)
+  {
     this.id = id;
-    this.username = username;
     this.email = email;
     this.password = password;
-    this.authorities = authorities;
+    this.authority = authority;
   }
 
-  public static UserDetailsImpl build(User user) {
-    List<GrantedAuthority> authorities = user.getRole().stream()
-        .map(role -> new SimpleGrantedAuthority(role.getName().name()))
-        .collect(Collectors.toList());
+  public static UserDetailsImpl build(User user)
+  {
+    GrantedAuthority authority = new SimpleGrantedAuthority(user.getRole());
 
     return new UserDetailsImpl(
         user.getUserId(),
-        user.getName(),
         user.getEmail(),
         user.getPassword(), 
-        authorities);
+        authority);
   }
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
+    Collection<GrantedAuthority> authorities = new ArrayList<>();
+    authorities.add(authority);
     return authorities;
   }
 
@@ -67,8 +62,9 @@ public class UserDetailsImpl implements UserDetails {
   }
 
   @Override
-  public String getUsername() {
-    return username;
+  public String getUsername()
+  {
+    return email;
   }
 
   @Override
