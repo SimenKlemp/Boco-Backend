@@ -47,21 +47,17 @@ public class User {
   @Column(name = "imageId")
   private Long imageId;
 
-  @NotBlank
-  @Size(max = 120)
-  @Column(name = "role")
-  private String role;
 
 
   public User() { }
 
-  public User(String name, boolean isPerson, String address,  String email, String password, String role ) {
+  public User(String name, boolean isPerson, String address,  String email, String password ) {
     this.name = name;
     this.isPerson = isPerson;
     this.address = address;
     this.email = email;
     this.password = password;
-    this.role = role;
+
   }
 
   public Long getUserId() {
@@ -120,11 +116,4 @@ public class User {
     this.imageId = imageId;
   }
 
-  public String getRole() {
-    return role;
-  }
-
-  public void setRole(String role) {
-    this.role = role;
-  }
 }

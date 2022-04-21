@@ -31,8 +31,8 @@ public class UserService
                 request.isPerson(),
                 request.getAddress(),
                 request.getEmail(),
-                encoder.encode(request.getPassword()),
-                "USER"
+                encoder.encode(request.getPassword())
+
         );
 
         userRepository.save(user);

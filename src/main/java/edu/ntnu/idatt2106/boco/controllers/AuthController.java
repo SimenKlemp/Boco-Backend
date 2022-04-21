@@ -1,21 +1,20 @@
 package edu.ntnu.idatt2106.boco.controllers;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import edu.ntnu.idatt2106.boco.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import edu.ntnu.idatt2106.boco.models.User;
 import edu.ntnu.idatt2106.boco.payload.request.LoginRequest;
@@ -86,6 +85,39 @@ public class AuthController
             jwt,
             user.getUserId(),
             user.getEmail(),
-            user.getRole()));
+            user.getAddress()));
+  }
+
+  @DeleteMapping(value="api/auth/user/delete")
+  public ResponseEntity<String> deleteUserById(@RequestBody User user ){
+    try{
+    Optional<User> email=userRepository.findByEmail(user.getEmail());
+    if(email.isEmpty()){
+      return new ResponseEntity("Error: User not found", HttpStatus.OK);
+    }
+    userRepository.deleteById(user.getUserId());
+    return new ResponseEntity("User has been deleted successfully", HttpStatus.OK);
+    }catch (Exception ex){
+      return new ResponseEntity("Error: Can not delete ",HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+  }
+
+  @PutMapping (value="api/auth/user/update")
+  public ResponseEntity<String> updateUserInfo(@PathVariable("email")String email, @RequestBody User user) {
+    try {
+      Optional<User> updatedUser = userRepository.findByEmail(email);
+      if (updatedUser.isEmpty()) {
+        return new ResponseEntity("Error: User not found", HttpStatus.OK);
+      }
+      updatedUser.get().setName(user.getName());
+      updatedUser.get().setEmail(user.getEmail());
+      updatedUser.get().setAddress(user.getAddress());
+      updatedUser.get().setPassword(user.getPassword());
+      userRepository.save(updatedUser.get());
+      return new ResponseEntity("User has been updated",HttpStatus.OK);
+    } catch (Exception ex) {
+      return new ResponseEntity("Can not update", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }
