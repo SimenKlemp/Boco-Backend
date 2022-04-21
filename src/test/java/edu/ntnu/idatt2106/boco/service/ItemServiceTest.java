@@ -36,7 +36,7 @@ public class ItemServiceTest {
         ArrayList<Item> items = new ArrayList<>();
         items.add(item1);
 
-        Mockito.lenient().when(itemRepository.findItemsByUser(Mockito.anyLong())).thenReturn(items);
+        Mockito.lenient().when(itemRepository.findAllByUser(Mockito.anyInt())).thenReturn(items);
         Mockito.lenient().when(itemRepository.findAll()).thenReturn(items);
         Mockito.lenient().when(itemRepository.save(Mockito.any())).thenReturn(0);
     }
@@ -66,7 +66,7 @@ public class ItemServiceTest {
     }
     @Test
     void getMyItemsTest() {
-        List<Item> items = itemService.getMyItems(Mockito.anyLong());
+        List<Item> items = itemService.getMyItems(Mockito.anyInt());
 
         assertThat(items.get(0).getAddress()).isEqualTo("Address");
         assertThat(items.get(0).getCategory()).isEqualTo("Category");
