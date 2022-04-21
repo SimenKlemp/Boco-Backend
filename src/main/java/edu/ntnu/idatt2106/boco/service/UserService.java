@@ -63,6 +63,7 @@ public class UserService
         return user;
     }
 
+
     public boolean deleteUserByEmail(User user){
         Optional<User> userEmail=userRepository.findByEmail(user.getEmail());
         if(userEmail.isEmpty()){
@@ -72,6 +73,7 @@ public class UserService
             return true;
 
     }
+
     public boolean updateUserByEmail(String email,User user){
         Optional<User> updatedUser = userRepository.findByEmail(email);
         if(updatedUser.isEmpty()){
