@@ -28,7 +28,7 @@ public class RentalController {
     Logger logger = LoggerFactory.getLogger(RentalController.class);
 
 
-    @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "createRental", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.CREATED)
     public int createRental(@RequestBody RentalRequest rentalRequest) {
         logger.info("Posting/storing a rentalRequest with ItemId '" + rentalRequest.getItemId() + "' to Rental table");
