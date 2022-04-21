@@ -7,7 +7,7 @@ public class ItemRegisterRequest {
     private String address;
 
     @NotBlank
-    private String price;
+    private float price;
 
     @NotBlank
     private String description;
@@ -24,6 +24,16 @@ public class ItemRegisterRequest {
     @NotBlank
     private Long imageId;
 
+    public ItemRegisterRequest(String address, float price, String description, String category, String title, Long userId, Long imageId){
+        this.address = address;
+        this.price = price;
+        this.description = description;
+        this.category = category;
+        this.title = title;
+        this.userId = userId;
+        this.imageId = imageId;
+    }
+
 
     public String getAddress() {
         return address;
@@ -33,11 +43,11 @@ public class ItemRegisterRequest {
         this.address = address;
     }
 
-    public String getPrice() {
+    public float getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(float price) {
         this.price = price;
     }
 

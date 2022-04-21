@@ -44,6 +44,7 @@ public class ItemController {
      * A method for retrieving all items a user own
      * @return
      */
+
     /*
     @GetMapping("{userId}")
     public List getMyItems(@PathVariable("userId") int userId) {
@@ -53,4 +54,6 @@ public class ItemController {
     }
 
      */
+
+
 }
