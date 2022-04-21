@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * A class that represents a RentalController endpoint
+ */
 @RestController
 @RequestMapping(value = "/rental")
 @EnableAutoConfiguration
@@ -28,12 +31,25 @@ public class RentalController {
     Logger logger = LoggerFactory.getLogger(RentalController.class);
 
 
+    /**
+     * A method for creating a rental request
+     * status is set later, when owner of item is responding to the request
+     * @param rentalRequest the rental request that is beeing stored
+     * @return returns a status int
+     */
     @PostMapping(value = "createRental", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.CREATED)
     public int createRental(@RequestBody RentalRequest rentalRequest) {
         logger.info("Posting/storing a rentalRequest with ItemId '" + rentalRequest.getItemId() + "' to Rental table");
         return rentalService.createRental(rentalRequest);
     }
+
+    /**
+     * A method for retrieving all rental requests on a specific itemId
+     *
+     * @param itemId the itemId the rental requests belongs to
+     * @return returns a list of rental requests for a specific itemId
+     */
 
     @GetMapping("{itemId}")
     public List<Rental> getAllRentalRequestSpecificItem(@PathVariable("itemId") Long itemId) {
@@ -42,6 +58,13 @@ public class RentalController {
         return rentalService.getAllRentalRequestSpecificItem(itemId);
 
     }
+
+    /**
+     * A method for updating a rental status
+     * @param rentalId the rentalId that is beeing updated
+     * @param rentalRequest the rental request that is renewed
+     * @return returns the updated rental object
+     */
 
     @PutMapping(value = "/updateRentalRequest/{rentalId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.CREATED)
