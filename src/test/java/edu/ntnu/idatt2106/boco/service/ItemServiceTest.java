@@ -36,7 +36,7 @@ public class ItemServiceTest {
         ArrayList<Item> items = new ArrayList<>();
         items.add(item1);
 
-        Mockito.lenient().when(itemRepository.findAllByUser(Mockito.anyInt())).thenReturn(items);
+        //Mockito.lenient().when(itemRepository.findAllByUser(Mockito.anyInt())).thenReturn(items);
         Mockito.lenient().when(itemRepository.findAll()).thenReturn(items);
         Mockito.lenient().when(itemRepository.save(Mockito.any())).thenReturn(0);
     }

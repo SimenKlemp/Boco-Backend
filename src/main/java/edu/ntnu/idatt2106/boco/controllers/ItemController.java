@@ -92,7 +92,7 @@ public class ItemController {
      * @return returns a status int
      */
 
-    @DeleteMapping(value = "/deleteItem/{itemId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/deleteItem/{itemId}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.CREATED)
     public int deleteSpecificItem(@PathVariable("itemId") int itemId) {
         logger.info("Prøver å slette et spesifikt item på itemId");

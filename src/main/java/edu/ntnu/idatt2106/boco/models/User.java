@@ -21,8 +21,6 @@ public class User {
   @Column(name = "name")
   private String name;
 
-  @NotBlank
-  @Size(max = 20)
   @Column(name = "isPerson")
   private boolean isPerson;
 
@@ -42,8 +40,6 @@ public class User {
   @Column(name = "password")
   private String password;
 
-  @NotBlank
-  @Size(max = 120)
   @Column(name = "imageId")
   private Long imageId;
 

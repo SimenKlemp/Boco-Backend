@@ -34,11 +34,6 @@ public class UserServiceTest {
         Mockito.lenient().when(userRepository.existsByEmail(Mockito.anyString())).thenReturn(true);
     }
     @Test
-    void userExistTest() {
-        Boolean response = userService.userExists(Mockito.anyString());
-        assertThat(response).isTrue();
-    }
-    @Test
     void registerTest() {
         RegisterUserRequest request = new RegisterUserRequest("Name",true, "Address", "Email", "Password");
 

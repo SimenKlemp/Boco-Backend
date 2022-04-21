@@ -26,8 +26,7 @@ public class UserService
     public User login(LoginRequest request)
     {
         User user = userRepository.findByEmail(request.getEmail()).get();
-        String requestPassword = encoder.encode(request.getPassword());
-        if (requestPassword.equals(user.getPassword()))
+        if (encoder.matches(request.getPassword(), user.getPassword()))
         {
             return user;
         }

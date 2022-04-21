@@ -62,12 +62,9 @@ public class ItemService {
      * @param userId the userId the items belongs to
      * @return returns a list of items
      */
-    public List getMyItems(int userId){
-        List<Item> items = new ArrayList<Item>();
-
-        itemRepository.findAllByUser(userId).forEach(items::add);
-
-        return items;
+    public List<Item> getMyItems(long userId){
+        User user = userRepository.findById(userId).get();
+        return itemRepository.findAllByUser(user);
     }
 
     /**
@@ -77,8 +74,8 @@ public class ItemService {
      * @param itemRegisterRequest
      * @return returns the updated Item
      */
-    public Item updateSpecificItem(int itemId, ItemRegisterRequest itemRegisterRequest){
-        Item item = itemRepository.findByUser(itemId);
+    public Item updateSpecificItem(long itemId, ItemRegisterRequest itemRegisterRequest){
+        Item item = itemRepository.findById(itemId).get();
         item.setAddress(itemRegisterRequest.getAddress());
         item.setPrice(itemRegisterRequest.getPrice());
         item.setDescription(itemRegisterRequest.getDescription());
@@ -94,8 +91,8 @@ public class ItemService {
      * @param itemId the item that is being deleted
      * @return returns a status int
      */
-    public int deleteSpecificItem(int itemId){
-        Item item = itemRepository.findByItemId(itemId);
+    public int deleteSpecificItem(long itemId){
+        Item item = itemRepository.findById(itemId).get();
 
         itemRepository.delete(item);
 
