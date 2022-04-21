@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,8 +24,12 @@ public class ItemServiceTest {
     @InjectMocks
     private ItemService itemService;
 
+
+
     @Mock
     private ItemRepository itemRepository;
+    @Mock
+    private ItemRepository userRepository;
 
     @BeforeEach
     public void setUp() {
@@ -36,12 +41,15 @@ public class ItemServiceTest {
         ArrayList<Item> items = new ArrayList<>();
         items.add(item1);
 
-        //Mockito.lenient().when(itemRepository.findAllByUser(Mockito.anyInt())).thenReturn(items);
+        Mockito.lenient().when(itemRepository.findAllByUser(Mockito.any())).thenReturn(items);
         Mockito.lenient().when(itemRepository.findAll()).thenReturn(items);
         Mockito.lenient().when(itemRepository.save(Mockito.any())).thenReturn(0);
+        Mockito.lenient().when(itemRepository.findById(Mockito.anyLong())).thenReturn(java.util.Optional.of(item1));
+        //Mockito.lenient().when(userRepository.findById(Mockito.anyLong())).thenReturn(user);
+
     }
 
-    /*
+
     @Test
     void createItemTest(){
         ItemRegisterRequest item = new ItemRegisterRequest("Address", 200,"Description", "Category", "Title", 1L,1l);
@@ -51,7 +59,6 @@ public class ItemServiceTest {
         assertThat(response).isEqualTo(0);
     }
 
-     */
     @Test
     void getAllSubjectsTest() {
         List<Item> items = itemService.getAllItems();
@@ -66,7 +73,7 @@ public class ItemServiceTest {
     }
     @Test
     void getMyItemsTest() {
-        List<Item> items = itemService.getMyItems(Mockito.anyInt());
+        List<Item> items = itemService.getMyItems(Mockito.anyLong());
 
         assertThat(items.get(0).getAddress()).isEqualTo("Address");
         assertThat(items.get(0).getCategory()).isEqualTo("Category");
@@ -76,5 +83,27 @@ public class ItemServiceTest {
         assertThat(items.get(0).getTitle()).isEqualTo("Title");
         assertThat(items.get(0).getUser().getEmail()).isEqualTo("email");
     }
+
+
+    @Test
+    void updateSpecificItem(){
+        ItemRegisterRequest itemRegisterRequest = new ItemRegisterRequest("Address", 200, "Description", "Category", "Title", 1L, 1L);
+        Item response = itemService.updateSpecificItem(Mockito.anyLong(), itemRegisterRequest);
+
+        assertThat(response.getAddress()).isEqualTo("Address");
+        assertThat(response.getPrice()).isEqualTo(200);
+        assertThat(response.getDescription()).isEqualTo("Description");
+        assertThat(response.getCategory()).isEqualTo("Category");
+        assertThat(response.getTitle()).isEqualTo("Title");
+    }
+
+    @Test
+    void deleteSpecificItem(){
+        int response = itemService.deleteSpecificItem(Mockito.anyLong());
+
+        assertThat(response).isEqualTo(0);
+    }
+
+
 
 }

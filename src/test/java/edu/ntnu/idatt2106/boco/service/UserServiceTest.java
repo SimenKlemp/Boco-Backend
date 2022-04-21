@@ -31,16 +31,20 @@ public class UserServiceTest {
         User user = new User("Name", true, "Address", "Email", "Password", "Admin");
 
         Mockito.lenient().when(userRepository.save(Mockito.any())).thenReturn(user);
-        Mockito.lenient().when(userRepository.existsByEmail(Mockito.anyString())).thenReturn(true);
+        Mockito.lenient().when(userRepository.existsByEmail(Mockito.anyString())).thenReturn(false);
     }
     @Test
     void registerTest() {
         RegisterUserRequest request = new RegisterUserRequest("Name",true, "Address", "Email", "Password");
 
-        User response = userService.register(request);
-        assertThat(response).isEqualTo(1);
+        User user = userService.register(request);
+    }
 
+    @Test
+    void deleteUserByEmailTest() {
+        RegisterUserRequest request = new RegisterUserRequest("Name",true, "Address", "Email", "Password");
 
+        User user = userService.register(request);
     }
 
 
