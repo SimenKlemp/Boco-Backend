@@ -26,7 +26,6 @@ public class UserController
 
   @Autowired
   private TokenComponent tokenComponent;
-
   @PostMapping("/login")
   public LoginResponse login(@Valid @RequestBody LoginRequest loginRequest) throws UnsupportedEncodingException
   {
