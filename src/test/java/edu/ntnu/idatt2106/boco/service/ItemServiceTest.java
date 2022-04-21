@@ -88,13 +88,17 @@ public class ItemServiceTest {
     @Test
     void updateSpecificItem(){
         ItemRegisterRequest itemRegisterRequest = new ItemRegisterRequest("Address", 200, "Description", "Category", "Title", 1L, 1L);
-        Item response = itemService.updateSpecificItem(Mockito.anyLong(), itemRegisterRequest);
+        boolean response = itemService.updateSpecificItem(Mockito.anyLong(), itemRegisterRequest);
 
+        /*
         assertThat(response.getAddress()).isEqualTo("Address");
         assertThat(response.getPrice()).isEqualTo(200);
         assertThat(response.getDescription()).isEqualTo("Description");
         assertThat(response.getCategory()).isEqualTo("Category");
         assertThat(response.getTitle()).isEqualTo("Title");
+
+         */
+        assertThat(response).isTrue();
     }
 
     @Test
@@ -103,7 +107,5 @@ public class ItemServiceTest {
 
         assertThat(response).isEqualTo(0);
     }
-
-
 
 }
