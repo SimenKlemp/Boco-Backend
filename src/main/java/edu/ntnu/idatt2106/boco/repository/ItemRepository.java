@@ -10,5 +10,11 @@ import java.util.List;
 
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
-    List<Item> findItemsByUser(long userId);
+
+    List<Item> findAllByUser(int userId);
+
+    Item findByUser(int userId);
+
+    Item findByItemId(int itemId);
+
 }

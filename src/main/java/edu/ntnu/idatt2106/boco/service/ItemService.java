@@ -13,6 +13,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * A class that represents an ItemService
+ */
+
 @Service
 public class ItemService {
 
@@ -23,6 +27,12 @@ public class ItemService {
     UserRepository userRepository;
 
 
+    /**
+     * A method for creating an Item
+     * finds the user that is creating an item
+     * @param request
+     * @return returns a status int
+     */
 
     public int createItem(ItemRegisterRequest request){
         User user = userRepository.findById(request.getUserId()).get();
@@ -33,6 +43,11 @@ public class ItemService {
 
     }
 
+    /**
+     * A method for retrieving all the items that is stored in database
+     * @return returns an item List
+     */
+
     public List getAllItems(){
         List<Item> items = new ArrayList<Item>();
 
@@ -41,12 +56,49 @@ public class ItemService {
         return items;
     }
 
-    public List getMyItems(long userId){
+
+    /**
+     * A method for retrieving all items to a specific user on userId
+     * @param userId the userId the items belongs to
+     * @return returns a list of items
+     */
+    public List getMyItems(int userId){
         List<Item> items = new ArrayList<Item>();
 
-        itemRepository.findItemsByUser(userId).forEach(items::add);
+        itemRepository.findAllByUser(userId).forEach(items::add);
 
         return items;
     }
 
+    /**
+     * A method for updating a specific Item on itemId
+     * Finds the item from database and then assigns new values to the columns
+     * @param itemId
+     * @param itemRegisterRequest
+     * @return returns the updated Item
+     */
+    public Item updateSpecificItem(int itemId, ItemRegisterRequest itemRegisterRequest){
+        Item item = itemRepository.findByUser(itemId);
+        item.setAddress(itemRegisterRequest.getAddress());
+        item.setPrice(itemRegisterRequest.getPrice());
+        item.setDescription(itemRegisterRequest.getDescription());
+        item.setCategory(itemRegisterRequest.getCategory());
+        item.setTitle(itemRegisterRequest.getTitle());
+        item.setImageid(itemRegisterRequest.getImageId());
+
+        return itemRepository.save(item);
+    }
+
+    /**
+     * A method for deleting a specific item in database
+     * @param itemId the item that is being deleted
+     * @return returns a status int
+     */
+    public int deleteSpecificItem(int itemId){
+        Item item = itemRepository.findByItemId(itemId);
+
+        itemRepository.delete(item);
+
+        return 0;
+    }
 }
