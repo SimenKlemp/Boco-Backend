@@ -23,6 +23,11 @@ public class UserService
         encoder = new BCryptPasswordEncoder();
     }
 
+    /**
+     * A method for checking if login credentials are correct
+     * @param request user info
+     * @return returns the user if the credentials match
+     */
     public User login(LoginRequest request)
     {
         User user = userRepository.findByEmail(request.getEmail()).get();
@@ -33,6 +38,11 @@ public class UserService
         throw new IllegalArgumentException("Email and/or password is wrong");
     }
 
+    /**
+     * A method for registering a new user
+     * @param request user info
+     * @return returns the newly created user
+     */
     public User register(RegisterUserRequest request)
     {
         if (userRepository.existsByEmail(request.getEmail()))
@@ -45,8 +55,8 @@ public class UserService
                 request.getIsPerson(),
                 request.getAddress(),
                 request.getEmail(),
-                encoder.encode(request.getPassword())
-
+                encoder.encode(request.getPassword()),
+                "USER"
         );
 
         user = userRepository.save(user);
