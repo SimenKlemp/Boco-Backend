@@ -20,31 +20,35 @@ public class UserDetailsImpl implements UserDetails
   @JsonIgnore
   private String password;
 
-  private GrantedAuthority authority;
+  private String address;
 
-  public UserDetailsImpl(Long id, String email, String password, GrantedAuthority authority)
+  public UserDetailsImpl(Long id, String email, String password, String address)
   {
     this.id = id;
     this.email = email;
     this.password = password;
-    this.authority = authority;
+    this.address=address;
   }
 
   public static UserDetailsImpl build(User user)
   {
-    GrantedAuthority authority = new SimpleGrantedAuthority(user.getRole());
+
 
     return new UserDetailsImpl(
         user.getUserId(),
         user.getEmail(),
         user.getPassword(), 
-        authority);
+        user.getAddress());
+  }
+
+  public String getAddress() {
+    return address;
   }
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
     Collection<GrantedAuthority> authorities = new ArrayList<>();
-    authorities.add(authority);
+
     return authorities;
   }
 

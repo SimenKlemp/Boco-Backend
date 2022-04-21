@@ -50,17 +50,15 @@ public class AuthController
 
     SecurityContextHolder.getContext().setAuthentication(authentication);
     String jwt = jwtUtils.generateJwtToken(authentication);
-    
-    UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();    
-    String role = userDetails.getAuthorities().stream()
-        .map(item -> item.getAuthority())
-        .collect(Collectors.toList()).get(0);
+
+    UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+
 
     return ResponseEntity.ok(new LoginResponse(
             jwt,
             userDetails.getId(),
             userDetails.getEmail(),
-            role));
+            userDetails.getAddress()));
   }
 
   @PostMapping("/register")
@@ -89,7 +87,7 @@ public class AuthController
   }
 
   @DeleteMapping(value="api/auth/user/delete")
-  public ResponseEntity<String> deleteUserById(@RequestBody User user ){
+  public ResponseEntity<String> deleteUserByEmai(@RequestBody User user ){
     try{
     Optional<User> email=userRepository.findByEmail(user.getEmail());
     if(email.isEmpty()){
