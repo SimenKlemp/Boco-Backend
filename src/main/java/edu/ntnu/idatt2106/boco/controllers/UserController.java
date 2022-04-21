@@ -56,7 +56,7 @@ public class UserController
   public ResponseEntity<String> deleteUserByEmail(@RequestBody User user ){
     try{
 
-      if( userService.deleteUserByEmail(user)){
+      if(!userService.deleteUserByEmail(user)){
         return new ResponseEntity("Error: User not found", HttpStatus.OK);
       }
       return new ResponseEntity("User has been deleted successfully", HttpStatus.OK);
@@ -69,7 +69,7 @@ public class UserController
   public ResponseEntity<String> updateUserInfo(@PathVariable("email")String email, @RequestBody User user) {
     try {
 
-      if (userService.updateUserByEmail(email,user)) {
+      if (!userService.updateUserByEmail(email,user)) {
         return new ResponseEntity("Error: User not found", HttpStatus.OK);
       }
 
