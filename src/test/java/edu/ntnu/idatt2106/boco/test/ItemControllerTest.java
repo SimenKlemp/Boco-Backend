@@ -27,6 +27,8 @@ public class ItemControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+
+    /*
     @Test
     void addItemTest() throws Exception {
         // Det er en del forskjellige libs som brukes her, se static imports øverst
@@ -40,4 +42,6 @@ public class ItemControllerTest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.subjectId").exists());
     }
+
+     */
 }
