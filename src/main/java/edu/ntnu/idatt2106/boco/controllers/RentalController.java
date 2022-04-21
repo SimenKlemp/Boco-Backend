@@ -1,5 +1,6 @@
 package edu.ntnu.idatt2106.boco.controllers;
 
+import edu.ntnu.idatt2106.boco.models.Item;
 import edu.ntnu.idatt2106.boco.models.Rental;
 import edu.ntnu.idatt2106.boco.payload.request.ItemRegisterRequest;
 import edu.ntnu.idatt2106.boco.payload.request.RentalRequest;
@@ -36,10 +37,18 @@ public class RentalController {
 
     @GetMapping("{itemId}")
     public List<Rental> getAllRentalRequestSpecificItem(@PathVariable("itemId") Long itemId) {
-        logger.info("Fetching all all rentalRequests...");
+        logger.info("Fetching all all rentalRequests for an item...");
 
         return rentalService.getAllRentalRequestSpecificItem(itemId);
 
     }
+
+    @PutMapping(value = "/updateRentalRequest/{rentalId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public Rental updateRentalRequest(@PathVariable("rentalId") int rentalId, @RequestBody RentalRequest rentalRequest) {
+        logger.info("updating a rentalRequest based on rentalId");
+        return rentalService.updateRentalRequest(rentalId, rentalRequest);
+    }
+
 
 }

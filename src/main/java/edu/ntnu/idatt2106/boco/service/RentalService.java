@@ -25,7 +25,7 @@ public class RentalService {
 
     public int createRental(RentalRequest rentalRequest){
         User user = userRepository.findById(rentalRequest.getUserId()).get();
-        Rental rental = new Rental(rentalRequest.getMessage(), rentalRequest.getStartDate(), rentalRequest.getEndDate(), rentalRequest.getStatus(), user, rentalRequest.getItemId());
+        Rental rental = new Rental(rentalRequest.getMessage(), rentalRequest.getStartDate(), rentalRequest.getEndDate(), "PENDING", user, rentalRequest.getItemId());
         rentalRepository.save(rental);
 
         return 0;
@@ -38,5 +38,12 @@ public class RentalService {
         rentalRepository.findAllByItemId(itemId).forEach(rentalRequests::add);
 
         return rentalRequests;
+    }
+
+    public Rental updateRentalRequest(long rentalId, RentalRequest rentalRequest){
+        Rental rental = rentalRepository.findById(rentalId).get();
+        rental.setStatus(rentalRequest.getStatus());
+
+        return rentalRepository.save(rental);
     }
 }
