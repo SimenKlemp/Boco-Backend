@@ -25,7 +25,7 @@ public class Item {
     @NotBlank
     @Size(max = 20)
     @Column(name = "price")
-    private String price;
+    private float price;
 
     @NotBlank
     @Size(max = 20)
@@ -56,7 +56,7 @@ public class Item {
 
     }
 
-    public Item(String address, String price, String description, String category, String title, User user, Long imageid){
+    public Item(String address, float price, String description, String category, String title, User user, Long imageid){
         this.address = address;
         this.price = price;
         this.description = description;
@@ -83,11 +83,11 @@ public class Item {
         this.address = address;
     }
 
-    public String getPrice() {
+    public float getPrice() {
         return price;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(float price) {
         this.price = price;
     }
 
