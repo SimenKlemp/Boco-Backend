@@ -22,8 +22,6 @@ public class Item {
     @Column(name = "address")
     private String address;
 
-    @NotBlank
-    @Size(max = 20)
     @Column(name = "price")
     private float price;
 
@@ -42,13 +40,10 @@ public class Item {
     @Column(name = "title")
     private String title;
 
-    @NotBlank
-    @Size(max = 20)
     @ManyToOne
+    @JoinColumn(name="userId")
     private User user;
 
-    @NotBlank
-    @Size(max = 20)
     @Column(name = "imageId")
     private Long imageid;
 
