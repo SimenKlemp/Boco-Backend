@@ -45,13 +45,13 @@ public class UserService
                 request.getIsPerson(),
                 request.getAddress(),
                 request.getEmail(),
-                encoder.encode(request.getPassword())
-
+                encoder.encode(request.getPassword(),request.getRoll())
         );
 
         user = userRepository.save(user);
         return user;
     }
+
 
     public boolean deleteUserByEmail(User user){
         Optional<User> userEmail=userRepository.findByEmail(user.getEmail());
@@ -62,6 +62,7 @@ public class UserService
             return true;
 
     }
+
     public boolean updateUserByEmail(String email,User user){
         Optional<User> updatedUser = userRepository.findByEmail(email);
         if(updatedUser.isEmpty()){
