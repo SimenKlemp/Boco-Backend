@@ -19,8 +19,6 @@ public class User {
   @Size(max = 20)
   private String name;
 
-  @NotBlank
-  @Size(max = 20)
   private boolean isPerson;
 
   @NotBlank
@@ -37,7 +35,6 @@ public class User {
   private String password;
 
   @NotBlank
-  @Size(max = 120)
   private Long imageId;
 
   @NotBlank

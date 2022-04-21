@@ -1,4 +1,4 @@
-package edu.ntnu.idatt2106.boco.swagger;
+package edu.ntnu.idatt2106.boco.config;
 
 import com.google.common.collect.Lists;
 import org.springframework.context.annotation.Bean;
