@@ -28,32 +28,30 @@ public class ItemController {
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.CREATED)
     public int createItem(@RequestBody ItemRegisterRequest itemRegisterRequest) {
-        logger.info("Prøver å opprette en item- annonse i controller");
+        logger.info("Posting/storing an item with the title '" + itemRegisterRequest.getTitle() + "' to the database");
         return itemService.createItem(itemRegisterRequest);
     }
 
-    @GetMapping("")
+    /**
+     * A method for fetching all items
+     * @return
+     */
+    @GetMapping("/all")
     public List getAllItems() {
-        logger.info("Hei, jeg har kommet meg inn i get getAllItems metoden");
+        logger.info("Fetching all all items...");
 
         return itemService.getAllItems();
-
     }
 
     /**
-     * A method for retrieving all items a user own
+     * A method for retrieving all items to a user
      * @return
      */
-
-    /*
     @GetMapping("{userId}")
-    public List getMyItems(@PathVariable("userId") int userId) {
-        logger.info("Hei, jeg har kommet meg inn i get equation metoden");
+    public List getMyItems(@PathVariable("userId") long userId) {
+        logger.info("Fetching items to a user with userId: " + userId + "...");
 
         return itemService.getMyItems(userId);
     }
-
-     */
-
 
 }

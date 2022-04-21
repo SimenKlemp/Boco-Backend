@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -40,19 +41,12 @@ public class ItemService {
         return items;
     }
 
-/*
-    public List getMyItems(int userId){
+    public List getMyItems(long userId){
         List<Item> items = new ArrayList<Item>();
 
-        itemRepository.findAllBy(userId).forEach(items::add);
+        itemRepository.findItemsByUser(userId).forEach(items::add);
 
         return items;
     }
-
- */
-
-
-
-
 
 }

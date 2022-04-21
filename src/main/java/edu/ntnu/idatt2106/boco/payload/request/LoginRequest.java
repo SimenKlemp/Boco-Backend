@@ -15,6 +15,11 @@ public class LoginRequest
 	@Size(max = 120)
 	private String password;
 
+	public LoginRequest(String email, String password){
+		this.email = email;
+		this.password = password;
+	}
+
 	public String getEmail()
 	{
 		return email;
