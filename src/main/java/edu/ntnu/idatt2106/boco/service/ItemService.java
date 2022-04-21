@@ -36,10 +36,12 @@ public class ItemService {
 
     public int createItem(ItemRegisterRequest request){
         User user = userRepository.findById(request.getUserId()).get();
+        if(user == null){
+            return 0;
+        }
         Item item = new Item(request.getAddress(), request.getPrice(), request.getDescription(), request.getCategory(), request.getTitle(), user, request.getImageId());
         itemRepository.save(item);
-
-        return 0;
+        return 1;
 
     }
 
@@ -74,16 +76,20 @@ public class ItemService {
      * @param itemRegisterRequest
      * @return returns the updated Item
      */
-    public Item updateSpecificItem(long itemId, ItemRegisterRequest itemRegisterRequest){
+    public boolean updateSpecificItem(long itemId, ItemRegisterRequest itemRegisterRequest){
+
         Item item = itemRepository.findById(itemId).get();
+        if(item==null){
+            return false;
+        }
         item.setAddress(itemRegisterRequest.getAddress());
         item.setPrice(itemRegisterRequest.getPrice());
         item.setDescription(itemRegisterRequest.getDescription());
         item.setCategory(itemRegisterRequest.getCategory());
         item.setTitle(itemRegisterRequest.getTitle());
         item.setImageid(itemRegisterRequest.getImageId());
-
-        return itemRepository.save(item);
+        itemRepository.save(item);
+        return true;
     }
 
     /**
@@ -93,9 +99,10 @@ public class ItemService {
      */
     public int deleteSpecificItem(long itemId){
         Item item = itemRepository.findById(itemId).get();
-
+        if(item==null){
+            return 0;
+        }
         itemRepository.delete(item);
-
-        return 0;
+        return 1;
     }
 }
