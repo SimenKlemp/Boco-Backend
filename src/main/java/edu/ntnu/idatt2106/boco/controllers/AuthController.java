@@ -89,30 +89,24 @@ public class AuthController
   @DeleteMapping(value="api/auth/user/delete")
   public ResponseEntity<String> deleteUserByEmai(@RequestBody User user ){
     try{
-    Optional<User> email=userRepository.findByEmail(user.getEmail());
-    if(email.isEmpty()){
+
+    if( userService.deleteUserByEmail(user)){
       return new ResponseEntity("Error: User not found", HttpStatus.OK);
     }
-    userRepository.deleteById(user.getUserId());
     return new ResponseEntity("User has been deleted successfully", HttpStatus.OK);
     }catch (Exception ex){
       return new ResponseEntity("Error: Can not delete ",HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
   }
 
   @PutMapping (value="api/auth/user/update")
   public ResponseEntity<String> updateUserInfo(@PathVariable("email")String email, @RequestBody User user) {
     try {
-      Optional<User> updatedUser = userRepository.findByEmail(email);
-      if (updatedUser.isEmpty()) {
+
+      if (userService.updateUserByEmail(email,user)) {
         return new ResponseEntity("Error: User not found", HttpStatus.OK);
       }
-      updatedUser.get().setName(user.getName());
-      updatedUser.get().setEmail(user.getEmail());
-      updatedUser.get().setAddress(user.getAddress());
-      updatedUser.get().setPassword(user.getPassword());
-      userRepository.save(updatedUser.get());
+
       return new ResponseEntity("User has been updated",HttpStatus.OK);
     } catch (Exception ex) {
       return new ResponseEntity("Can not update", HttpStatus.INTERNAL_SERVER_ERROR);

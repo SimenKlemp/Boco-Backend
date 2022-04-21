@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserService
 {
@@ -38,6 +40,29 @@ public class UserService
         userRepository.save(user);
 
         return user;
+    }
+
+    public boolean deleteUserByEmail(User user){
+        Optional<User> userEmail=userRepository.findByEmail(user.getEmail());
+        if(userEmail.isEmpty()){
+            return false;
+        }
+            userRepository.deleteById(user.getUserId());
+            return true;
+
+    }
+    public boolean updateUserByEmail(String email,User user){
+        Optional<User> updatedUser = userRepository.findByEmail(email);
+        if(updatedUser.isEmpty()){
+            return false;
+        }
+        updatedUser.get().setName(user.getName());
+        updatedUser.get().setEmail(user.getEmail());
+        updatedUser.get().setAddress(user.getAddress());
+        updatedUser.get().setPassword(user.getPassword());
+        userRepository.save(updatedUser.get());
+        return true;
+
     }
 }
 
