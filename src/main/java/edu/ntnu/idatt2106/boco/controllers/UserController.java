@@ -26,10 +26,16 @@ public class UserController
 
   @Autowired
   private TokenComponent tokenComponent;
+
+  /**
+   * A method for login and returning token in login response
+   * @param request Email and password
+   * @return returns a LoginResponse containing token and user info
+   */
   @PostMapping("/login")
-  public LoginResponse login(@Valid @RequestBody LoginRequest loginRequest) throws UnsupportedEncodingException
+  public LoginResponse login(@Valid @RequestBody LoginRequest request) throws UnsupportedEncodingException
   {
-    User user = userService.login(loginRequest);
+    User user = userService.login(request);
     String token = tokenComponent.generateToken(user.getUserId(), user.getRole());
     return new LoginResponse(
             token,
@@ -39,6 +45,11 @@ public class UserController
     );
   }
 
+  /**
+   * A method for registering a new user and returning token in login response
+   * @param request user info
+   * @return returns a LoginResponse containing token and user info
+   */
   @PostMapping("/register")
   public LoginResponse register(@Valid @RequestBody RegisterUserRequest request) throws UnsupportedEncodingException
   {
@@ -56,7 +67,7 @@ public class UserController
   public ResponseEntity<String> deleteUserByEmail(@RequestBody User user ){
     try{
 
-      if( userService.deleteUserByEmail(user)){
+      if(!userService.deleteUserByEmail(user)){
         return new ResponseEntity("Error: User not found", HttpStatus.OK);
       }
       return new ResponseEntity("User has been deleted successfully", HttpStatus.OK);
@@ -69,7 +80,7 @@ public class UserController
   public ResponseEntity<String> updateUserInfo(@PathVariable("email")String email, @RequestBody User user) {
     try {
 
-      if (userService.updateUserByEmail(email,user)) {
+      if (!userService.updateUserByEmail(email,user)) {
         return new ResponseEntity("Error: User not found", HttpStatus.OK);
       }
 

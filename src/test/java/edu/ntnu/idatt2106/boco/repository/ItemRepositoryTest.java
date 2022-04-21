@@ -29,8 +29,8 @@ class ItemRepositoryTest {
 
     @Test
     public void  saveItem(){
-        User user =new User("name",true,"example@example.com","address","password", "Admin");
-        Item expectedItem =new Item("address",100,"category","description","title",user, 1L);
+        User user =new User("name",true,"example@example.com","address","password","USER");
+        Item expectedItem =new Item("address",1F,"category","description","title",user, 1L);
         Item actualItem=itemRepository.save(expectedItem);
         assertThat(actualItem).usingRecursiveComparison()
                 .ignoringFields("itemId").isEqualTo(expectedItem);
