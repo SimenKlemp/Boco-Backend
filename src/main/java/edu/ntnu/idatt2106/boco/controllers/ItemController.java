@@ -38,7 +38,7 @@ public class ItemController {
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.CREATED)
     public int createItem(@RequestBody ItemRegisterRequest itemRegisterRequest) {
-        logger.info("Prøver å opprette en item- annonse i controller");
+        logger.info("Posting/storing an item with the title '" + itemRegisterRequest.getTitle() + "' to the database");
         return itemService.createItem(itemRegisterRequest);
     }
 
@@ -49,7 +49,7 @@ public class ItemController {
 
     @GetMapping("")
     public List getAllItems() {
-        logger.info("Hei, jeg har kommet meg inn i get getAllItems metoden");
+        logger.info("Fetching all all items...");
 
         return itemService.getAllItems();
 
@@ -78,16 +78,24 @@ public class ItemController {
      * @return returns the updated Item
      */
 
-    @GetMapping(value = "/updateItem/{itemId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/updateItem/{itemId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.CREATED)
     public Item updateSpecificItem(@PathVariable("itemId") int itemId, @RequestBody ItemRegisterRequest itemRegisterRequest) {
         logger.info("Prøver å oppdatere en spesifikk item annonse på itemId");
         return itemService.updateSpecificItem(itemId, itemRegisterRequest);
     }
 
+    /**
+     * A method for deleting a specific item in database
+     * DeleteMapping HTTP annotation
+     * @param itemId the item that is being deleted
+     * @return returns a status int
+     */
 
-
-
-
-
+    @DeleteMapping(value = "/deleteItem/{itemId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public int deleteSpecificItem(@PathVariable("itemId") int itemId) {
+        logger.info("Prøver å slette et spesifikt item på itemId");
+        return itemService.deleteSpecificItem(itemId);
+    }
 }

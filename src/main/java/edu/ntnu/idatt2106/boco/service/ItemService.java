@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -88,10 +89,16 @@ public class ItemService {
         return itemRepository.save(item);
     }
 
+    /**
+     * A method for deleting a specific item in database
+     * @param itemId the item that is being deleted
+     * @return returns a status int
+     */
+    public int deleteSpecificItem(int itemId){
+        Item item = itemRepository.findByItemId(itemId);
 
+        itemRepository.delete(item);
 
-
-
-
-
+        return 0;
+    }
 }

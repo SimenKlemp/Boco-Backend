@@ -8,8 +8,6 @@ public class RegisterUserRequest
   @Size(max = 20)
   private String name;
 
-  @NotBlank
-  @Size(max = 20)
   private boolean isPerson;
 
   @Size(max = 20)
@@ -43,14 +41,14 @@ public class RegisterUserRequest
     this.name = name;
   }
 
-  public boolean isPerson()
+  public boolean getIsPerson()
   {
     return isPerson;
   }
 
-  public void setPerson(boolean person)
+  public void setIsPerson(boolean isPerson)
   {
-    isPerson = person;
+    this.isPerson = isPerson;
   }
 
   public String getAddress()

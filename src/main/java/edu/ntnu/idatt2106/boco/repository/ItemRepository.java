@@ -15,8 +15,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     Item findByUser(int userId);
 
-
-
-
+    Item findByItemId(int itemId);
 
 }

@@ -6,13 +6,13 @@ public class LoginResponse
   private String type = "Bearer";
   private Long id;
   private String email;
-  private String address;
+  private String role;
 
-  public LoginResponse(String accessToken, Long id, String email,String address) {
+  public LoginResponse(String accessToken, Long id, String email, String role) {
     this.token = accessToken;
     this.id = id;
     this.email = email;
-    this.address=address;
+    this.role = role;
   }
 
   public String getAccessToken() {
@@ -47,6 +47,9 @@ public class LoginResponse
     this.email = email;
   }
 
+  public String getRole() {
+    return role;
+  }
 
   public String getToken()
   {
@@ -68,4 +71,8 @@ public class LoginResponse
     this.type = type;
   }
 
+  public void setRole(String role)
+  {
+    this.role = role;
+  }
 }
