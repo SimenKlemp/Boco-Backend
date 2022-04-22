@@ -40,19 +40,20 @@ public class ItemController
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ItemResponse> registerItem(@RequestBody RegisterItemRequest request)
     {
-        try
-        {
-            ItemResponse item = itemService.registerItem(request);
-            if (item == null)
-            {
-                return new ResponseEntity("Error: User can not be found ", HttpStatus.NO_CONTENT);
-            }
-            return new ResponseEntity<>(item, HttpStatus.CREATED);
-        }
-        catch(Exception e)
-        {
-            return new ResponseEntity("Error: Cannot create a new item ",HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+       try
+       {
+           ItemResponse item = itemService.registerItem(request);
+           if (item == null)
+           {
+               return new ResponseEntity("Error: User can not be found ", HttpStatus.NO_CONTENT);
+           }
+           return new ResponseEntity<>(item, HttpStatus.CREATED);
+       }
+       catch(Exception e)
+       {
+           e.printStackTrace();
+           return new ResponseEntity("Error: Cannot create a new item ",HttpStatus.INTERNAL_SERVER_ERROR);
+       }
     }
 
     /**
@@ -74,6 +75,7 @@ public class ItemController
         }
         catch(Exception e)
         {
+            e.printStackTrace();
             return new ResponseEntity("Could not fetch all items", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -97,6 +99,7 @@ public class ItemController
         }
         catch(Exception e)
         {
+            e.printStackTrace();
             return new ResponseEntity("Error",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -125,6 +128,7 @@ public class ItemController
         }
         catch(Exception e)
         {
+            e.printStackTrace();
             return new ResponseEntity("Error: Can not update", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -151,6 +155,7 @@ public class ItemController
         }
         catch (Exception e)
         {
+            e.printStackTrace();
             return new ResponseEntity<>("Error: Can not delete", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -161,14 +166,20 @@ public class ItemController
      * @return returns a list of items belonging to a category
      */
     @GetMapping("getAllSearchedItems/{category}")
-    public ResponseEntity<List> getAllSearchedItems(@PathVariable("category") String category) {
+    public ResponseEntity<List> getAllSearchedItems(@PathVariable("category") String category)
+    {
         logger.info("Fetching all items connected to a search ...");
-        try {
-            if (itemService.getAllSearchedItems(category).isEmpty()) {
+        try
+        {
+            if (itemService.getAllSearchedItems(category).isEmpty())
+            {
                 return new ResponseEntity(0, HttpStatus.NO_CONTENT);
             }
             return new ResponseEntity(itemService.getAllSearchedItems(category), HttpStatus.OK);
-        }catch(Exception e){
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
             return new ResponseEntity("Error",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
