@@ -64,7 +64,9 @@ public class UserService
         User user = new User(
                 request.getName(),
                 request.isPerson(),
-                request.getAddress(),
+                request.getStreetAddress(),
+                request.getPostalCode(),
+                request.getPostOffice(),
                 request.getEmail(),
                 encoder.encode(request.getPassword()),
                 "USER",
@@ -92,7 +94,10 @@ public class UserService
 
         if (request.getName() != null) user.setName(request.getName());
         if (request.getEmail() != null) user.setEmail(request.getEmail());
-        if (request.getAddress() != null) user.setAddress(request.getAddress());
+        if (request.getStreetAddress() != null) user.setStreetAddress(request.getStreetAddress());
+        if (request.getPostalCode() != null) user.setPostalCode(request.getPostalCode());
+        if (request.getPostOffice() != null) user.setPostOffice(request.getPostOffice());
+
 
         if (request.getPassword() != null)
         {

@@ -47,7 +47,7 @@ public class RentalController
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RentalResponse> registerRental(@RequestBody RegisterRentalRequest request)
     {
-        logger.info("Posting/storing a rentalRequest with ItemId '" + request.getItemId() + "' to Rental table");
+        logger.info("Posting/storing a rentalRequest for ItemId '" + request.getItemId() + "' to Rental table");
         try
         {
             if (!tokenComponent.haveAccessTo(request.getUserId()))

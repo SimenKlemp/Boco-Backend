@@ -20,7 +20,9 @@ public abstract class Mapper
                 user.getUserId(),
                 user.getName(),
                 user.isPerson(),
-                user.getAddress(),
+                user.getStreetAddress(),
+                user.getPostalCode(),
+                user.getPostOffice(),
                 user.getEmail(),
                 user.getRole(),
                 user.getImage() != null ? user.getImage().getImageId() : -1
