@@ -24,6 +24,7 @@ import edu.ntnu.idatt2106.boco.payload.request.RegisterUserRequest;
 import edu.ntnu.idatt2106.boco.payload.response.LoginResponse;
 
 import java.io.UnsupportedEncodingException;
+import java.util.UUID;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -85,7 +86,7 @@ public class UserController
       if(!userService.deleteUserByEmail(user)){
         return new ResponseEntity("Error: User not found", HttpStatus.OK);
       }
-      return new ResponseEntity("User has been deleted successfully", HttpStatus.OK);
+      return new ResponseEntity("User is deleted successfully", HttpStatus.OK);
     }catch (Exception ex){
       return new ResponseEntity("Error: Can not delete ",HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -99,7 +100,7 @@ public class UserController
         return new ResponseEntity("Error: User not found", HttpStatus.OK);
       }
 
-      return new ResponseEntity("User has been updated",HttpStatus.OK);
+      return new ResponseEntity("User is updated successfully",HttpStatus.OK);
     } catch (Exception ex) {
       return new ResponseEntity("Can not update", HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -109,11 +110,11 @@ public class UserController
     Params:HttpServletRequest request
     returns an assuring message to user
     */
-    @PostMapping("user/forgot_password")
+    @PostMapping("/forgot_password")
     public ResponseEntity<String> processForgotPassword(HttpServletRequest request) {
         String email = request.getParameter("email");
         //
-        String token = RandomString.make(30);
+        String token = UUID.randomUUID().toString();
 
         try {
          if( userService.updateResetPasswordToken(token, email)) {

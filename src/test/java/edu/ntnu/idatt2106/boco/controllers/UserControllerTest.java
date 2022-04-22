@@ -63,6 +63,11 @@ class UserControllerTest {
         return objectMapper.readValue(json, clazz);
     }
 
+    /*
+    Test method for checking if the user has registered successfully
+
+     */
+
     @Test
     public void createUserTest() throws Exception {
         String uri = "/user";
@@ -82,6 +87,11 @@ class UserControllerTest {
         assertEquals(content, "user is created successfully");
     }
 
+    /*
+    Test method to update user info
+
+     */
+
     @Test
     public void updateUserTest() throws Exception {
         String uri = "/user/delete";
@@ -98,6 +108,10 @@ class UserControllerTest {
         String content = mvcResult.getResponse().getContentAsString();
         assertEquals(content, "User is updated successfully");
     }
+
+    /*
+    Test method to delete user form database
+     */
     @Test
     public void deleteUserTest() throws Exception {
         String uri = "/user/update";
@@ -107,5 +121,4 @@ class UserControllerTest {
         String content = mvcResult.getResponse().getContentAsString();
         assertEquals(content, "user is deleted successfully");
     }
-
 }
