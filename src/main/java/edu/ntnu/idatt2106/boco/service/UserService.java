@@ -1,13 +1,17 @@
 package edu.ntnu.idatt2106.boco.service;
 
+import edu.ntnu.idatt2106.boco.models.Image;
 import edu.ntnu.idatt2106.boco.models.User;
 import edu.ntnu.idatt2106.boco.payload.request.LoginRequest;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterUserRequest;
+import edu.ntnu.idatt2106.boco.payload.request.UpdateUserRequest;
+import edu.ntnu.idatt2106.boco.payload.response.UserResponse;
 import edu.ntnu.idatt2106.boco.repository.UserRepository;
+import edu.ntnu.idatt2106.boco.util.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import org.springframework.web.multipart.MultipartFile;
 import java.util.Optional;
 
 @Service
@@ -16,7 +20,10 @@ public class UserService
     @Autowired
     UserRepository userRepository;
 
-    private BCryptPasswordEncoder encoder;
+    @Autowired
+    ImageService imageService;
+
+    private final BCryptPasswordEncoder encoder;
 
     public UserService()
     {
@@ -28,14 +35,18 @@ public class UserService
      * @param request user info
      * @return returns the user if the credentials match
      */
-    public User login(LoginRequest request)
+    public UserResponse login(LoginRequest request)
     {
-        User user = userRepository.findByEmail(request.getEmail()).get();
+        Optional<User> optionalUser = userRepository.findByEmail(request.getEmail());
+        if (optionalUser.isEmpty()) return null;
+        User user = optionalUser.get();
+
         if (encoder.matches(request.getPassword(), user.getPassword()))
         {
-            return user;
+            return Mapper.ToUserResponse(user);
         }
-        throw new IllegalArgumentException("Email and/or password is wrong");
+
+        return null;
     }
 
     /**
@@ -43,50 +54,54 @@ public class UserService
      * @param request user info
      * @return returns the newly created user
      */
-    public User register(RegisterUserRequest request)
+    public UserResponse register(RegisterUserRequest request)
     {
-        if (userRepository.existsByEmail(request.getEmail()))
-        {
-            throw new IllegalArgumentException("Error: Email is already in use!");
-        }
+        if (userRepository.existsByEmail(request.getEmail())) return null;
+
+        MultipartFile imageFile = request.getImage();
+        Image image = imageFile != null ? imageService.createImage(imageFile) : null;
 
         User user = new User(
                 request.getName(),
-                request.getIsPerson(),
+                request.isPerson(),
                 request.getAddress(),
                 request.getEmail(),
                 encoder.encode(request.getPassword()),
-                "USER"
+                "USER",
+                image
         );
 
         user = userRepository.save(user);
-        return user;
+        return Mapper.ToUserResponse(user);
     }
 
+    public boolean deleteUser(long userId)
+    {
+        Optional<User> user = userRepository.findById(userId);
+        if(user.isEmpty()) return false;
 
-
-    public boolean deleteUserByEmail(User user){
-        Optional<User> userEmail=userRepository.findByEmail(user.getEmail());
-        if(userEmail.isEmpty()){
-            return false;
-        }
-            userRepository.deleteById(user.getUserId());
-            return true;
-
-    }
-
-    public boolean updateUserByEmail(String email,User user){
-        Optional<User> updatedUser = userRepository.findByEmail(email);
-        if(updatedUser.isEmpty()){
-            return false;
-        }
-        updatedUser.get().setName(user.getName());
-        updatedUser.get().setEmail(user.getEmail());
-        updatedUser.get().setAddress(user.getAddress());
-        updatedUser.get().setPassword(user.getPassword());
-        userRepository.save(updatedUser.get());
+        userRepository.delete(user.get());
         return true;
+    }
 
+    public UserResponse updateUser(long userId, UpdateUserRequest request)
+    {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) return null;
+        User user = optionalUser.get();
+
+        if (request.getName() != null) user.setName(request.getName());
+        if (request.getEmail() != null) user.setEmail(request.getEmail());
+        if (request.getAddress() != null) user.setAddress(request.getAddress());
+
+        if (request.getPassword() != null)
+        {
+            String encodedPassword = encoder.encode(request.getPassword());
+            user.setPassword(encodedPassword);
+        }
+
+        user = userRepository.save(user);
+        return Mapper.ToUserResponse(user);
     }
 }
 

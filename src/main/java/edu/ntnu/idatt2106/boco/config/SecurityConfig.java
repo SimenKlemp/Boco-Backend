@@ -33,8 +33,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
     protected void configure(HttpSecurity http) throws Exception
     {
         http
-                .csrf().disable()
-                .cors().and()
+                .csrf().disable().cors().and()
                 .addFilterBefore(new TokenFilter(), AbstractPreAuthenticatedProcessingFilter.class)
                 .authorizeRequests()
                 .antMatchers(permitAllList).permitAll()

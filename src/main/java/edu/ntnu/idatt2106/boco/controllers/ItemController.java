@@ -1,8 +1,9 @@
 package edu.ntnu.idatt2106.boco.controllers;
 
 
-import edu.ntnu.idatt2106.boco.models.Item;
-import edu.ntnu.idatt2106.boco.payload.request.ItemRegisterRequest;
+import edu.ntnu.idatt2106.boco.payload.request.RegisterItemRequest;
+import edu.ntnu.idatt2106.boco.payload.request.UpdateItemRequest;
+import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
 import edu.ntnu.idatt2106.boco.service.ItemService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,8 +25,8 @@ import java.util.List;
 @RequestMapping(value = "/item")
 @EnableAutoConfiguration
 @CrossOrigin
-public class ItemController {
-
+public class ItemController
+{
     @Autowired
     private ItemService itemService;
 
@@ -34,18 +34,23 @@ public class ItemController {
 
     /**
      * A method for creating an item-post when logged in as a user
-     * @param itemRegisterRequest The item-post request that is being stored
+     * @param request The item-post request that is being stored
      * @return returns a status int
      */
-    @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-   // @ResponseStatus(value = HttpStatus.CREATED)
-    public ResponseEntity<String> createItem(@RequestBody ItemRegisterRequest itemRegisterRequest) {
-       try {
-           if (itemService.createItem(itemRegisterRequest) == 0) {
+    @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ItemResponse> registerItem(@RequestBody RegisterItemRequest request)
+    {
+       try
+       {
+           ItemResponse item = itemService.registerItem(request);
+           if (item == null)
+           {
                return new ResponseEntity("Error: User can not be found ", HttpStatus.NO_CONTENT);
            }
-           return new ResponseEntity("A new item has been added successfully ", HttpStatus.CREATED);
-       }catch(Exception e){
+           return new ResponseEntity<>(item, HttpStatus.CREATED);
+       }
+       catch(Exception e)
+       {
            return new ResponseEntity("Error: Cannot create a new item ",HttpStatus.INTERNAL_SERVER_ERROR);
        }
     }
@@ -54,17 +59,22 @@ public class ItemController {
      * A method for retrieving all items posts that is stored in database
      * @return Returns a list of items
      */
-
     @GetMapping("")
-    public ResponseEntity<List> getAllItems() {
+    public ResponseEntity<List<ItemResponse>> getAllItems()
+    {
         logger.info("Fetching all all items...");
-        try {
-            if (itemService.getAllItems().isEmpty()) {
-                return new ResponseEntity(0, HttpStatus.NO_CONTENT);
+        try
+        {
+            List<ItemResponse> items = itemService.getAllItems();
+            if (items == null || items.isEmpty())
+            {
+                return new ResponseEntity(HttpStatus.NO_CONTENT);
             }
-            return new ResponseEntity(itemService.getAllItems(), HttpStatus.OK);
-        }catch(Exception e){
-            return new ResponseEntity("Error",HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(items, HttpStatus.OK);
+        }
+        catch(Exception e)
+        {
+            return new ResponseEntity("Could not fetch all items", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -73,16 +83,20 @@ public class ItemController {
      * method for MyItems page frontend
      * @return returns a List of Items
      */
-
-    @GetMapping("{userId}")
-    public ResponseEntity<List> getMyItems(@PathVariable("userId") int userId) {
-        logger.info("Hei, jeg har kommet meg inn i get equation metoden");
-        try {
-            if (itemService.getMyItems(userId).isEmpty()) {
-                return new ResponseEntity(0, HttpStatus.NO_CONTENT);
+    @GetMapping("/get-my/{userId}")
+    public ResponseEntity<List<ItemResponse>> getMyItems(@PathVariable("userId") long userId)
+    {
+        try
+        {
+            List<ItemResponse> items = itemService.getMyItems(userId);
+            if (items == null || items.isEmpty())
+            {
+                return new ResponseEntity(HttpStatus.NO_CONTENT);
             }
-            return new ResponseEntity(itemService.getMyItems(userId), HttpStatus.OK);
-        }catch(Exception e){
+            return new ResponseEntity<>(items, HttpStatus.OK);
+        }
+        catch(Exception e)
+        {
             return new ResponseEntity("Error",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -93,21 +107,25 @@ public class ItemController {
      * overwrites the old data in database
      * Edit item in frontend
      * @param itemId the item that is being updated
-     * @param itemRegisterRequest the data that is renewed
+     * @param request the data that is renewed
      * @return returns the updated Item
      */
-
-    @PutMapping(value = "/updateItem/{itemId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-   // @ResponseStatus(value = HttpStatus.CREATED)
-    public ResponseEntity<String> updateSpecificItem(@PathVariable("itemId") int itemId, @RequestBody ItemRegisterRequest itemRegisterRequest) {
+    @PutMapping(value = "/update/{itemId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ItemResponse> updateItem(@PathVariable("itemId") long itemId, @RequestBody UpdateItemRequest request)
+    {
         logger.info("Prøver å oppdatere en spesifikk item annonse på itemId");
-        try {
-           if(!itemService.updateSpecificItem(itemId, itemRegisterRequest)){
-               return new ResponseEntity("Can not found item ",HttpStatus.NOT_FOUND);
-           }
-           return new ResponseEntity("Item has been updated",HttpStatus.OK);
-        }catch(Exception e){
-            return new ResponseEntity("Error: Can not update",HttpStatus.INTERNAL_SERVER_ERROR);
+        try
+        {
+            ItemResponse item = itemService.updateItem(itemId, request);
+            if(item == null)
+            {
+                return new ResponseEntity("Can not find item ", HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(item, HttpStatus.OK);
+        }
+        catch(Exception e)
+        {
+            return new ResponseEntity("Error: Can not update", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -118,17 +136,22 @@ public class ItemController {
      * @return returns a status int
      */
 
-    @DeleteMapping(value = "/deleteItem/{itemId}", produces = MediaType.APPLICATION_JSON_VALUE)
-   // @ResponseStatus(value = HttpStatus.CREATED)
-    public ResponseEntity<String> deleteSpecificItem(@PathVariable("itemId") int itemId) {
+    @DeleteMapping(value = "/delete/{itemId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> deleteItem(@PathVariable("itemId") long itemId)
+    {
         logger.info("Prøver å slette et spesifikt item på itemId");
-        try {
-            if (itemService.deleteSpecificItem(itemId) == 0) {
-                return new ResponseEntity("Item can not be found ", HttpStatus.NOT_FOUND);
+        try
+        {
+            boolean success = itemService.deleteItem(itemId);
+            if (!success)
+            {
+                return new ResponseEntity<>("Item can not be found ", HttpStatus.NOT_FOUND);
             }
-            return new ResponseEntity("Item has been deleted successfully ", HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity("Error: Can not delete", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Item has been deleted successfully ", HttpStatus.OK);
+        }
+        catch (Exception e)
+        {
+            return new ResponseEntity<>("Error: Can not delete", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
