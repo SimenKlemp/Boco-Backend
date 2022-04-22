@@ -53,6 +53,7 @@ public class RentalController
         }
         catch(Exception e)
         {
+            e.printStackTrace();
             return new ResponseEntity("Error: Cannot create a new rental ", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -79,6 +80,7 @@ public class RentalController
         }
         catch(Exception e)
         {
+            e.printStackTrace();
             return new ResponseEntity("Error: Cannot update rental ", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -104,6 +106,7 @@ public class RentalController
         }
         catch(Exception e)
         {
+            e.printStackTrace();
             return new ResponseEntity("Could not fetch all rentals", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

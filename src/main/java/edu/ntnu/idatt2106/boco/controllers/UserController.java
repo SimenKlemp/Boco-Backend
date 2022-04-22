@@ -5,6 +5,7 @@ import edu.ntnu.idatt2106.boco.payload.response.UserResponse;
 import edu.ntnu.idatt2106.boco.token.TokenComponent;
 import edu.ntnu.idatt2106.boco.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,9 +15,10 @@ import edu.ntnu.idatt2106.boco.payload.request.RegisterUserRequest;
 import edu.ntnu.idatt2106.boco.payload.response.LoginResponse;
 
 
-@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/user")
+@RequestMapping(value = "/user")
+@EnableAutoConfiguration
+@CrossOrigin
 public class UserController
 {
     @Autowired
@@ -48,6 +50,7 @@ public class UserController
         }
         catch (Exception e)
         {
+            e.printStackTrace();
             return new ResponseEntity("Error: Could not login", HttpStatus.NO_CONTENT);
         }
     }
@@ -75,6 +78,7 @@ public class UserController
         }
         catch (Exception e)
         {
+            e.printStackTrace();
             return new ResponseEntity("Error: Could not register", HttpStatus.NO_CONTENT);
         }
     }
@@ -92,6 +96,7 @@ public class UserController
         }
         catch (Exception e)
         {
+            e.printStackTrace();
             return new ResponseEntity<>("Error: Can not delete ",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -109,6 +114,7 @@ public class UserController
         }
         catch (Exception e)
         {
+            e.printStackTrace();
             return new ResponseEntity("Can not update", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
