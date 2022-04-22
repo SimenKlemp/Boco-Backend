@@ -17,6 +17,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
     private final String[] permitAllList = {
             "/user/register",
             "/user/login",
+            "/image/**",
+            "/item/all",
+            "item/getAllSearchedItems/**",
 
             "/v2/api-docs",
             "/v2/api-docs/**",

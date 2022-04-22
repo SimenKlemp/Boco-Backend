@@ -1,9 +1,7 @@
 package edu.ntnu.idatt2106.boco.controllers;
 
 import edu.ntnu.idatt2106.boco.payload.request.FeedbackWebPageRequest;
-import edu.ntnu.idatt2106.boco.payload.request.ItemRegisterRequest;
 import edu.ntnu.idatt2106.boco.service.FeedbackWebPageService;
-import edu.ntnu.idatt2106.boco.service.ItemService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

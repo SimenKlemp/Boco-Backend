@@ -144,4 +144,11 @@ public class ItemService
         List<Item> items = itemRepository.findAllByCategory(category);
         return Mapper.ToItemResponses(items);
     }
+
+    public ItemResponse getItem(long itemId)
+    {
+        Optional<Item> optionalItem = itemRepository.findById(itemId);
+        if(optionalItem.isEmpty()) return null;
+        return Mapper.ToItemResponse(optionalItem.get());
+    }
 }

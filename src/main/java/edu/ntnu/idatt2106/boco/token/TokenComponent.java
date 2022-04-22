@@ -36,12 +36,17 @@ public class TokenComponent
                 .compact();
     }
 
-    public static boolean isThisUser (long userId)
+    public boolean haveAccessTo (long userId)
+    {
+        return isThisUser(userId) || isAdmin();
+    }
+
+    public boolean isThisUser (long userId)
     {
         return Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName()) == userId;
     }
 
-    public static boolean isAdmin ()
+    public boolean isAdmin ()
     {
         return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
                 .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ADMIN"));

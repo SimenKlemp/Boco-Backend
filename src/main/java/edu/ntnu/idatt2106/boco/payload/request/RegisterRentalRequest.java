@@ -24,9 +24,6 @@ public class RegisterRentalRequest
     private Date endDate;
 
     @NotBlank
-    private String status;
-
-    @NotBlank
     private Long userId;
 
     @NotBlank

@@ -5,6 +5,7 @@ import edu.ntnu.idatt2106.boco.payload.request.RegisterItemRequest;
 import edu.ntnu.idatt2106.boco.payload.request.UpdateItemRequest;
 import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
 import edu.ntnu.idatt2106.boco.service.ItemService;
+import edu.ntnu.idatt2106.boco.token.TokenComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,9 @@ public class ItemController
     @Autowired
     private ItemService itemService;
 
+    @Autowired
+    private TokenComponent tokenComponent;
+
     Logger logger = LoggerFactory.getLogger(ItemController.class);
 
     /**
@@ -42,6 +46,11 @@ public class ItemController
     {
        try
        {
+           if (!tokenComponent.haveAccessTo(request.getUserId()))
+           {
+               return new ResponseEntity(HttpStatus.FORBIDDEN);
+           }
+
            ItemResponse item = itemService.registerItem(request);
            if (item == null)
            {
@@ -60,7 +69,7 @@ public class ItemController
      * A method for retrieving all items posts that is stored in database
      * @return Returns a list of items
      */
-    @GetMapping("")
+    @GetMapping("/all")
     public ResponseEntity<List<ItemResponse>> getAllItems()
     {
         logger.info("Fetching all all items...");
@@ -90,6 +99,11 @@ public class ItemController
     {
         try
         {
+            if (!tokenComponent.haveAccessTo(userId))
+            {
+                return new ResponseEntity(HttpStatus.FORBIDDEN);
+            }
+
             List<ItemResponse> items = itemService.getMyItems(userId);
             if (items == null || items.isEmpty())
             {
@@ -116,9 +130,13 @@ public class ItemController
     @PutMapping(value = "/update/{itemId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ItemResponse> updateItem(@PathVariable("itemId") long itemId, @RequestBody UpdateItemRequest request)
     {
-        logger.info("Prøver å oppdatere en spesifikk item annonse på itemId");
         try
         {
+            if (!tokenComponent.haveAccessTo(request.getUserId()))
+            {
+                return new ResponseEntity(HttpStatus.FORBIDDEN);
+            }
+
             ItemResponse item = itemService.updateItem(itemId, request);
             if(item == null)
             {
@@ -143,9 +161,18 @@ public class ItemController
     @DeleteMapping(value = "/delete/{itemId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> deleteItem(@PathVariable("itemId") long itemId)
     {
-        logger.info("Prøver å slette et spesifikt item på itemId");
         try
         {
+            ItemResponse item = itemService.getItem(itemId);
+            if (item == null)
+            {
+                return new ResponseEntity<>("Item can not be found ", HttpStatus.NOT_FOUND);
+            }
+            if (!tokenComponent.haveAccessTo(item.getUser().getUserId()))
+            {
+                return new ResponseEntity(HttpStatus.FORBIDDEN);
+            }
+
             boolean success = itemService.deleteItem(itemId);
             if (!success)
             {
