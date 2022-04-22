@@ -50,6 +50,7 @@ public class ItemServiceTest {
     }
 
 
+    /*
     @Test
     void createItemTest(){
         ItemRegisterRequest item = new ItemRegisterRequest("streetAddress", "postalCode", "postOffice", 200,"Description", "Category", "Title", 1L,1l);
@@ -58,6 +59,8 @@ public class ItemServiceTest {
 
         assertThat(response).isEqualTo(0);
     }
+
+     */
 
     @Test
     void getAllSubjectsTest() {
