@@ -4,7 +4,13 @@ import javax.validation.constraints.NotBlank;
 
 public class ItemRegisterRequest {
     @NotBlank
-    private String address;
+    private String streetAddress;
+
+    @NotBlank
+    private String postalCode;
+
+    @NotBlank
+    private String postOffice;
 
     @NotBlank
     private float price;
@@ -24,8 +30,10 @@ public class ItemRegisterRequest {
     @NotBlank
     private Long imageId;
 
-    public ItemRegisterRequest(String address, float price, String description, String category, String title, Long userId, Long imageId){
-        this.address = address;
+    public ItemRegisterRequest(String streetAddress, String postalCode, String postOffice, float price, String description, String category, String title, Long userId, Long imageId){
+        this.streetAddress = streetAddress;
+        this.postalCode = postalCode;
+        this.postOffice = postOffice;
         this.price = price;
         this.description = description;
         this.category = category;
@@ -35,12 +43,28 @@ public class ItemRegisterRequest {
     }
 
 
-    public String getAddress() {
-        return address;
+    public String getStreetAddress() {
+        return streetAddress;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setStreetAddress(String streetAddress) {
+        this.streetAddress = streetAddress;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
+    }
+
+    public String getPostOffice() {
+        return postOffice;
+    }
+
+    public void setPostOffice(String postOffice) {
+        this.postOffice = postOffice;
     }
 
     public float getPrice() {
