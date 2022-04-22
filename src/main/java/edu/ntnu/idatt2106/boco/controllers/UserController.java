@@ -1,7 +1,7 @@
 package edu.ntnu.idatt2106.boco.controllers;
 
-import javax.validation.Valid;
-
+import edu.ntnu.idatt2106.boco.payload.request.UpdateUserRequest;
+import edu.ntnu.idatt2106.boco.payload.response.UserResponse;
 import edu.ntnu.idatt2106.boco.token.TokenComponent;
 import edu.ntnu.idatt2106.boco.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,85 +9,107 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import edu.ntnu.idatt2106.boco.models.User;
 import edu.ntnu.idatt2106.boco.payload.request.LoginRequest;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterUserRequest;
 import edu.ntnu.idatt2106.boco.payload.response.LoginResponse;
 
-import java.io.UnsupportedEncodingException;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/user")
 public class UserController
 {
-  @Autowired
-  private UserService userService;
+    @Autowired
+    private UserService userService;
 
-  @Autowired
-  private TokenComponent tokenComponent;
+    @Autowired
+    private TokenComponent tokenComponent;
 
-  /**
-   * A method for login and returning token in login response
-   * @param request Email and password
-   * @return returns a LoginResponse containing token and user info
-   */
-  @PostMapping("/login")
-  public LoginResponse login(@Valid @RequestBody LoginRequest request) throws UnsupportedEncodingException
-  {
-    User user = userService.login(request);
-    String token = tokenComponent.generateToken(user.getUserId(), user.getRole());
-    return new LoginResponse(
-            token,
-            user.getUserId(),
-            user.getEmail(),
-            user.getRole()
-    );
-  }
+    /**
+     * A method for login and returning token in login response
+     * @param request Email and password
+     * @return returns a LoginResponse containing token and user info
+     */
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request)
+    {
+        try
+        {
+            UserResponse user = userService.login(request);
+            if (user == null)
+            {
+                return new ResponseEntity("Email or password is incorrect", HttpStatus.NO_CONTENT);
+            }
 
-  /**
-   * A method for registering a new user and returning token in login response
-   * @param request user info
-   * @return returns a LoginResponse containing token and user info
-   */
-  @PostMapping("/register")
-  public LoginResponse register(@Valid @RequestBody RegisterUserRequest request) throws UnsupportedEncodingException
-  {
-    User user = userService.register(request);
-    String token = tokenComponent.generateToken(user.getUserId(), user.getRole());
-    return new LoginResponse(
-            token,
-            user.getUserId(),
-            user.getEmail(),
-            user.getRole()
-    );
-  }
+            String token = tokenComponent.generateToken(user.getUserId(), user.getRole());
+            LoginResponse loginResponse = new LoginResponse(token, user);
 
-  @DeleteMapping(value="/user/delete")
-  public ResponseEntity<String> deleteUserByEmail(@RequestBody User user ){
-    try{
-
-      if(!userService.deleteUserByEmail(user)){
-        return new ResponseEntity("Error: User not found", HttpStatus.OK);
-      }
-      return new ResponseEntity("User has been deleted successfully", HttpStatus.OK);
-    }catch (Exception ex){
-      return new ResponseEntity("Error: Can not delete ",HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(loginResponse, HttpStatus.OK);
+        }
+        catch (Exception e)
+        {
+            return new ResponseEntity("Error: Could not login", HttpStatus.NO_CONTENT);
+        }
     }
-  }
 
-  @PutMapping (value="/user/update")
-  public ResponseEntity<String> updateUserInfo(@PathVariable("email")String email, @RequestBody User user) {
-    try {
+    /**
+     * A method for registering a new user and returning token in login response
+     * @param request user info
+     * @return returns a LoginResponse containing token and user info
+     */
+    @PostMapping("/register")
+    public ResponseEntity<LoginResponse> register(@RequestBody RegisterUserRequest request)
+    {
+        try
+        {
+            UserResponse user = userService.register(request);
+            if (user == null)
+            {
+                return new ResponseEntity("Email is already in use", HttpStatus.NO_CONTENT);
+            }
 
-      if (!userService.updateUserByEmail(email,user)) {
-        return new ResponseEntity("Error: User not found", HttpStatus.OK);
-      }
+            String token = tokenComponent.generateToken(user.getUserId(), user.getRole());
+            LoginResponse loginResponse = new LoginResponse(token, user);
 
-      return new ResponseEntity("User has been updated",HttpStatus.OK);
-    } catch (Exception ex) {
-      return new ResponseEntity("Can not update", HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(loginResponse, HttpStatus.OK);
+        }
+        catch (Exception e)
+        {
+            return new ResponseEntity("Error: Could not register", HttpStatus.NO_CONTENT);
+        }
     }
-  }
 
+    @DeleteMapping(value="/delete/{userId}")
+    public ResponseEntity<String> deleteUser(@PathVariable long userId){
+        try
+        {
+            boolean success = userService.deleteUser(userId);
+            if(!success)
+            {
+                return new ResponseEntity<>("Error: User not found", HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>("User has been deleted successfully", HttpStatus.OK);
+        }
+        catch (Exception e)
+        {
+            return new ResponseEntity<>("Error: Can not delete ",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping (value="/update/{userId}")
+    public ResponseEntity<UserResponse> updateUser(@PathVariable("userId") long userId, @RequestBody UpdateUserRequest request) {
+        try
+        {
+            UserResponse user = userService.updateUser(userId, request);
+            if (user == null)
+            {
+                return new ResponseEntity("Error: User not found", HttpStatus.OK);
+            }
+            return new ResponseEntity<>(user,HttpStatus.OK);
+        }
+        catch (Exception e)
+        {
+            return new ResponseEntity("Can not update", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

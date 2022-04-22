@@ -1,22 +1,14 @@
 package edu.ntnu.idatt2106.boco.token;
 
-
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import java.io.UnsupportedEncodingException;
 import java.security.Key;
-import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Component
 public class TokenComponent
@@ -27,11 +19,12 @@ public class TokenComponent
     {
         Key key = Keys.hmacShaKeyFor(jwtSecret.getBytes("UTF-8"));
 
-
+        ArrayList<String> roles = new ArrayList<>();
+        roles.add(role);
 
         Claims claims = Jwts.claims().setSubject(String.valueOf(userId));
         claims.put("userId", userId);
-        claims.put("authorities", role);
+        claims.put("authorities", roles);
 
         return Jwts.builder()
                 .setId(UUID.randomUUID().toString())

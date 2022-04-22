@@ -6,32 +6,19 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.*;
+import java.util.Optional;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterUserRequest
+public class UpdateItemRequest
 {
-    @NotBlank
-    @Size(max = 20)
-    private String name;
-
-    private boolean isPerson;
-
-    @Size(max = 20)
     private String address;
-
-    @NotBlank
-    @Size(max = 50)
-    @Email
-    private String email;
-
-    @NotBlank
-    @Size(max = 120)
-    private String password;
-
-    @NotBlank
+    private Float price;
+    private String description;
+    private String category;
+    private String title;
+    private Long userId;
     private MultipartFile image;
 }
