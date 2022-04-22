@@ -60,6 +60,16 @@ public class User {
   public void setItems(List<Item> items) {
     this.items = items;
   }
+  @Column(name = "reset_password_token")
+  private String resetPasswordToken;
+
+  public String getResetPasswordToken() {
+    return resetPasswordToken;
+  }
+
+  public void setResetPasswordToken(String resetPasswordToken) {
+    this.resetPasswordToken = resetPasswordToken;
+  }
 
   public User() { }
 

@@ -96,7 +96,7 @@ class UserControllerTest {
         int status = mvcResult.getResponse().getStatus();
         assertEquals(200, status);
         String content = mvcResult.getResponse().getContentAsString();
-        assertEquals(content, "Product is updated successfully");
+        assertEquals(content, "User is updated successfully");
     }
     @Test
     public void deleteUserTest() throws Exception {
@@ -105,7 +105,7 @@ class UserControllerTest {
         int status = mvcResult.getResponse().getStatus();
         assertEquals(200, status);
         String content = mvcResult.getResponse().getContentAsString();
-        assertEquals(content, "user is deleted successsfully");
+        assertEquals(content, "user is deleted successfully");
     }
 
 }
