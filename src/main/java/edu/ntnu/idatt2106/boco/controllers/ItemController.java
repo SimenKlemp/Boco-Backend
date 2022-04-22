@@ -131,4 +131,23 @@ public class ItemController {
             return new ResponseEntity("Error: Can not delete", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    /**
+     * A method for retrieving all items connected to a search on category
+     * @param category The category the item belongs
+     * @return returns a list of items belonging to a category
+     */
+    @GetMapping("getAllSearchedItems/{category}")
+    public ResponseEntity<List> getAllSearchedItems(@PathVariable("category") String category) {
+        logger.info("Fetching all items connected to a search ...");
+        try {
+            if (itemService.getAllSearchedItems(category).isEmpty()) {
+                return new ResponseEntity(0, HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity(itemService.getAllSearchedItems(category), HttpStatus.OK);
+        }catch(Exception e){
+            return new ResponseEntity("Error",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

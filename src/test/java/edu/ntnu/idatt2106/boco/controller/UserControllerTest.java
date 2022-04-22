@@ -14,15 +14,17 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class) // JUnit
 //@SpringBootTest(webEnvironment = MOCK, classes = TestsDemoApplication.class) // Spring
 @SpringBootTest
 @AutoConfigureMockMvc // Trengs for å kunne autowire MockMvc
-public class AuthControllerTest {
+public class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -31,18 +33,22 @@ public class AuthControllerTest {
     @Test
     public void existentUserCanGetTokenAndAuthentication() throws Exception {
 
-        LoginRequest loginRequest = new LoginRequest("test@email.com", "EncryptedPassword");
+        LoginRequest loginRequest = new LoginRequest("test16@test.no", "string");
 
-        mockMvc.perform(post("http://localhost:8080/api/auth/login")
+        mockMvc.perform(post("http://localhost:8080/api/user/login")
                         .content(objectMapper.writeValueAsString(loginRequest))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated()).andReturn();
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.token").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.userId").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.email").exists())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.role").exists());
     }
     @Test
     public void nonexistentUserCannotGetToken() throws Exception {
         LoginRequest loginRequest = new LoginRequest("WRONGusernameTEST", "WRONGpasswordTEST");
 
-        mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8080/api/auth/login")
+        mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8080/api/user/login")
                         .content(objectMapper.writeValueAsString(loginRequest)))
                 .andExpect(status().isForbidden()).andReturn();
     }

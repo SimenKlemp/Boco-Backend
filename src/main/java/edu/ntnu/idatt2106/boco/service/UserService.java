@@ -64,6 +64,7 @@ public class UserService
     }
 
 
+
     public boolean deleteUserByEmail(User user){
         Optional<User> userEmail=userRepository.findByEmail(user.getEmail());
         if(userEmail.isEmpty()){

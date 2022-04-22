@@ -105,4 +105,18 @@ public class ItemService {
         itemRepository.delete(item);
         return 1;
     }
+
+    /**
+     * A method for retrieving all items connected to a search
+     * @param category the category that is being searched for
+     * @return returns a list of Items belonging to a category
+     */
+
+    public List getAllSearchedItems(String category){
+        List<Item> items = new ArrayList<Item>();
+
+        itemRepository.findAllByCategory(category).forEach(items::add);
+
+        return items;
+    }
 }
