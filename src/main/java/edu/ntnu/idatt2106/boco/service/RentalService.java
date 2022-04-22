@@ -4,7 +4,6 @@ import edu.ntnu.idatt2106.boco.models.Item;
 import edu.ntnu.idatt2106.boco.models.Rental;
 import edu.ntnu.idatt2106.boco.models.User;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterRentalRequest;
-import edu.ntnu.idatt2106.boco.payload.request.UpdateRentalRequest;
 import edu.ntnu.idatt2106.boco.payload.response.RentalResponse;
 import edu.ntnu.idatt2106.boco.repository.ItemRepository;
 import edu.ntnu.idatt2106.boco.repository.RentalRepository;
@@ -76,20 +75,56 @@ public class RentalService
     }
 
     /**
+     * A method for accepting a rental request based on rentalId
+     * @param rentalId the rentalId that is being updated
+     * @return returns the renewed Rental object
+     */
+    public RentalResponse acceptRental(long rentalId)
+    {
+        return updateRentalStatus(rentalId, "ACCEPTED");
+    }
+
+    /**
+     * A method for rejecting a rental request based on rentalId
+     * @param rentalId the rentalId that is being updated
+     * @return returns the renewed Rental object
+     */
+    public RentalResponse rejectRental(long rentalId)
+    {
+        return updateRentalStatus(rentalId, "REJECTED");
+    }
+
+    /**
+     * A method for canceling a rental request based on rentalId
+     * @param rentalId the rentalId that is being updated
+     * @return returns the renewed Rental object
+     */
+    public RentalResponse cancelRental(long rentalId)
+    {
+        return updateRentalStatus(rentalId, "CANCELED");
+    }
+
+    /**
      * A method for updating a rental request based on rentalId
      * @param rentalId the rentalId that is being updated
-     * @param request the renewed rentalRequest data
+     * @param status the new status
      * @return returns the renewed Rental object 
      */
-
-    public RentalResponse updateRental(long rentalId, UpdateRentalRequest request)
+    private RentalResponse updateRentalStatus(long rentalId, String status)
     {
         Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
         if (optionalRental.isEmpty()) return null;
         Rental rental = optionalRental.get();
 
-        rental.setStatus(request.getStatus());
+        rental.setStatus(status);
         rental = rentalRepository.save(rental);
         return Mapper.ToRentalResponse(rental);
+    }
+
+    public RentalResponse getRental(long rentalId)
+    {
+        Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
+        if (optionalRental.isEmpty()) return null;
+        return Mapper.ToRentalResponse(optionalRental.get());
     }
 }
