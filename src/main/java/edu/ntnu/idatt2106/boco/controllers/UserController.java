@@ -48,6 +48,7 @@ public class UserController
         }
         catch (Exception e)
         {
+            e.printStackTrace();
             return new ResponseEntity("Error: Could not login", HttpStatus.NO_CONTENT);
         }
     }
@@ -75,6 +76,7 @@ public class UserController
         }
         catch (Exception e)
         {
+            e.printStackTrace();
             return new ResponseEntity("Error: Could not register", HttpStatus.NO_CONTENT);
         }
     }
@@ -92,6 +94,7 @@ public class UserController
         }
         catch (Exception e)
         {
+            e.printStackTrace();
             return new ResponseEntity<>("Error: Can not delete ",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -109,6 +112,7 @@ public class UserController
         }
         catch (Exception e)
         {
+            e.printStackTrace();
             return new ResponseEntity("Can not update", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
