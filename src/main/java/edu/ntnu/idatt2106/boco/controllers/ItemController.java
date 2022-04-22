@@ -1,6 +1,7 @@
 package edu.ntnu.idatt2106.boco.controllers;
 
 
+import edu.ntnu.idatt2106.boco.models.Item;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterItemRequest;
 import edu.ntnu.idatt2106.boco.payload.request.UpdateItemRequest;
 import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
@@ -193,21 +194,23 @@ public class ItemController
      * @return returns a list of items belonging to a category
      */
     @GetMapping("getAllSearchedItems/{category}")
-    public ResponseEntity<List> getAllSearchedItems(@PathVariable("category") String category)
+    public ResponseEntity<List<ItemResponse>> getAllSearchedItems(@PathVariable("category") String category)
     {
         logger.info("Fetching all items connected to a search ...");
         try
         {
-            if (itemService.getAllSearchedItems(category).isEmpty())
+            List<ItemResponse> items = itemService.getAllSearchedItems(category);
+
+            if (items.isEmpty())
             {
                 return new ResponseEntity(0, HttpStatus.NO_CONTENT);
             }
-            return new ResponseEntity(itemService.getAllSearchedItems(category), HttpStatus.OK);
+            return new ResponseEntity(items, HttpStatus.OK);
         }
         catch(Exception e)
         {
             e.printStackTrace();
-            return new ResponseEntity("Error",HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity("Error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
