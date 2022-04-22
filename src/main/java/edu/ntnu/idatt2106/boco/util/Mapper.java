@@ -1,8 +1,10 @@
 package edu.ntnu.idatt2106.boco.util;
 
+import edu.ntnu.idatt2106.boco.models.FeedbackWebPage;
 import edu.ntnu.idatt2106.boco.models.Item;
 import edu.ntnu.idatt2106.boco.models.Rental;
 import edu.ntnu.idatt2106.boco.models.User;
+import edu.ntnu.idatt2106.boco.payload.response.FeedbackWebPageResponse;
 import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
 import edu.ntnu.idatt2106.boco.payload.response.RentalResponse;
 import edu.ntnu.idatt2106.boco.payload.response.UserResponse;
@@ -68,4 +70,19 @@ public abstract class Mapper
     {
         return rentals.stream().map(Mapper::ToRentalResponse).collect(Collectors.toList());
     }
+
+    public static FeedbackWebPageResponse ToFeedbackWebPageResponse(FeedbackWebPage feedbackWebPage) {
+        return new FeedbackWebPageResponse(
+                feedbackWebPage.getFeedbackId(),
+                feedbackWebPage.getFeedbackMessage(),
+                ToUserResponse(feedbackWebPage.getUser())
+        );
+
+    }
+    public static List<FeedbackWebPageResponse> ToFeedbackWebPageResponses(List<FeedbackWebPage> feedbacks)
+    {
+        return feedbacks.stream().map(Mapper::ToFeedbackWebPageResponse).collect(Collectors.toList());
+    }
+
+
 }

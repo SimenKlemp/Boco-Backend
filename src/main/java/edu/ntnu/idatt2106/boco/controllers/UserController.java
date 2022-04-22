@@ -101,6 +101,11 @@ public class UserController
     public ResponseEntity<String> deleteUser(@PathVariable long userId){
         try
         {
+            if (!tokenComponent.haveAccessTo(userId))
+            {
+                return new ResponseEntity(HttpStatus.FORBIDDEN);
+            }
+
             boolean success = userService.deleteUser(userId);
             if(!success)
             {
@@ -119,6 +124,11 @@ public class UserController
     public ResponseEntity<UserResponse> updateUser(@PathVariable("userId") long userId, @RequestBody UpdateUserRequest request) {
         try
         {
+            if (!tokenComponent.haveAccessTo(userId))
+            {
+                return new ResponseEntity(HttpStatus.FORBIDDEN);
+            }
+
             UserResponse user = userService.updateUser(userId, request);
             if (user == null)
             {

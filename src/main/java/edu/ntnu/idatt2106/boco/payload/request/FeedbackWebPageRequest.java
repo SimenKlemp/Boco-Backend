@@ -1,11 +1,19 @@
 package edu.ntnu.idatt2106.boco.payload.request;
 
 import edu.ntnu.idatt2106.boco.models.User;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class FeedbackWebPageRequest {
     @NotBlank
     private String feedbackMessage;
@@ -13,24 +21,4 @@ public class FeedbackWebPageRequest {
     @NotBlank
     private Long userId;
 
-    public FeedbackWebPageRequest(String feedbackMessage, Long userId) {
-        this.feedbackMessage = feedbackMessage;
-        this.userId = userId;
-    }
-
-    public String getFeedbackMessage() {
-        return feedbackMessage;
-    }
-
-    public void setFeedbackMessage(String feedbackMessage) {
-        this.feedbackMessage = feedbackMessage;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
 }

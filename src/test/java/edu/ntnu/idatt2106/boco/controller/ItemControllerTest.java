@@ -42,7 +42,6 @@ public class ItemControllerTest {
         String response = result.getResponse().getContentAsString();
 
         //set the token
-
     }
 
     //Denne testen lager nye fag hver gang du kjører

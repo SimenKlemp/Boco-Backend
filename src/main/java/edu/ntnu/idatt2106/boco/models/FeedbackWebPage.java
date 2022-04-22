@@ -1,10 +1,16 @@
 package edu.ntnu.idatt2106.boco.models;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "feedback",
         uniqueConstraints = {
@@ -21,45 +27,18 @@ public class FeedbackWebPage {
     @NotBlank
     @Size(max = 20)
     @Column(name = "feedbackMessage")
-    private String streetAddress;
+    private String feedbackMessage;
 
     @ManyToOne
-    @JoinColumn(name="userId")
+    @JoinColumn(name = "userId")
     private User user;
 
-    public FeedbackWebPage(){
-
-    }
-
-    public FeedbackWebPage(String streetAddress, User user) {
-        this.streetAddress = streetAddress;
-        this.user = user;
-    }
-
-    public Long getFeedbackId() {
-        return feedbackId;
-    }
-
-    public void setFeedbackId(Long feedbackId) {
-        this.feedbackId = feedbackId;
-    }
-
-    public String getStreetAddress() {
-        return streetAddress;
-    }
-
-    public void setStreetAddress(String streetAddress) {
-        this.streetAddress = streetAddress;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
+    public FeedbackWebPage(String feedbackMessage, User user) {
+        this.feedbackMessage = feedbackMessage;
         this.user = user;
     }
 }
+
 
 
 

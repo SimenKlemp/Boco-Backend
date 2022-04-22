@@ -26,11 +26,9 @@ public class Rental
     @Column(name = "message")
     private String message;
 
-    @NotBlank
     @Column(name = "startDate")
     private Date startDate;
 
-    @NotBlank
     @Column(name = "endDate")
     private Date endDate;
 

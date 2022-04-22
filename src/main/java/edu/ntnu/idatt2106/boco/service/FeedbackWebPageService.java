@@ -4,14 +4,17 @@ import edu.ntnu.idatt2106.boco.models.FeedbackWebPage;
 import edu.ntnu.idatt2106.boco.models.Item;
 import edu.ntnu.idatt2106.boco.models.User;
 import edu.ntnu.idatt2106.boco.payload.request.FeedbackWebPageRequest;
+import edu.ntnu.idatt2106.boco.payload.response.FeedbackWebPageResponse;
 import edu.ntnu.idatt2106.boco.repository.FeedbackWebPageRepository;
 import edu.ntnu.idatt2106.boco.repository.ItemRepository;
 import edu.ntnu.idatt2106.boco.repository.UserRepository;
+import edu.ntnu.idatt2106.boco.util.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * A class that represents a FeedbackWebPageService
@@ -32,14 +35,15 @@ public class FeedbackWebPageService {
      * @return returns status int
      */
 
-    public int registerFeedbackWebPage(FeedbackWebPageRequest feedbackWebPageRequest){
-        User user = userRepository.findById(feedbackWebPageRequest.getUserId()).get();
-        if(user == null){
-            return 0;
-        }
+    public FeedbackWebPageResponse registerFeedbackWebPage(FeedbackWebPageRequest feedbackWebPageRequest){
+        Optional<User> optionalUser = userRepository.findById(feedbackWebPageRequest.getUserId());
+        if(optionalUser.isEmpty()) return null;
+        User user = optionalUser.get();
+
         FeedbackWebPage feedbackWebPage = new FeedbackWebPage(feedbackWebPageRequest.getFeedbackMessage(), user);
-        feedBackWebPageRepository.save(feedbackWebPage);
-        return 1;
+
+        feedbackWebPage = feedBackWebPageRepository.save(feedbackWebPage);
+        return Mapper.ToFeedbackWebPageResponse(feedbackWebPage);
 
     }
 
@@ -48,12 +52,11 @@ public class FeedbackWebPageService {
      * @return returns a list of feedbacks of the web page
      */
 
-    public List<FeedbackWebPage> getAllFeedbacksWebPage(){
-        List<FeedbackWebPage> feedbacks = new ArrayList<FeedbackWebPage>();
+    public List<FeedbackWebPageResponse> getAllFeedbacksWebPage(){
 
-        feedBackWebPageRepository.findAll().forEach(feedbacks::add);
+        List<FeedbackWebPage> feedbacks = feedBackWebPageRepository.findAll();
 
-        return feedbacks;
+        return Mapper.ToFeedbackWebPageResponses(feedbacks);
 
     }
 }
