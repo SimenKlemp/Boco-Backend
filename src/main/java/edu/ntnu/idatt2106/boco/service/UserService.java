@@ -5,12 +5,9 @@ import edu.ntnu.idatt2106.boco.payload.request.LoginRequest;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterUserRequest;
 import edu.ntnu.idatt2106.boco.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.net.ResponseCache;
 import java.util.Optional;
 
 @Service
@@ -67,30 +64,6 @@ public class UserService
     }
 
 
-    public boolean updateResetPasswordToken(String token, String email)  {
-        User user= userRepository.findUserByEmail(email);
-        if (user != null) {
-            user.setResetPasswordToken(token);
-            userRepository.save(user);
-            return true;
-        } else {
-            return  false;
-        }
-    }
-
-    public User getByResetPasswordToken(String token) {
-        return userRepository.findByResetPasswordToken(token);
-    }
-
-    public void updatePassword(User user , String newPassword) {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String encodedPassword = passwordEncoder.encode(newPassword);
-        user.setPassword(encodedPassword);
-
-        user.setResetPasswordToken(null);
-        userRepository.save(user);
-
-    }
 
     public boolean deleteUserByEmail(User user){
         Optional<User> userEmail=userRepository.findByEmail(user.getEmail());
@@ -103,15 +76,15 @@ public class UserService
     }
 
     public boolean updateUserByEmail(String email,User user){
-        User updatedUser = userRepository.findUserByEmail(email);
-        if(updatedUser==null){
+        Optional<User> updatedUser = userRepository.findByEmail(email);
+        if(updatedUser.isEmpty()){
             return false;
         }
-        updatedUser.setName(user.getName());
-        updatedUser.setEmail(user.getEmail());
-        updatedUser.setAddress(user.getAddress());
-        updatedUser.setPassword(user.getPassword());
-        userRepository.save(updatedUser);
+        updatedUser.get().setName(user.getName());
+        updatedUser.get().setEmail(user.getEmail());
+        updatedUser.get().setAddress(user.getAddress());
+        updatedUser.get().setPassword(user.getPassword());
+        userRepository.save(updatedUser.get());
         return true;
 
     }

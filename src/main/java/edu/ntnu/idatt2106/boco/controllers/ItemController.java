@@ -56,7 +56,7 @@ public class ItemController {
      */
 
     @GetMapping("")
-    public ResponseEntity<List<Item>> getAllItems() {
+    public ResponseEntity<List> getAllItems() {
         logger.info("Fetching all all items...");
         try {
             if (itemService.getAllItems().isEmpty()) {
@@ -75,7 +75,7 @@ public class ItemController {
      */
 
     @GetMapping("{userId}")
-    public ResponseEntity<List<Item>> getMyItems(@PathVariable("userId") int userId) {
+    public ResponseEntity<List> getMyItems(@PathVariable("userId") int userId) {
         logger.info("Hei, jeg har kommet meg inn i get equation metoden");
         try {
             if (itemService.getMyItems(userId).isEmpty()) {

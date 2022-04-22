@@ -1,4 +1,4 @@
-package edu.ntnu.idatt2106.boco.payload.request;
+package edu.ntnu.idatt2106.boco.payload.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,32 +6,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.*;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterUserRequest
+public class UserResponse
 {
-    @NotBlank
-    @Size(max = 20)
+    private Long userId;
     private String name;
-
     private boolean isPerson;
-
-    @Size(max = 20)
     private String address;
-
-    @NotBlank
-    @Size(max = 50)
-    @Email
     private String email;
-
-    @NotBlank
-    @Size(max = 120)
-    private String password;
-
-    @NotBlank
-    private MultipartFile image;
+    private String role;
+    private long imageId;
 }

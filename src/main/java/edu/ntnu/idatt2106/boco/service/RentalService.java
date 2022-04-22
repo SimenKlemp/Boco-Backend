@@ -51,7 +51,9 @@ public class RentalService {
 
     public List<Rental> getAllRentalRequestSpecificItem(Long itemId){
         List<Rental> rentalRequests = new ArrayList<Rental>();
+
         rentalRepository.findAllByItemId(itemId).forEach(rentalRequests::add);
+
         return rentalRequests;
     }
 

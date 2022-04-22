@@ -1,31 +1,37 @@
 package edu.ntnu.idatt2106.boco.service;
 
+import edu.ntnu.idatt2106.boco.models.Image;
 import edu.ntnu.idatt2106.boco.models.Item;
 import edu.ntnu.idatt2106.boco.models.User;
-import edu.ntnu.idatt2106.boco.payload.request.ItemRegisterRequest;
+import edu.ntnu.idatt2106.boco.payload.request.RegisterItemRequest;
+import edu.ntnu.idatt2106.boco.payload.request.UpdateItemRequest;
+import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
 import edu.ntnu.idatt2106.boco.repository.ItemRepository;
 import edu.ntnu.idatt2106.boco.repository.UserRepository;
+import edu.ntnu.idatt2106.boco.util.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * A class that represents an ItemService
  */
 
 @Service
-public class ItemService {
-
+public class ItemService
+{
     @Autowired
     ItemRepository itemRepository;
 
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    ImageService imageService;
 
     /**
      * A method for creating an Item
@@ -33,29 +39,40 @@ public class ItemService {
      * @param request
      * @return returns a status int
      */
+    public ItemResponse registerItem(RegisterItemRequest request)
+    {
+        Optional<User> optionalUser = userRepository.findById(request.getUserId());
+        if(optionalUser.isEmpty()) return null;
+        User user = optionalUser.get();
 
-    public int createItem(ItemRegisterRequest request){
-        User user = userRepository.findById(request.getUserId()).get();
-        if(user == null){
-            return 0;
-        }
-        Item item = new Item(request.getStreetAddress(), request.getPostalCode(), request.getPostOffice(), request.getPrice(), request.getDescription(), request.getCategory(), request.getTitle(), user, request.getImageId());
-        itemRepository.save(item);
-        return 1;
+        MultipartFile imageFile = request.getImage();
+        if (imageFile.isEmpty()) return null;
+        Image image = imageService.createImage(imageFile);
+        if (image == null) return null;
 
+        Item item = new Item(
+                request.getStreetAddress(),
+                request.getPostalCode(),
+                request.getPostOffice(),
+                request.getPrice(),
+                request.getDescription(),
+                request.getCategory(),
+                request.getTitle(),
+                image,
+                user
+        );
+        item = itemRepository.save(item);
+        return Mapper.ToItemResponse(item);
     }
 
     /**
      * A method for retrieving all the items that is stored in database
      * @return returns an item List
      */
-
-    public List getAllItems(){
-        List<Item> items = new ArrayList<Item>();
-
-        itemRepository.findAll().forEach(items::add);
-
-        return items;
+    public List<ItemResponse> getAllItems()
+    {
+        List<Item> items = itemRepository.findAll();
+        return Mapper.ToItemResponses(items);
     }
 
 
@@ -64,34 +81,44 @@ public class ItemService {
      * @param userId the userId the items belongs to
      * @return returns a list of items
      */
-    public List<Item> getMyItems(long userId){
-        User user = userRepository.findById(userId).get();
-        return itemRepository.findAllByUser(user);
+    public List<ItemResponse> getMyItems(long userId)
+    {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) return null;
+        List<Item> items = itemRepository.findAllByUser(optionalUser.get());
+        return Mapper.ToItemResponses(items);
     }
 
     /**
      * A method for updating a specific Item on itemId
      * Finds the item from database and then assigns new values to the columns
      * @param itemId
-     * @param itemRegisterRequest
+     * @param request
      * @return returns the updated Item
      */
-    public boolean updateSpecificItem(long itemId, ItemRegisterRequest itemRegisterRequest){
+    public ItemResponse updateItem(long itemId, UpdateItemRequest request)
+    {
+        Optional<Item> optionalItem = itemRepository.findById(itemId);
+        if(optionalItem.isEmpty()) return null;
+        Item item = optionalItem.get();
 
-        Item item = itemRepository.findById(itemId).get();
-        if(item==null){
-            return false;
+        if (request.getStreetAddress() != null) item.setStreetAddress(request.getStreetAddress());
+        if (request.getPostalCode() != null) item.setPostalCode(request.getPostalCode());
+        if (request.getPostOffice() != null) item.setPostOffice(request.getPostOffice());
+        if (request.getPrice() != null) item.setPrice(request.getPrice());
+        if (request.getDescription() != null) item.setDescription(request.getDescription());
+        if (request.getCategory() != null) item.setCategory(request.getCategory());
+        if (request.getTitle() != null) item.setTitle(request.getTitle());
+
+        if (request.getImage() != null)
+        {
+            MultipartFile imageFile = request.getImage();
+            Image image = imageService.createImage(imageFile);
+            item.setImage(image);
         }
-        item.setStreetAddress(itemRegisterRequest.getStreetAddress());
-        item.setPostalCode(itemRegisterRequest.getPostalCode());
-        item.setPostOffice(itemRegisterRequest.getPostOffice());
-        item.setPrice(itemRegisterRequest.getPrice());
-        item.setDescription(itemRegisterRequest.getDescription());
-        item.setCategory(itemRegisterRequest.getCategory());
-        item.setTitle(itemRegisterRequest.getTitle());
-        item.setImageid(itemRegisterRequest.getImageId());
-        itemRepository.save(item);
-        return true;
+
+        item = itemRepository.save(item);
+        return Mapper.ToItemResponse(item);
     }
 
     /**
@@ -99,13 +126,12 @@ public class ItemService {
      * @param itemId the item that is being deleted
      * @return returns a status int
      */
-    public int deleteSpecificItem(long itemId){
-        Item item = itemRepository.findById(itemId).get();
-        if(item==null){
-            return 0;
-        }
-        itemRepository.delete(item);
-        return 1;
+    public boolean deleteItem(long itemId)
+    {
+        Optional<Item> optionalItem = itemRepository.findById(itemId);
+        if(optionalItem.isEmpty()) return false;
+        itemRepository.delete(optionalItem.get());
+        return true;
     }
 
     /**
@@ -113,12 +139,9 @@ public class ItemService {
      * @param category the category that is being searched for
      * @return returns a list of Items belonging to a category
      */
-
-    public List getAllSearchedItems(String category){
-        List<Item> items = new ArrayList<Item>();
-
-        itemRepository.findAllByCategory(category).forEach(items::add);
-
-        return items;
+    public List<ItemResponse> getAllSearchedItems(String category)
+    {
+        List<Item> items = itemRepository.findAllByCategory(category);
+        return Mapper.ToItemResponses(items);
     }
 }

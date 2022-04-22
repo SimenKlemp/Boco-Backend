@@ -1,17 +1,20 @@
 package edu.ntnu.idatt2106.boco.models;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
-@Table(name = "item",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = "itemId")
-        })
-
-public class Item {
+@Table(name = "item", uniqueConstraints = { @UniqueConstraint(columnNames = "itemId") })
+public class Item
+{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "itemId")
@@ -50,18 +53,15 @@ public class Item {
     @Column(name = "title")
     private String title;
 
+    @JoinColumn(name = "imageId")
+    @OneToOne
+    private Image image;
+
     @ManyToOne
     @JoinColumn(name="userId")
     private User user;
 
-    @Column(name = "imageId")
-    private Long imageid;
-
-    public Item(){
-
-    }
-
-    public Item(String streetAddress, String postalCode, String postOffice, float price, String description, String category, String title, User user, Long imageid){
+    public Item(String streetAddress, String postalCode, String postOffice, float price, String description, String category, String title, Image image, User user){
         this.streetAddress = streetAddress;
         this.postalCode = postalCode;
         this.postOffice = postOffice;
@@ -69,88 +69,8 @@ public class Item {
         this.description = description;
         this.category = category;
         this.title = title;
+        this.image = image;
         this.user = user;
-        this.imageid = imageid;
 
-    }
-
-    public Long getItemId() {
-        return itemId;
-    }
-
-    public void setItemId(Long itemId) {
-        this.itemId = itemId;
-    }
-
-    public String getStreetAddress() {
-        return streetAddress;
-    }
-
-    public void setStreetAddress(String streetAddress) {
-        this.streetAddress = streetAddress;
-    }
-
-    public String getPostalCode() {
-        return postalCode;
-    }
-
-    public void setPostalCode(String postalCode) {
-        this.postalCode = postalCode;
-    }
-
-    public String getPostOffice() {
-        return postOffice;
-    }
-
-    public void setPostOffice(String postOffice) {
-        this.postOffice = postOffice;
-    }
-
-    public float getPrice() {
-        return price;
-    }
-
-    public void setPrice(float price) {
-        this.price = price;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Long getImageid() {
-        return imageid;
-    }
-
-    public void setImageid(Long imageid) {
-        this.imageid = imageid;
     }
 }

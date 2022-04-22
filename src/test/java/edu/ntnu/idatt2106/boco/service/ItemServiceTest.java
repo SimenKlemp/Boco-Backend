@@ -2,7 +2,9 @@ package edu.ntnu.idatt2106.boco.service;
 
 import edu.ntnu.idatt2106.boco.models.Item;
 import edu.ntnu.idatt2106.boco.models.User;
-import edu.ntnu.idatt2106.boco.payload.request.ItemRegisterRequest;
+import edu.ntnu.idatt2106.boco.payload.request.RegisterItemRequest;
+import edu.ntnu.idatt2106.boco.payload.request.UpdateItemRequest;
+import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
 import edu.ntnu.idatt2106.boco.repository.ItemRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -34,9 +35,8 @@ public class ItemServiceTest {
     @BeforeEach
     public void setUp() {
 
-        User user = new User("Name",true,"Address", "email", "password", "Admin");
-
-        Item item1 = new Item("streetAddress", "postalCode", "postOffice", 200,"Description", "Category", "Title", user,1l);
+        User user = new User("Name",true,"Address", "email", "password", "Admin", null);
+        Item item1 = new Item("streetAddress", "postalCode", "postOffice", 200,"Description", "Category", "Title", null, user);
 
         ArrayList<Item> items = new ArrayList<>();
         items.add(item1);
@@ -52,16 +52,16 @@ public class ItemServiceTest {
 
     @Test
     void createItemTest(){
-        ItemRegisterRequest item = new ItemRegisterRequest("streetAddress", "postalCode", "postOffice", 200,"Description", "Category", "Title", 1L,1l);
+        RegisterItemRequest item = new RegisterItemRequest("streetAddress", "postalCode", "postOffice", 200,"Description", "Category", "Title", 1L,null);
 
-        int response =  itemService.createItem(item);
+        ItemResponse response =  itemService.registerItem(item);
 
-        assertThat(response).isEqualTo(0);
+        assertThat(response).isNotNull();
     }
 
     @Test
     void getAllSubjectsTest() {
-        List<Item> items = itemService.getAllItems();
+        List<ItemResponse> items = itemService.getAllItems();
 
         assertThat(items.get(0).getStreetAddress()).isEqualTo("streetAddress");
         assertThat(items.get(0).getPostalCode()).isEqualTo("postalCode");
@@ -69,13 +69,13 @@ public class ItemServiceTest {
         assertThat(items.get(0).getCategory()).isEqualTo("Category");
         assertThat(items.get(0).getDescription()).isEqualTo("Description");
         assertThat(items.get(0).getPrice()).isEqualTo(200);
-        assertThat(items.get(0).getImageid()).isEqualTo(1);
+        assertThat(items.get(0).getImageId()).isEqualTo(-1);
         assertThat(items.get(0).getTitle()).isEqualTo("Title");
         assertThat(items.get(0).getUser().getEmail()).isEqualTo("email");
     }
     @Test
     void getMyItemsTest() {
-        List<Item> items = itemService.getMyItems(Mockito.anyLong());
+        List<ItemResponse> items = itemService.getMyItems(Mockito.anyLong());
 
         assertThat(items.get(0).getStreetAddress()).isEqualTo("streetAddress");
         assertThat(items.get(0).getPostalCode()).isEqualTo("postalCode");
@@ -83,7 +83,7 @@ public class ItemServiceTest {
         assertThat(items.get(0).getCategory()).isEqualTo("Category");
         assertThat(items.get(0).getDescription()).isEqualTo("Description");
         assertThat(items.get(0).getPrice()).isEqualTo(200);
-        assertThat(items.get(0).getImageid()).isEqualTo(1);
+        assertThat(items.get(0).getImageId()).isEqualTo(-1);
         assertThat(items.get(0).getTitle()).isEqualTo("Title");
         assertThat(items.get(0).getUser().getEmail()).isEqualTo("email");
     }
@@ -91,25 +91,19 @@ public class ItemServiceTest {
 
     @Test
     void updateSpecificItem(){
-        ItemRegisterRequest itemRegisterRequest = new ItemRegisterRequest("strretAddress", "postalCode", "postOffice", 200, "Description", "Category", "Title", 1L, 1L);
-        boolean response = itemService.updateSpecificItem(Mockito.anyLong(), itemRegisterRequest);
+        UpdateItemRequest updateItemRequest = new UpdateItemRequest("strretAddress", "postalCode", "postOffice", 200f, "Description", "Category", "Title", 1L, null);
+        ItemResponse response = itemService.updateItem(Mockito.anyLong(), updateItemRequest);
 
-        /*
-        assertThat(response.getAddress()).isEqualTo("Address");
         assertThat(response.getPrice()).isEqualTo(200);
         assertThat(response.getDescription()).isEqualTo("Description");
         assertThat(response.getCategory()).isEqualTo("Category");
         assertThat(response.getTitle()).isEqualTo("Title");
-
-         */
-        assertThat(response).isTrue();
     }
 
     @Test
     void deleteSpecificItem(){
-        int response = itemService.deleteSpecificItem(Mockito.anyLong());
-
-        assertThat(response).isEqualTo(0);
+        boolean response = itemService.deleteItem(Mockito.anyLong());
+        assertThat(response).isFalse();
     }
 
 }

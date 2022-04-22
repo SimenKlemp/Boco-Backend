@@ -11,9 +11,6 @@ import edu.ntnu.idatt2106.boco.models.User;
 public interface UserRepository extends JpaRepository<User, Long> {
 
   Optional<User> findByEmail(String email);
-  User findUserByEmail(String email);
 
   Boolean existsByEmail(String email);
-
-  public User findByResetPasswordToken(String token);
 }
