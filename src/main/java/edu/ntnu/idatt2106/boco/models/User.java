@@ -4,6 +4,8 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "users",
@@ -48,6 +50,16 @@ public class User {
   @Column(name = "role")
   private String role;
 
+  @OneToMany (mappedBy="user")
+  private List<Item> items;
+
+  public List<Item> getItems() {
+    return items;
+  }
+
+  public void setItems(List<Item> items) {
+    this.items = items;
+  }
 
   public User() { }
 

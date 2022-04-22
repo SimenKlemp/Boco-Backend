@@ -38,6 +38,7 @@ public class RentalController {
     public List<Rental> getAllRentalRequestSpecificItem(@PathVariable("itemId") Long itemId) {
         logger.info("Fetching all all rentalRequests...");
 
+
         return rentalService.getAllRentalRequestSpecificItem(itemId);
 
     }
