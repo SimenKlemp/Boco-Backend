@@ -8,9 +8,9 @@ import org.springframework.stereotype.Repository;
 import edu.ntnu.idatt2106.boco.models.User;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Long>
+{
+    Optional<User> findByEmail(String email);
 
-  Optional<User> findByEmail(String email);
-
-  Boolean existsByEmail(String email);
+    Boolean existsByEmail(String email);
 }

@@ -3,6 +3,7 @@ package edu.ntnu.idatt2106.boco.service;
 
 import edu.ntnu.idatt2106.boco.models.User;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterUserRequest;
+import edu.ntnu.idatt2106.boco.payload.response.UserResponse;
 import edu.ntnu.idatt2106.boco.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,7 @@ public class UserServiceTest {
     @BeforeEach
     public void setUp() {
 
-        User user = new User("Name", true, "Address", "Email", "Password", "Admin");
+        User user = new User("Name", true, "Address", "Email", "Password", "ADMIN", null);
 
         Mockito.lenient().when(userRepository.save(Mockito.any())).thenReturn(user);
         Mockito.lenient().when(userRepository.existsByEmail(Mockito.anyString())).thenReturn(false);
@@ -36,31 +37,18 @@ public class UserServiceTest {
     }
     @Test
     void registerTest() {
-        RegisterUserRequest request = new RegisterUserRequest("Name",true, "Address", "Email", "Password");
+        RegisterUserRequest request = new RegisterUserRequest("Name",true, "Address", "Email", "Password", null);
 
-        User user = userService.register(request);
+        UserResponse user = userService.register(request);
     }
 
     @Test
-    void deleteUserByEmailTest() {
-        User user = new User("Name", true, "Address", "Email", "Password", "Admin");
+    void deleteUserTest() {
+        User user = new User("Name", true, "Address", "Email", "Password", "ADMIN", null);
+        user = userRepository.save(user);
 
-        boolean response = userService.deleteUserByEmail(user);
-
-        assertThat(response).isTrue();
-    }
-
-    @Test
-    void updateUserByEmailTest() {
-        User user = new User("Name", true, "Address", "Email", "Password", "Admin");
-
-        boolean response = userService.updateUserByEmail("NewEmail.com", user);
+        boolean response = userService.deleteUser(user.getUserId());
 
         assertThat(response).isTrue();
     }
-
-
-
-
-
 }

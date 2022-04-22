@@ -1,7 +1,7 @@
 package edu.ntnu.idatt2106.boco.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.ntnu.idatt2106.boco.payload.request.ItemRegisterRequest;
+import edu.ntnu.idatt2106.boco.payload.request.RegisterItemRequest;
 import edu.ntnu.idatt2106.boco.payload.request.LoginRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,7 +50,8 @@ public class ItemControllerTest {
     void createItemTest() throws Exception {
         // Det er en del forskjellige libs som brukes her, se static imports øverst
         // En har også tilsvarende metoder for POST/PUT/DELETE osv.
-        ItemRegisterRequest itemRequest = new ItemRegisterRequest("streetAddress", "postalCode", "postOffice", 200, "This is a item made from test", "Category", "Title", 1L, 1L);
+
+        RegisterItemRequest itemRequest = new RegisterItemRequest("streetAddress", "postalCode", "postOffice", 200, "This is a item made from test", "Category", "Title", 1L, null);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/item").header("Authorization", "Bearer " + token)
                         .content(objectMapper.writeValueAsString(itemRequest))

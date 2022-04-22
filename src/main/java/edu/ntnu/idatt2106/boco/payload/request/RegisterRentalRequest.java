@@ -5,22 +5,30 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import java.util.Date;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginRequest
+public class RegisterRentalRequest
 {
     @NotBlank
-    @Size(max = 50)
-    @Email
-    private String email;
+    private String message;
 
     @NotBlank
-    @Size(max = 120)
-    private String password;
+    private Date startDate;
+
+    @NotBlank
+    private Date endDate;
+
+    @NotBlank
+    private String status;
+
+    @NotBlank
+    private Long userId;
+
+    @NotBlank
+    private Long itemId;
 }
