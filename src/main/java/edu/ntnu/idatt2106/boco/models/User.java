@@ -54,6 +54,9 @@ public class User
     @OneToOne
     private Image image;
 
+    @Column(name = "reset_password_token")
+    private String resetPasswordToken;
+
     public User(String name, boolean isPerson, String address,  String email, String password, String role, Image image)
     {
         this.name = name;
