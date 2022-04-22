@@ -26,7 +26,7 @@ public class FeedbackWebPage {
 
     @NotBlank
     @Size(max = 20)
-    @Column(name = "feedbackMessage")
+    @Column(name = "message")
     private String feedbackMessage;
 
     @ManyToOne
