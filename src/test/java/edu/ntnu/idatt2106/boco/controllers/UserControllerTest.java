@@ -2,8 +2,10 @@ package edu.ntnu.idatt2106.boco.controllers;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.ntnu.idatt2106.boco.models.Image;
 import edu.ntnu.idatt2106.boco.models.User;
 import edu.ntnu.idatt2106.boco.repository.UserRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
@@ -51,6 +53,12 @@ class UserControllerTest {
                 .setControllerAdvice()
                 .addFilters()
                 .build();
+
+
+    }
+    @AfterEach
+    public void cleanup() {
+        userRepository.deleteAll();
     }
     protected String mapToJson(Object obj) throws JsonProcessingException, com.fasterxml.jackson.core.JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -63,6 +71,8 @@ class UserControllerTest {
         return objectMapper.readValue(json, clazz);
     }
 
+
+
     /*
     Test method for checking if the user has registered successfully
 
@@ -73,7 +83,7 @@ class UserControllerTest {
         String uri = "/user";
         User user =new User("name",true,
                 "example@example.com","address",
-                "password", "USER");
+                "password", "USER", new Image());
 
 
 
@@ -97,7 +107,7 @@ class UserControllerTest {
         String uri = "/user/delete";
         User user =new User("name",true,
                 "example@example.com","address",
-                "password", "USER");
+                "password", "USER",new Image());
         String inputJson = mapToJson(user);
         MvcResult mvcResult = mvc.perform(MockMvcRequestBuilders.put(uri)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

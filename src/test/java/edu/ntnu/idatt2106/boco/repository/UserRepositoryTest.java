@@ -26,7 +26,8 @@ class UserRepositoryTest {
 
     @Test
     public void saveTest(){
-        User expectedUser = new User("name",true,"address", "example@example.com","password", "USER", null);
+        User expectedUser = new User("name",true,"address",
+                "example@example.com","password", "USER", null);
         User actualUser=registrationRepository.save(expectedUser);
         assertThat(actualUser).usingRecursiveComparison()
                 .ignoringFields("userId").isEqualTo(expectedUser);
