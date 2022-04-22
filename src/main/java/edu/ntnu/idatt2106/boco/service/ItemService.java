@@ -2,11 +2,13 @@ package edu.ntnu.idatt2106.boco.service;
 
 import edu.ntnu.idatt2106.boco.models.Image;
 import edu.ntnu.idatt2106.boco.models.Item;
+import edu.ntnu.idatt2106.boco.models.Rental;
 import edu.ntnu.idatt2106.boco.models.User;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterItemRequest;
 import edu.ntnu.idatt2106.boco.payload.request.UpdateItemRequest;
 import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
 import edu.ntnu.idatt2106.boco.repository.ItemRepository;
+import edu.ntnu.idatt2106.boco.repository.RentalRepository;
 import edu.ntnu.idatt2106.boco.repository.UserRepository;
 import edu.ntnu.idatt2106.boco.util.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,9 @@ public class ItemService
     UserRepository userRepository;
 
     @Autowired
+    RentalRepository rentalRepository;
+
+    @Autowired
     ImageService imageService;
 
     /**
@@ -42,13 +47,15 @@ public class ItemService
     public ItemResponse registerItem(RegisterItemRequest request)
     {
         Optional<User> optionalUser = userRepository.findById(request.getUserId());
-        if(optionalUser.isEmpty()) return null;
+        if (optionalUser.isEmpty()) return null;
         User user = optionalUser.get();
 
         MultipartFile imageFile = request.getImage();
-        if (imageFile.isEmpty()) return null;
-        Image image = imageService.createImage(imageFile);
-        if (image == null) return null;
+        Image image = null;
+        if (imageFile != null && !imageFile.isEmpty())
+        {
+            image = imageService.createImage(imageFile);
+        }
 
         Item item = new Item(
                 request.getStreetAddress(),
@@ -130,6 +137,11 @@ public class ItemService
     {
         Optional<Item> optionalItem = itemRepository.findById(itemId);
         if(optionalItem.isEmpty()) return false;
+        Item item = optionalItem.get();
+
+        List<Rental> rentals = rentalRepository.findAllByItem(item);
+        rentalRepository.deleteAll(rentals);
+
         itemRepository.delete(optionalItem.get());
         return true;
     }
