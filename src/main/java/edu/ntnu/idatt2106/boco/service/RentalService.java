@@ -52,7 +52,7 @@ public class RentalService
                 request.getMessage(),
                 request.getStartDate(),
                 request.getEndDate(),
-                request.getStatus(),
+                "PENDING",
                 user,
                 item
         );
@@ -83,12 +83,13 @@ public class RentalService
      */
 
     public RentalResponse updateRental(long rentalId, UpdateRentalRequest request)
-        {
-        Rental rental = rentalRepository.findById(rentalId).get();
+    {
+        Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
+        if (optionalRental.isEmpty()) return null;
+        Rental rental = optionalRental.get();
+
         rental.setStatus(request.getStatus());
-
         rental = rentalRepository.save(rental);
-
         return Mapper.ToRentalResponse(rental);
     }
 }

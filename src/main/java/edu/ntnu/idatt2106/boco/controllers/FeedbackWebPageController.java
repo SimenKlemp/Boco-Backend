@@ -2,7 +2,6 @@ package edu.ntnu.idatt2106.boco.controllers;
 
 import edu.ntnu.idatt2106.boco.payload.request.FeedbackWebPageRequest;
 import edu.ntnu.idatt2106.boco.payload.response.FeedbackWebPageResponse;
-import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
 import edu.ntnu.idatt2106.boco.service.FeedbackWebPageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

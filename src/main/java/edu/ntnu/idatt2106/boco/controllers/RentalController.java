@@ -4,8 +4,11 @@ import edu.ntnu.idatt2106.boco.models.Item;
 import edu.ntnu.idatt2106.boco.models.Rental;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterRentalRequest;
 import edu.ntnu.idatt2106.boco.payload.request.UpdateRentalRequest;
+import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
 import edu.ntnu.idatt2106.boco.payload.response.RentalResponse;
+import edu.ntnu.idatt2106.boco.service.ItemService;
 import edu.ntnu.idatt2106.boco.service.RentalService;
+import edu.ntnu.idatt2106.boco.token.TokenComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +32,12 @@ public class RentalController
     @Autowired
     private RentalService rentalService;
 
+    @Autowired
+    private ItemService itemService;
+
+    @Autowired
+    private TokenComponent tokenComponent;
+
     Logger logger = LoggerFactory.getLogger(RentalController.class);
 
 
@@ -44,6 +53,11 @@ public class RentalController
         logger.info("Posting/storing a rentalRequest with ItemId '" + request.getItemId() + "' to Rental table");
         try
         {
+            if (!tokenComponent.haveAccessTo(request.getUserId()))
+            {
+                return new ResponseEntity(HttpStatus.FORBIDDEN);
+            }
+
             RentalResponse rental = rentalService.registerRental(request);
             if (rental == null)
             {
@@ -97,6 +111,16 @@ public class RentalController
         logger.info("Fetching all rentals for itemId=" + itemId);
         try
         {
+            ItemResponse item = itemService.getItem(itemId);
+            if (item == null)
+            {
+                return new ResponseEntity("Item can not be found ", HttpStatus.NOT_FOUND);
+            }
+            if (!tokenComponent.haveAccessTo(item.getUser().getUserId()))
+            {
+                return new ResponseEntity(HttpStatus.FORBIDDEN);
+            }
+
             List<RentalResponse> rentals = rentalService.getAllRentalsForItem(itemId);
             if (rentals == null || rentals.isEmpty())
             {
