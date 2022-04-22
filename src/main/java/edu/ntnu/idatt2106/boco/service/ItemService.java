@@ -39,7 +39,7 @@ public class ItemService {
         if(user == null){
             return 0;
         }
-        Item item = new Item(request.getAddress(), request.getPrice(), request.getDescription(), request.getCategory(), request.getTitle(), user, request.getImageId());
+        Item item = new Item(request.getStreetAddress(), request.getPostalCode(), request.getPostOffice(), request.getPrice(), request.getDescription(), request.getCategory(), request.getTitle(), user, request.getImageId());
         itemRepository.save(item);
         return 1;
 
@@ -82,7 +82,9 @@ public class ItemService {
         if(item==null){
             return false;
         }
-        item.setAddress(itemRegisterRequest.getAddress());
+        item.setStreetAddress(itemRegisterRequest.getStreetAddress());
+        item.setPostalCode(itemRegisterRequest.getPostalCode());
+        item.setPostOffice(itemRegisterRequest.getPostOffice());
         item.setPrice(itemRegisterRequest.getPrice());
         item.setDescription(itemRegisterRequest.getDescription());
         item.setCategory(itemRegisterRequest.getCategory());

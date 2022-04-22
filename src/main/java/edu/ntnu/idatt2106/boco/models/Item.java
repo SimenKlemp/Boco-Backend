@@ -19,8 +19,18 @@ public class Item {
 
     @NotBlank
     @Size(max = 20)
-    @Column(name = "address")
-    private String address;
+    @Column(name = "streetAddress")
+    private String streetAddress;
+
+    @NotBlank
+    @Size(max = 20)
+    @Column(name = "postalCode")
+    private String postalCode;
+
+    @NotBlank
+    @Size(max = 20)
+    @Column(name = "postOffice")
+    private String postOffice;
 
     @Column(name = "price")
     private float price;
@@ -51,8 +61,10 @@ public class Item {
 
     }
 
-    public Item(String address, float price, String description, String category, String title, User user, Long imageid){
-        this.address = address;
+    public Item(String streetAddress, String postalCode, String postOffice, float price, String description, String category, String title, User user, Long imageid){
+        this.streetAddress = streetAddress;
+        this.postalCode = postalCode;
+        this.postOffice = postOffice;
         this.price = price;
         this.description = description;
         this.category = category;
@@ -70,12 +82,28 @@ public class Item {
         this.itemId = itemId;
     }
 
-    public String getAddress() {
-        return address;
+    public String getStreetAddress() {
+        return streetAddress;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setStreetAddress(String streetAddress) {
+        this.streetAddress = streetAddress;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
+    }
+
+    public String getPostOffice() {
+        return postOffice;
+    }
+
+    public void setPostOffice(String postOffice) {
+        this.postOffice = postOffice;
     }
 
     public float getPrice() {
@@ -114,7 +142,7 @@ public class Item {
         return user;
     }
 
-    public void setUserId(User user) {
+    public void setUser(User user) {
         this.user = user;
     }
 

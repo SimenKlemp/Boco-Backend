@@ -36,7 +36,7 @@ public class ItemServiceTest {
 
         User user = new User("Name",true,"Address", "email", "password", "Admin");
 
-        Item item1 = new Item("Address", 200,"Description", "Category", "Title", user,1l);
+        Item item1 = new Item("streetAddress", "postalCode", "postOffice", 200,"Description", "Category", "Title", user,1l);
 
         ArrayList<Item> items = new ArrayList<>();
         items.add(item1);
@@ -52,7 +52,7 @@ public class ItemServiceTest {
 
     @Test
     void createItemTest(){
-        ItemRegisterRequest item = new ItemRegisterRequest("Address", 200,"Description", "Category", "Title", 1L,1l);
+        ItemRegisterRequest item = new ItemRegisterRequest("streetAddress", "postalCode", "postOffice", 200,"Description", "Category", "Title", 1L,1l);
 
         int response =  itemService.createItem(item);
 
@@ -63,7 +63,9 @@ public class ItemServiceTest {
     void getAllSubjectsTest() {
         List<Item> items = itemService.getAllItems();
 
-        assertThat(items.get(0).getAddress()).isEqualTo("Address");
+        assertThat(items.get(0).getStreetAddress()).isEqualTo("streetAddress");
+        assertThat(items.get(0).getPostalCode()).isEqualTo("postalCode");
+        assertThat(items.get(0).getPostOffice()).isEqualTo("postOffice");
         assertThat(items.get(0).getCategory()).isEqualTo("Category");
         assertThat(items.get(0).getDescription()).isEqualTo("Description");
         assertThat(items.get(0).getPrice()).isEqualTo(200);
@@ -75,7 +77,9 @@ public class ItemServiceTest {
     void getMyItemsTest() {
         List<Item> items = itemService.getMyItems(Mockito.anyLong());
 
-        assertThat(items.get(0).getAddress()).isEqualTo("Address");
+        assertThat(items.get(0).getStreetAddress()).isEqualTo("streetAddress");
+        assertThat(items.get(0).getPostalCode()).isEqualTo("postalCode");
+        assertThat(items.get(0).getPostOffice()).isEqualTo("postOffice");
         assertThat(items.get(0).getCategory()).isEqualTo("Category");
         assertThat(items.get(0).getDescription()).isEqualTo("Description");
         assertThat(items.get(0).getPrice()).isEqualTo(200);
@@ -87,7 +91,7 @@ public class ItemServiceTest {
 
     @Test
     void updateSpecificItem(){
-        ItemRegisterRequest itemRegisterRequest = new ItemRegisterRequest("Address", 200, "Description", "Category", "Title", 1L, 1L);
+        ItemRegisterRequest itemRegisterRequest = new ItemRegisterRequest("strretAddress", "postalCode", "postOffice", 200, "Description", "Category", "Title", 1L, 1L);
         boolean response = itemService.updateSpecificItem(Mockito.anyLong(), itemRegisterRequest);
 
         /*
