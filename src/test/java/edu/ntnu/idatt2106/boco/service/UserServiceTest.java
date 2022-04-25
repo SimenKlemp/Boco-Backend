@@ -37,7 +37,7 @@ public class UserServiceTest {
     }
     @Test
     void registerTest() {
-        RegisterUserRequest request = new RegisterUserRequest("Name",true, "streetAddress", "postalCode", "postOffice", "Email", "Password", null);
+        RegisterUserRequest request = new RegisterUserRequest("Name",true, "streetAddress", "postalCode", "postOffice", "Email", "Password", 0);
 
         UserResponse user = userService.register(request);
     }

@@ -45,9 +45,12 @@ public class FeedbackWebPageController {
             if (feedback == null) {
                 return new ResponseEntity("Error: No feedbacks can be found ", HttpStatus.NO_CONTENT);
             }
+            logger.info("Managed to post feedback");
             return new ResponseEntity(feedback, HttpStatus.CREATED);
+
         }
         catch(Exception e){
+            e.printStackTrace();
             return new ResponseEntity("Error: Cannot create a new feedback ", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

@@ -4,6 +4,7 @@ import edu.ntnu.idatt2106.boco.models.Item;
 import edu.ntnu.idatt2106.boco.models.Rental;
 import edu.ntnu.idatt2106.boco.models.User;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterRentalRequest;
+import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
 import edu.ntnu.idatt2106.boco.payload.response.RentalResponse;
 import edu.ntnu.idatt2106.boco.repository.ItemRepository;
 import edu.ntnu.idatt2106.boco.repository.RentalRepository;
@@ -127,5 +128,13 @@ public class RentalService
         Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
         if (optionalRental.isEmpty()) return null;
         return Mapper.ToRentalResponse(optionalRental.get());
+    }
+
+    public List<RentalResponse> getAllRentalsUser(long userId)
+    {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) return null;
+        List<Rental> rentals = rentalRepository.findAllByUser(optionalUser.get());
+        return Mapper.ToRentalResponses(rentals);
     }
 }
