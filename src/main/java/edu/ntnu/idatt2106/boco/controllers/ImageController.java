@@ -24,7 +24,7 @@ class ImageController
     }
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    long uploadImage(@RequestParam MultipartFile image)
+    long uploadImage(@RequestParam("image") MultipartFile image)
     {
         return imageService.upload(image);
     }

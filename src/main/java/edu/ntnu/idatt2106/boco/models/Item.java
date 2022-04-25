@@ -3,6 +3,9 @@ package edu.ntnu.idatt2106.boco.models;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.TermVector;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -11,6 +14,7 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 @NoArgsConstructor
+@Indexed
 @Entity
 @Table(name = "item", uniqueConstraints = { @UniqueConstraint(columnNames = "itemId") })
 public class Item
@@ -40,16 +44,19 @@ public class Item
 
     @NotBlank
     @Size(max = 20)
+    @Field
     @Column(name = "description")
     private String description;
 
     @NotBlank
     @Size(max = 20)
+    @Field
     @Column(name = "category")
     private String category;
 
     @NotBlank
     @Size(max = 20)
+    @Field
     @Column(name = "title")
     private String title;
 
@@ -71,6 +78,5 @@ public class Item
         this.title = title;
         this.image = image;
         this.user = user;
-
     }
 }

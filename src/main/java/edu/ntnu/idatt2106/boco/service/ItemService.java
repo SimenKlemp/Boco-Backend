@@ -5,6 +5,7 @@ import edu.ntnu.idatt2106.boco.models.Item;
 import edu.ntnu.idatt2106.boco.models.Rental;
 import edu.ntnu.idatt2106.boco.models.User;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterItemRequest;
+import edu.ntnu.idatt2106.boco.payload.request.SearchRequest;
 import edu.ntnu.idatt2106.boco.payload.request.UpdateItemRequest;
 import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
 import edu.ntnu.idatt2106.boco.repository.ImageRepository;
@@ -13,11 +14,8 @@ import edu.ntnu.idatt2106.boco.repository.RentalRepository;
 import edu.ntnu.idatt2106.boco.repository.UserRepository;
 import edu.ntnu.idatt2106.boco.util.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -154,12 +152,12 @@ public class ItemService
 
     /**
      * A method for retrieving all items connected to a search
-     * @param category the category that is being searched for
-     * @return returns a list of Items belonging to a category
+     * @param request what is being searched for
+     * @return returns a list of Items belonging to a search
      */
-    public List<ItemResponse> getAllSearchedItems(String category)
+    public List<ItemResponse> search(SearchRequest request)
     {
-        List<Item> items = itemRepository.findAllByCategory(category);
+        List<Item> items = itemRepository.search(request.getText());
         return Mapper.ToItemResponses(items);
     }
 
