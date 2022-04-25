@@ -98,6 +98,8 @@ public class ItemController
     @GetMapping("/get-my/{userId}")
     public ResponseEntity<List<ItemResponse>> getMyItems(@PathVariable("userId") long userId)
     {
+        logger.info("Fetching all items for a user...");
+
         try
         {
             if (!tokenComponent.haveAccessTo(userId))
