@@ -39,4 +39,5 @@ public class RegisterItemRequest
     private Long userId;
 
     private MultipartFile image;
+
 }

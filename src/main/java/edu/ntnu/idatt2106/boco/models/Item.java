@@ -69,6 +69,8 @@ public class Item
 
 
 
+
+
     public Item(String streetAddress, String postalCode, String postOffice, float price, String description, String category, String title, Image image, User user, Date publicityDate){
         this.streetAddress = streetAddress;
         this.postalCode = postalCode;

@@ -205,6 +205,7 @@ public class ItemController
             {
                 return new ResponseEntity(0, HttpStatus.NO_CONTENT);
             }
+
             return new ResponseEntity(items, HttpStatus.OK);
         }
         catch(Exception e)
@@ -213,6 +214,32 @@ public class ItemController
             return new ResponseEntity("Error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
+    /*
+    @GetMapping("getAllSearchedItemsTest/{searchWord}/{greaterThan}/{lessThan}")
+    public ResponseEntity<List<ItemResponse>> getAllSearchedItemsTest(@PathVariable("searchWord") String searchWord, @PathVariable("greaterThan") float greaterThan, @PathVariable("lessThan") float lessThan )
+    {
+        logger.info("Fetching all items connected to a search ...");
+        try
+        {
+            List<ItemResponse> items = itemService.getAllSearchedItemsTest(searchWord, greaterThan, lessThan);
+
+            if (items.isEmpty())
+            {
+                return new ResponseEntity(0, HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity(items, HttpStatus.OK);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            return new ResponseEntity("Error", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+     */
+
 
 
 

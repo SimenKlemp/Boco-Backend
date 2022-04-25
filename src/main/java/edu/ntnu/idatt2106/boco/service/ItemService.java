@@ -169,5 +169,15 @@ public class ItemService
         return Mapper.ToItemResponse(optionalItem.get());
     }
 
+    /*
+    public List<ItemResponse> getAllSearchedItemsTest(String searchWord, float greaterThan, float lessThan)
+    {
+        List<Item> items = itemRepository.findAllByCategoryContainingOrTitleContainingAndPriceGreaterThanAndPriceLessThan(searchWord, searchWord, greaterThan, lessThan);
+        return Mapper.ToItemResponses(items);
+    }
+
+     */
+
+
 
 }

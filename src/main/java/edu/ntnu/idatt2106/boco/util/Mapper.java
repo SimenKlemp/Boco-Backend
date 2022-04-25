@@ -65,7 +65,8 @@ public abstract class Mapper
                 rental.getEndDate(),
                 rental.getStatus(),
                 ToUserResponse(rental.getUser()),
-                ToItemResponse(rental.getItem())
+                ToItemResponse(rental.getItem()),
+                rental.getDeliveryInfo()
         );
     }
 

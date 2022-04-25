@@ -39,6 +39,7 @@ public class FeedbackWebPageController {
     @PostMapping(value = "registerFeedback", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     // @ResponseStatus(value = HttpStatus.CREATED)
     public ResponseEntity<FeedbackWebPageResponse> registerFeedbackWebPage(@RequestBody FeedbackWebPageRequest feedbackWebPageRequest) {
+        logger.info("registration of a feedback");
         try {
             FeedbackWebPageResponse feedback = feedbackWebPageService.registerFeedbackWebPage(feedbackWebPageRequest);
             if (feedback == null) {
@@ -60,6 +61,7 @@ public class FeedbackWebPageController {
             if (feedbacks.isEmpty()) {
                 return new ResponseEntity(0, HttpStatus.NO_CONTENT);
             }
+
             return new ResponseEntity(feedbacks, HttpStatus.OK);
         }catch(Exception e){
             return new ResponseEntity("Could not fetch all feedbacks error", HttpStatus.INTERNAL_SERVER_ERROR);

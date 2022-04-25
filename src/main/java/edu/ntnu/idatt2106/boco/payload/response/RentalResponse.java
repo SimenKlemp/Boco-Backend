@@ -19,4 +19,5 @@ public class RentalResponse
     private String status;
     private UserResponse user;
     private ItemResponse item;
+    private int deliveryInfo;
 }

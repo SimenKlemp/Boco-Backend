@@ -53,7 +53,8 @@ public class RentalService
                 request.getEndDate(),
                 "PENDING",
                 user,
-                item
+                item,
+                request.getDeliveryInfo()
         );
         rental = rentalRepository.save(rental);
         return Mapper.ToRentalResponse(rental);
