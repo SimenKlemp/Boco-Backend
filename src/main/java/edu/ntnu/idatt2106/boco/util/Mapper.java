@@ -46,7 +46,8 @@ public abstract class Mapper
                 item.getCategory(),
                 item.getTitle(),
                 item.getImage() != null ? item.getImage().getImageId() : -1,
-                ToUserResponse(item.getUser())
+                ToUserResponse(item.getUser()),
+                item.getPublicityDate()
         );
     }
 

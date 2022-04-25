@@ -3,10 +3,13 @@ package edu.ntnu.idatt2106.boco.models;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.time.Instant;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -61,7 +64,12 @@ public class Item
     @JoinColumn(name="userId")
     private User user;
 
-    public Item(String streetAddress, String postalCode, String postOffice, float price, String description, String category, String title, Image image, User user){
+    @Column(name = "publicityDate")
+    private Date publicityDate;
+
+
+
+    public Item(String streetAddress, String postalCode, String postOffice, float price, String description, String category, String title, Image image, User user, Date publicityDate){
         this.streetAddress = streetAddress;
         this.postalCode = postalCode;
         this.postOffice = postOffice;
@@ -71,6 +79,7 @@ public class Item
         this.title = title;
         this.image = image;
         this.user = user;
+        this.publicityDate = publicityDate;
 
     }
 }

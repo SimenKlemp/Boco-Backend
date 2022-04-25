@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,6 +58,8 @@ public class ItemService
             image = imageService.createImage(imageFile);
         }
 
+        Date currentDate = new Date();
+
         Item item = new Item(
                 request.getStreetAddress(),
                 request.getPostalCode(),
@@ -66,7 +69,8 @@ public class ItemService
                 request.getCategory(),
                 request.getTitle(),
                 image,
-                user
+                user,
+                currentDate
         );
         item = itemRepository.save(item);
         return Mapper.ToItemResponse(item);
@@ -151,6 +155,7 @@ public class ItemService
      * @param category the category that is being searched for
      * @return returns a list of Items belonging to a category
      */
+
     public List<ItemResponse> getAllSearchedItems(String category)
     {
         List<Item> items = itemRepository.findAllByCategory(category);
@@ -163,4 +168,6 @@ public class ItemService
         if(optionalItem.isEmpty()) return null;
         return Mapper.ToItemResponse(optionalItem.get());
     }
+
+
 }

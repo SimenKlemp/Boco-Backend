@@ -15,4 +15,12 @@ public interface ItemRepository extends JpaRepository<Item, Long>
     Item findByUser(User user);
 
     List<Item> findAllByCategory(String category);
+
+
+
+
+
+
+
+
 }
