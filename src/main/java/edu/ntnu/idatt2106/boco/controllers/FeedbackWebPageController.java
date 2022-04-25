@@ -40,6 +40,7 @@ public class FeedbackWebPageController {
     // @ResponseStatus(value = HttpStatus.CREATED)
     public ResponseEntity<FeedbackWebPageResponse> registerFeedbackWebPage(@RequestBody FeedbackWebPageRequest feedbackWebPageRequest) {
         logger.info("registration of a feedback");
+        logger.info(feedbackWebPageRequest.getMessage());
         try {
             FeedbackWebPageResponse feedback = feedbackWebPageService.registerFeedbackWebPage(feedbackWebPageRequest);
             if (feedback == null) {
@@ -56,7 +57,7 @@ public class FeedbackWebPageController {
     }
 
 
-    @GetMapping("")
+    @GetMapping("/getFeedbacks")
     public ResponseEntity<List<FeedbackWebPageResponse>> getAllFeedbacksWebPage() {
         logger.info("Fetching all all feedbacks for the web page...");
         try {

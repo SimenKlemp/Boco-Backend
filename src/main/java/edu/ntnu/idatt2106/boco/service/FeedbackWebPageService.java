@@ -40,7 +40,7 @@ public class FeedbackWebPageService {
         if(optionalUser.isEmpty()) return null;
         User user = optionalUser.get();
 
-        FeedbackWebPage feedbackWebPage = new FeedbackWebPage(feedbackWebPageRequest.getFeedbackMessage(), user);
+        FeedbackWebPage feedbackWebPage = new FeedbackWebPage(feedbackWebPageRequest.getMessage(), user);
 
         feedbackWebPage = feedBackWebPageRepository.save(feedbackWebPage);
         return Mapper.ToFeedbackWebPageResponse(feedbackWebPage);

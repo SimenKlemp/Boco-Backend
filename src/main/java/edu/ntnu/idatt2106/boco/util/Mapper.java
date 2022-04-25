@@ -78,7 +78,7 @@ public abstract class Mapper
     public static FeedbackWebPageResponse ToFeedbackWebPageResponse(FeedbackWebPage feedbackWebPage) {
         return new FeedbackWebPageResponse(
                 feedbackWebPage.getFeedbackId(),
-                feedbackWebPage.getFeedbackMessage(),
+                feedbackWebPage.getMessage(),
                 ToUserResponse(feedbackWebPage.getUser())
         );
 

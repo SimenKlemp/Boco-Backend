@@ -11,6 +11,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class FeedbackWebPageResponse {
     private Long feedbackId;
-    private String feedbackMessage;
+    private String message;
     private UserResponse user;
 }
