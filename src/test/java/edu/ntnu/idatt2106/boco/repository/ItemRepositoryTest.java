@@ -22,7 +22,7 @@ class ItemRepositoryTest {
     MySQLContainer container =(MySQLContainer)new MySQLContainer("mysql:latest")
             .withDatabaseName("mariuskp")
             .withUsername("mariuskp")
-            .withPassword("");
+            .withPassword("eYZsMgMm");
 
     @Autowired
     ItemRepository itemRepository;

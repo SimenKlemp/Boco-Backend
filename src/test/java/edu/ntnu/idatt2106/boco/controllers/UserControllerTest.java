@@ -37,7 +37,7 @@ import static org.junit.Assert.assertEquals;
 
 
 @ExtendWith(MockitoExtension.class)
-class UserControllerTest {
+public class UserControllerTest {
     @Mock
     UserRepository userRepository;
     @InjectMocks
@@ -45,6 +45,7 @@ class UserControllerTest {
 
     protected MockMvc mvc;
     private JacksonTester<User> userTest;
+
     @BeforeEach
     public void setUp(){
 
