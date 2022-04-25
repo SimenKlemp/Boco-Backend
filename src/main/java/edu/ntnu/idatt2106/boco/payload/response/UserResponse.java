@@ -15,7 +15,9 @@ public class UserResponse
     private Long userId;
     private String name;
     private boolean isPerson;
-    private String address;
+    private String streetAddress;
+    private String postalCode;
+    private String postOffice;
     private String email;
     private String role;
     private long imageId;

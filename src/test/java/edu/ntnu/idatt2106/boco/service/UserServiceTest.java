@@ -29,7 +29,7 @@ public class UserServiceTest {
     @BeforeEach
     public void setUp() {
 
-        User user = new User("Name", true, "Address", "Email", "Password", "ADMIN", null);
+        User user = new User("Name", true, "streetAddress", "postalCode", "postOffice", "Email", "Password", "ADMIN", null);
 
         Mockito.lenient().when(userRepository.save(Mockito.any())).thenReturn(user);
         Mockito.lenient().when(userRepository.existsByEmail(Mockito.anyString())).thenReturn(false);
@@ -37,14 +37,14 @@ public class UserServiceTest {
     }
     @Test
     void registerTest() {
-        RegisterUserRequest request = new RegisterUserRequest("Name",true, "Address", "Email", "Password", null);
+        RegisterUserRequest request = new RegisterUserRequest("Name",true, "streetAddress", "postalCode", "postOffice", "Email", "Password", null);
 
         UserResponse user = userService.register(request);
     }
 
     @Test
     void deleteUserTest() {
-        User user = new User("Name", true, "Address", "Email", "Password", "ADMIN", null);
+        User user = new User("Name", true, "streetAddress", "postalCode", "postOffice", "Email", "Password", "ADMIN", null);
         user = userRepository.save(user);
 
         boolean response = userService.deleteUser(user.getUserId());

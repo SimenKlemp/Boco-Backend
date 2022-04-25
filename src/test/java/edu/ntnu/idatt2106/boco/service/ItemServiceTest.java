@@ -35,7 +35,7 @@ public class ItemServiceTest {
     @BeforeEach
     public void setUp() {
 
-        User user = new User("Name",true,"Address", "email", "password", "Admin", null);
+        User user = new User("Name",true,"streetAddress", "postalCode", "postOffice", "email", "password", "Admin", null);
         Item item1 = new Item("streetAddress", "postalCode", "postOffice", 200,"Description", "Category", "Title", null, user);
 
         ArrayList<Item> items = new ArrayList<>();

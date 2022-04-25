@@ -6,6 +6,7 @@ import edu.ntnu.idatt2106.boco.payload.request.LoginRequest;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterUserRequest;
 import edu.ntnu.idatt2106.boco.payload.request.UpdateUserRequest;
 import edu.ntnu.idatt2106.boco.payload.response.UserResponse;
+import edu.ntnu.idatt2106.boco.repository.ImageRepository;
 import edu.ntnu.idatt2106.boco.repository.UserRepository;
 import edu.ntnu.idatt2106.boco.util.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,9 @@ public class UserService
 
     @Autowired
     ImageService imageService;
+
+    @Autowired
+    ImageRepository imageRepository;
 
     private final BCryptPasswordEncoder encoder;
 
@@ -59,12 +63,18 @@ public class UserService
         if (userRepository.existsByEmail(request.getEmail())) return null;
 
         MultipartFile imageFile = request.getImage();
-        Image image = imageFile != null ? imageService.createImage(imageFile) : null;
+        Image image = null;
+        if (imageFile != null && !imageFile.isEmpty())
+        {
+            image = imageService.createImage(imageFile);
+        }
 
         User user = new User(
                 request.getName(),
                 request.isPerson(),
-                request.getAddress(),
+                request.getStreetAddress(),
+                request.getPostalCode(),
+                request.getPostOffice(),
                 request.getEmail(),
                 encoder.encode(request.getPassword()),
                 "USER",
@@ -91,13 +101,24 @@ public class UserService
         User user = optionalUser.get();
 
         if (request.getName() != null) user.setName(request.getName());
+        if (request.getIsPerson() != null) user.setPerson(request.getIsPerson());
         if (request.getEmail() != null) user.setEmail(request.getEmail());
-        if (request.getAddress() != null) user.setAddress(request.getAddress());
+        if (request.getStreetAddress() != null) user.setStreetAddress(request.getStreetAddress());
+        if (request.getPostalCode() != null) user.setPostalCode(request.getPostalCode());
+        if (request.getPostOffice() != null) user.setPostOffice(request.getPostOffice());
+
 
         if (request.getPassword() != null)
         {
             String encodedPassword = encoder.encode(request.getPassword());
             user.setPassword(encodedPassword);
+        }
+
+        MultipartFile imageFile = request.getImage();
+        if (imageFile != null && !imageFile.isEmpty())
+        {
+            if (user.getImage() != null) imageRepository.delete(user.getImage());
+            user.setImage(imageService.createImage(imageFile));
         }
 
         user = userRepository.save(user);

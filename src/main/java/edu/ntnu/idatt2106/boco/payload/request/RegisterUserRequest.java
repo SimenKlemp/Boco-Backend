@@ -20,8 +20,17 @@ public class RegisterUserRequest
 
     private boolean isPerson;
 
+    @NotBlank
     @Size(max = 20)
-    private String address;
+    private String streetAddress;
+
+    @NotBlank
+    @Size(max = 20)
+    private String postalCode;
+
+    @NotBlank
+    @Size(max = 20)
+    private String postOffice;
 
     @NotBlank
     @Size(max = 50)

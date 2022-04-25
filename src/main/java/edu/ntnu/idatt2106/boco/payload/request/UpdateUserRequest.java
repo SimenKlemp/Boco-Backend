@@ -22,7 +22,13 @@ public class UpdateUserRequest
     private Boolean isPerson;
 
     @Size(max = 20)
-    private String address;
+    private String streetAddress;
+
+    @Size(max = 20)
+    private String postalCode;
+
+    @Size(max = 20)
+    private String postOffice;
 
     @Size(max = 50)
     @Email

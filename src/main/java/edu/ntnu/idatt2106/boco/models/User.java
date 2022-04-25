@@ -31,8 +31,18 @@ public class User
 
     @NotBlank
     @Size(max = 20)
-    @Column(name = "address")
-    private String address;
+    @Column(name = "streetAddress")
+    private String streetAddress;
+
+    @NotBlank
+    @Size(max = 20)
+    @Column(name = "postalCode")
+    private String postalCode;
+
+    @NotBlank
+    @Size(max = 20)
+    @Column(name = "postOffice")
+    private String postOffice;
 
     @NotBlank
     @Size(max = 50)
@@ -54,14 +64,20 @@ public class User
     @OneToOne
     private Image image;
 
+
     @Column(name = "reset_password_token")
     private String resetPasswordToken;
 
-    public User(String name, boolean isPerson, String address,  String email, String password, String role, Image image)
+    public User(String name, boolean isPerson, String address,  String email, String password, String role, Image image){};
+
+    public User(String name, boolean isPerson, String streetAddress, String postalCode, String postOffice, String email, String password, String role, Image image)
+
     {
         this.name = name;
         this.isPerson = isPerson;
-        this.address = address;
+        this.streetAddress = streetAddress;
+        this.postalCode = postalCode;
+        this.postOffice = postOffice;
         this.email = email;
         this.password = password;
         this.role = role;
