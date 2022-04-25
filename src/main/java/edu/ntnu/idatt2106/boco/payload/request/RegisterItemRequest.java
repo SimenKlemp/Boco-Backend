@@ -38,6 +38,5 @@ public class RegisterItemRequest
     @NotBlank
     private Long userId;
 
-    private MultipartFile image;
-
+    private long imageId;
 }
