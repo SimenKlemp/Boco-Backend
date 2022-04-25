@@ -18,18 +18,18 @@ public class ImageService
     @Autowired
     ImageRepository imageRepository;
 
-    public Image createImage(MultipartFile file)
+    public long upload(MultipartFile file)
     {
         try
         {
             Image image = new Image(file.getName(), file.getBytes());
             image = imageRepository.save(image);
-            return image;
+            return image.getImageId();
         }
         catch (IOException e)
         {
             e.printStackTrace();
-            return null;
+            return -1;
         }
     }
 
