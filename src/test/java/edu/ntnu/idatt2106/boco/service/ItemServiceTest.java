@@ -36,7 +36,7 @@ public class ItemServiceTest {
     public void setUp() {
 
         User user = new User("Name",true,"streetAddress", "postalCode", "postOffice", "email", "password", "Admin", null);
-        Item item1 = new Item("streetAddress", "postalCode", "postOffice", 200,"Description", "Category", "Title", null, user, null);
+        Item item1 = new Item("streetAddress", "postalCode", "postOffice", 200,"Description", "Category", "Title",null, true, true, null, user);
 
         ArrayList<Item> items = new ArrayList<>();
         items.add(item1);
@@ -64,7 +64,7 @@ public class ItemServiceTest {
 
     @Test
     void getAllSubjectsTest() {
-        List<ItemResponse> items = itemService.getAllItems();
+        List<ItemResponse> items = itemService.getAllItems(0, 50);
 
         assertThat(items.get(0).getStreetAddress()).isEqualTo("streetAddress");
         assertThat(items.get(0).getPostalCode()).isEqualTo("postalCode");
@@ -94,7 +94,7 @@ public class ItemServiceTest {
 
     @Test
     void updateSpecificItem(){
-        UpdateItemRequest updateItemRequest = new UpdateItemRequest("strretAddress", "postalCode", "postOffice", 200f, "Description", "Category", "Title", 1L, null);
+        UpdateItemRequest updateItemRequest = new UpdateItemRequest("strretAddress", "postalCode", "postOffice", 200f, "Description", "Category", "Title",true, true, 1L, null);
         ItemResponse response = itemService.updateItem(Mockito.anyLong(), updateItemRequest);
 
         assertThat(response.getPrice()).isEqualTo(200);

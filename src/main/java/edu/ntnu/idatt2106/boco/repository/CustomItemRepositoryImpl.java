@@ -54,6 +54,9 @@ public class CustomItemRepositoryImpl implements CustomItemRepository
             fullTextQuery.setSort(sort);
         }
 
+        fullTextQuery.setFirstResult(request.getPage() * request.getPageSize());
+        fullTextQuery.setMaxResults(request.getPageSize());
+
         logger.debug(fullTextQuery.toString());
 
         List items = fullTextQuery.getResultList();
