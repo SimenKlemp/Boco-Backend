@@ -14,6 +14,7 @@ public class SearchRequest
     private String text;
 
     private int page = 0;
+    private int pageSize = 0;
 
     private SortField sortField = SortField.RELEVANCE;
     private boolean ascending = true;

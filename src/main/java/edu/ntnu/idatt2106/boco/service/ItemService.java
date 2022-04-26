@@ -14,6 +14,10 @@ import edu.ntnu.idatt2106.boco.repository.RentalRepository;
 import edu.ntnu.idatt2106.boco.repository.UserRepository;
 import edu.ntnu.idatt2106.boco.util.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -83,9 +87,9 @@ public class ItemService
      * A method for retrieving all the items that is stored in database
      * @return returns an item List
      */
-    public List<ItemResponse> getAllItems()
+    public List<ItemResponse> getAllItems(int page, int pageSize)
     {
-        List<Item> items = itemRepository.findAll();
+        List<Item> items = itemRepository.findAll(PageRequest.of(page, pageSize)).getContent();
         return Mapper.ToItemResponses(items);
     }
 

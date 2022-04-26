@@ -70,13 +70,13 @@ public class ItemController
      * A method for retrieving all items posts that is stored in database
      * @return Returns a list of items
      */
-    @GetMapping("/all")
-    public ResponseEntity<List<ItemResponse>> getAllItems()
+    @GetMapping("/all/{page}/{pageSize}")
+    public ResponseEntity<List<ItemResponse>> getAllItems(@PathVariable("page") int page, @PathVariable("pageSize") int pageSize)
     {
         logger.info("Fetching all all items...");
         try
         {
-            List<ItemResponse> items = itemService.getAllItems();
+            List<ItemResponse> items = itemService.getAllItems(page, pageSize);
             if (items == null || items.isEmpty())
             {
                 return new ResponseEntity(HttpStatus.NO_CONTENT);
