@@ -69,9 +69,11 @@ public class ItemService
                 request.getDescription(),
                 request.getCategory(),
                 request.getTitle(),
+                currentDate,
+                request.getIsPickupable(),
+                request.getIsDeliverable(),
                 image,
-                user,
-                currentDate
+                user
         );
         item = itemRepository.save(item);
         return Mapper.ToItemResponse(item);

@@ -83,7 +83,7 @@ public class Item
     @JoinColumn(name="userId")
     private User user;
 
-    public Item(String streetAddress, String postalCode, String postOffice, float price, String description, String category, String title, Image image, User user, Date publicityDate){
+    public Item(String streetAddress, String postalCode, String postOffice, float price, String description, String category, String title, Date publicityDate, Boolean isPickupable, Boolean isDeliverable, Image image, User user){
         this.streetAddress = streetAddress;
         this.postalCode = postalCode;
         this.postOffice = postOffice;
@@ -91,8 +91,10 @@ public class Item
         this.description = description;
         this.category = category;
         this.title = title;
+        this.publicityDate = publicityDate;
+        this.isPickupable = isPickupable;
+        this.isDeliverable = isDeliverable;
         this.image = image;
         this.user = user;
-        this.publicityDate = publicityDate;
     }
 }
