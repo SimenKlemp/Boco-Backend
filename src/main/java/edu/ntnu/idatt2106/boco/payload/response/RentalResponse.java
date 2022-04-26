@@ -21,7 +21,6 @@ public class RentalResponse
     private UserResponse user;
     private ItemResponse item;
     private Rental.DeliverInfo deliveryInfo;
-    private int deliveryInfo;
 
     public String getStartDate() {
         return startDate.toString();
