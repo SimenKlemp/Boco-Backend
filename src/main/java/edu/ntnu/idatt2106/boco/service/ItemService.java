@@ -15,10 +15,8 @@ import edu.ntnu.idatt2106.boco.repository.UserRepository;
 import edu.ntnu.idatt2106.boco.util.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+
+import java.util.*;
 
 /**
  * A class that represents an ItemService
@@ -123,10 +121,14 @@ public class ItemService
         if (request.getDescription() != null) item.setDescription(request.getDescription());
         if (request.getCategory() != null) item.setCategory(request.getCategory());
         if (request.getTitle() != null) item.setTitle(request.getTitle());
+
         if (request.getImageId() != null)
         {
             Image prevImage = item.getImage();
-            imageRepository.delete(prevImage);
+            if (prevImage != null && !Objects.equals(request.getImageId(), prevImage.getImageId()))
+            {
+                imageRepository.delete(prevImage);
+            }
 
             Optional<Image> optionalImage = imageRepository.findById(request.getImageId());
             if (optionalImage.isPresent()) item.setImage(optionalImage.get());
@@ -161,7 +163,7 @@ public class ItemService
      */
     public List<ItemResponse> search(SearchRequest request)
     {
-        List<Item> items = itemRepository.search(request.getText());
+        List<Item> items = itemRepository.search(request);
         return Mapper.ToItemResponses(items);
     }
 

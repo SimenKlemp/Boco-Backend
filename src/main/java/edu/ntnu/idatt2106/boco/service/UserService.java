@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -117,7 +119,10 @@ public class UserService
         if (request.getImageId() != null)
         {
             Image prevImage = user.getImage();
-            imageRepository.delete(prevImage);
+            if (prevImage != null && !Objects.equals(request.getImageId(), prevImage.getImageId()))
+            {
+                imageRepository.delete(prevImage);
+            }
 
             Optional<Image> optionalImage = imageRepository.findById(request.getImageId());
             if (optionalImage.isPresent()) user.setImage(optionalImage.get());

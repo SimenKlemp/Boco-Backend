@@ -45,10 +45,11 @@ public class Rental
     @ManyToOne
     private Item item;
 
+    @NotBlank
     @Column(name = "deliveryInfo")
-    private int deliveryInfo;
+    private DeliverInfo deliveryInfo;
 
-    public Rental(String message, Date startDate, Date endDate, String status, User user, Item item, int deliveryInfo)
+    public Rental(String message, Date startDate, Date endDate, String status, User user, Item item, DeliverInfo deliveryInfo)
     {
         this.message = message;
         this.startDate = startDate;
@@ -57,5 +58,11 @@ public class Rental
         this.user = user;
         this.item = item;
         this.deliveryInfo = deliveryInfo;
+    }
+
+    public enum DeliverInfo
+    {
+        PICKUP,
+        DELIVERED
     }
 }

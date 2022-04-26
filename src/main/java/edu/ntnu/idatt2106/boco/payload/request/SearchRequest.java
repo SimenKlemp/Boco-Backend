@@ -13,14 +13,36 @@ public class SearchRequest
 {
     private String text;
 
-    private int page;
+    private int page = 0;
 
-    private String sort;
-    private boolean ascending;
+    private SortField sortField = SortField.RELEVANCE;
+    private boolean ascending = true;
 
-    private float minPrice;
-    private float maxPrice;
+    private float minPrice = 0;
+    private float maxPrice = Float.POSITIVE_INFINITY;
 
-    private boolean mustBeDeliverable;
-    private boolean mustBeRetrievable;
+    private boolean mustBePickupable = false;
+    private boolean mustBeDeliverable = false;
+
+    public enum SortField
+    {
+        RELEVANCE,
+        PRICE;
+
+        public org.apache.lucene.search.SortField.Type getType()
+        {
+            switch (this)
+            {
+                case PRICE:
+                    return org.apache.lucene.search.SortField.Type.FLOAT;
+            }
+            return null;
+        }
+
+        @Override
+        public String toString()
+        {
+            return super.toString().toLowerCase();
+        }
+    }
 }

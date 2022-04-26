@@ -1,5 +1,6 @@
 package edu.ntnu.idatt2106.boco.payload.request;
 
+import edu.ntnu.idatt2106.boco.models.Rental;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,5 +31,5 @@ public class RegisterRentalRequest
     private Long itemId;
 
     @NotBlank
-    private int deliveryInfo;
+    private Rental.DeliverInfo deliveryInfo;
 }
