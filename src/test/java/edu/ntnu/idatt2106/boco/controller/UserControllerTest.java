@@ -34,6 +34,7 @@ public class UserControllerTest {
     public void existentUserCanGetTokenAndAuthentication() throws Exception {
 
         LoginRequest loginRequest = new LoginRequest("test16@test.no", "string");
+        
 
         mockMvc.perform(post("http://localhost:8080/api/user/login")
                         .content(objectMapper.writeValueAsString(loginRequest))
