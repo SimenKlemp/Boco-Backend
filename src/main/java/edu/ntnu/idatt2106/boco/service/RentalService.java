@@ -4,7 +4,6 @@ import edu.ntnu.idatt2106.boco.models.Item;
 import edu.ntnu.idatt2106.boco.models.Rental;
 import edu.ntnu.idatt2106.boco.models.User;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterRentalRequest;
-import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
 import edu.ntnu.idatt2106.boco.payload.response.RentalResponse;
 import edu.ntnu.idatt2106.boco.repository.ItemRepository;
 import edu.ntnu.idatt2106.boco.repository.RentalRepository;
@@ -48,11 +47,14 @@ public class RentalService
         if (optionalItem.isEmpty()) return null;
         Item item = optionalItem.get();
 
+        if (request.getDeliveryInfo() == Rental.DeliverInfo.PICKUP && !item.getIsPickupable()) return null;
+        if (request.getDeliveryInfo() == Rental.DeliverInfo.DELIVERED && !item.getIsDeliverable()) return null;
+
         Rental rental = new Rental(
                 request.getMessage(),
                 request.getStartDate(),
                 request.getEndDate(),
-                "PENDING",
+                Rental.Status.PENDING,
                 user,
                 item,
                 request.getDeliveryInfo()
@@ -83,7 +85,7 @@ public class RentalService
      */
     public RentalResponse acceptRental(long rentalId)
     {
-        return updateRentalStatus(rentalId, "ACCEPTED");
+        return updateRentalStatus(rentalId, Rental.Status.ACCEPTED);
     }
 
     /**
@@ -93,7 +95,7 @@ public class RentalService
      */
     public RentalResponse rejectRental(long rentalId)
     {
-        return updateRentalStatus(rentalId, "REJECTED");
+        return updateRentalStatus(rentalId, Rental.Status.REJECTED);
     }
 
     /**
@@ -103,7 +105,7 @@ public class RentalService
      */
     public RentalResponse cancelRental(long rentalId)
     {
-        return updateRentalStatus(rentalId, "CANCELED");
+        return updateRentalStatus(rentalId, Rental.Status.CANCELED);
     }
 
     /**
@@ -112,7 +114,7 @@ public class RentalService
      * @param status the new status
      * @return returns the renewed Rental object 
      */
-    private RentalResponse updateRentalStatus(long rentalId, String status)
+    private RentalResponse updateRentalStatus(long rentalId, Rental.Status status)
     {
         Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
         if (optionalRental.isEmpty()) return null;

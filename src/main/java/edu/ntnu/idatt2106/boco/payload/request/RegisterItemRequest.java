@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
-
 import javax.validation.constraints.NotBlank;
 
 @Getter
@@ -36,7 +34,13 @@ public class RegisterItemRequest
     private String title;
 
     @NotBlank
+    private Boolean isPickupable;
+
+    @NotBlank
+    private Boolean isDeliverable;
+
+    @NotBlank
     private Long userId;
 
-    private long imageId;
+    private Long imageId;
 }
