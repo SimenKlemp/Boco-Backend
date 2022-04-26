@@ -32,8 +32,6 @@ public class Rental
     @Column(name = "endDate")
     private Date endDate;
 
-    @NotBlank
-    @Size(max = 20)
     @Column(name = "status")
     private Status status;
 
