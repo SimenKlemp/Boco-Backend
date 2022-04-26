@@ -53,14 +53,14 @@ class RentalServiceTest {
 
         item =new Item();
 
-        request1 =new RegisterRentalRequest("message", new Date(),new Date(),1l,1l);
-        request2 =new RegisterRentalRequest("message", new Date(),new Date(),1l,1l);
+        request1 =new RegisterRentalRequest("message", new Date(),new Date(),1l,1l,1);
+        request2 =new RegisterRentalRequest("message", new Date(),new Date(),1l,1l,2);
 
         rental1 =new Rental(request1.getMessage(),request1.getStartDate(),
-                request1.getEndDate(),"status1",user,item);
+                request1.getEndDate(),"status1",user,item,request1.getDeliveryInfo());
 
         rental1 =new Rental(request2.getMessage(),request2.getStartDate(),
-                request2.getEndDate(),"status1",user,item);
+                request2.getEndDate(),"status1",user,item,request1.getDeliveryInfo());
         rentalList.add(rental1);
         rentalList.add(rental1);
 

@@ -1,5 +1,5 @@
 package edu.ntnu.idatt2106.boco.service;
-
+/**
 
 import edu.ntnu.idatt2106.boco.models.User;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterUserRequest;
@@ -52,3 +52,4 @@ public class UserServiceTest {
         assertThat(response).isTrue();
     }
 }
+*/

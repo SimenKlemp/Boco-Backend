@@ -16,11 +16,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import static org.hamcrest.Matchers.any;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+
 
 @ExtendWith(MockitoExtension.class)
 class RentalRepositoryTest {
@@ -42,7 +39,7 @@ class RentalRepositoryTest {
 
         Item item =new Item();
         rental1 =new Rental("message1",new Date(),
-                new Date(),"status1",user,item);
+                new Date(),"status1",user,item,1);
 
         rentalList.add(rental1);
         rentalList.add(rental2);

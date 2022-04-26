@@ -10,62 +10,66 @@ import edu.ntnu.idatt2106.boco.payload.request.RegisterRentalRequest;
 import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
 import edu.ntnu.idatt2106.boco.payload.response.RentalResponse;
 import edu.ntnu.idatt2106.boco.payload.response.UserResponse;
+import edu.ntnu.idatt2106.boco.repository.RentalRepository;
 import edu.ntnu.idatt2106.boco.service.RentalService;
 import edu.ntnu.idatt2106.boco.token.TokenComponent;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import org.testcontainers.shaded.com.github.dockerjava.core.MediaType;
+
+import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.web.context.WebApplicationContext;
+
+import org.springframework.http.MediaType;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.MOCK;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(MockitoExtension.class)
+
+//@WebMvcTest(RentalController.class)
+@SpringBootTest(webEnvironment = MOCK)
+@AutoConfigureMockMvc
 class RentalControllerTest {
 
-    @Mock
-    private RentalService rentalService;
-    private Rental rental;
+    @MockBean
+    private RentalRepository rentalRepository;
+
+    @Autowired
+    private MockMvc mockMvc;
+    @Autowired
+
+    protected WebApplicationContext wac;
+
+
     private User user;
     private UserResponse userResponse;
     private ItemResponse item;
     private RegisterRentalRequest request1;
+    private RegisterRentalRequest request2;
+    private Rental rental1;
+    private Rental rental2;
     private RentalResponse rentalResponse;
-    private List<RentalResponse> rentalList;
+    private List<Rental> rentalList;
 
-    @Autowired
-    private MockMvc mockMvc;
 
-    @InjectMocks
-    private RentalController rentalController;
 
     @InjectMocks
     private TokenComponent tokenComponent;
@@ -76,6 +80,7 @@ class RentalControllerTest {
                 ,"email","password","role",
                 new Image());
         user.setUserId(1L);
+        tokenComponent.generateToken(user.getUserId(),"USER");
 
         userResponse=new UserResponse(user.getUserId(),user.getName(),user.isPerson()
                 ,user.getStreetAddress(),user.getPostalCode(),user.getPostOffice(),
@@ -83,20 +88,32 @@ class RentalControllerTest {
 
         item=new ItemResponse();
 
-        request1=new RegisterRentalRequest("message",new Date(),new Date(),1L,1L);
-        rental=new Rental(request1.getMessage(), request1.getStartDate(),request1.getEndDate(),"status",user,new Item());
-        rentalResponse=new RentalResponse(rental.getRentalId(), rental.getMessage()
-                , rental.getStartDate(),rental.getEndDate(),rental.getStatus(),userResponse,item);
+        request1=new RegisterRentalRequest("message",new Date(),new Date(),1L,1L,1);
+        RegisterRentalRequest request2 = new RegisterRentalRequest("message", new Date(), new Date(), 2L, 2L, 2);
+        rental1=new Rental(request1.getMessage(), request1.getStartDate(),request1.getEndDate(),"status",user,new Item(),request1.getDeliveryInfo());
+        rental1=new Rental(request2.getMessage(), request2.getStartDate(),request2.getEndDate(),"status",user,new Item(),request2.getDeliveryInfo());
+
+        rentalResponse=new RentalResponse(rental1.getRentalId(), rental1.getMessage()
+                , rental1.getStartDate(),rental1.getEndDate(),rental1.getStatus(),userResponse,item,rental1.getDeliveryInfo());
+
+        rentalResponse=new RentalResponse(rental2.getRentalId(), rental2.getMessage()
+                , rental2.getStartDate(),rental2.getEndDate(),rental2.getStatus(),userResponse,item,rental2.getDeliveryInfo());
+
+        rental1.getUser().setUserId(1L);
+        rental1.getUser().setUserId(1L);
 
         rentalList=new ArrayList<>();
-        rentalList.add(rentalResponse);
-        mockMvc= MockMvcBuilders.standaloneSetup(rentalController).build();
-        tokenComponent.generateToken(user.getUserId(),"USER");
+        rentalList.add(rental1);
+        rentalList.add(rental2);
+
     }
 
     @AfterEach
     void tearDown(){
-        rental=null;
+
+        rental1=rental2=null;
+        rentalList=null;
+        rentalRepository.deleteAll();
     }
 
 
@@ -110,7 +127,7 @@ class RentalControllerTest {
                 andExpect(status().isCreated());
 
         verify(rentalService,times(1)).registerRental(any());
-         */
+
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
@@ -119,40 +136,134 @@ class RentalControllerTest {
         ResponseEntity<RentalResponse> responseEntity=rentalController.registerRental(request1);
         assertThat(responseEntity.getStatusCodeValue()).isEqualTo(201);
 
-        assertThat(responseEntity.getHeaders().getLocation().getPath()).isEqualTo("rental/register");
+        assertThat(responseEntity.getHeaders().getLocation().getPath()).isEqualTo("user/rental/register");
+   */
+        mockMvc.perform(post("rental/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(request1)))
+                .andExpect(status().isCreated())
+                .andDo(print());
     }
 
     @Test
-    void acceptRental() {
+    void acceptRental() throws Exception {
+        long rentalId = rental1.getRentalId();
+        when(rentalRepository.findById(rentalId)).thenReturn(Optional.of(rental1));
+        rental1.setStatus("ACCEPTED");
+        when(rentalRepository.save(any(Rental.class))).thenReturn(rental1);
+        mockMvc.perform(put("rental/accept/{rentalId}",rentalId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(rental1)))
+                .andExpect(status().isOk())
+                .andExpect((ResultMatcher) jsonPath("$.status").value(rental1.getStatus()))
+                .andDo(print());
     }
 
     @Test
-    void rejectRental() {
-    }
+    void rejectRental() throws Exception {
 
+        long rentalId = rental1.getRentalId();
+        when(rentalRepository.findById(rentalId)).thenReturn(Optional.of(rental1));
+        rental1.setStatus("REJECTED");
+        when(rentalRepository.save(any(Rental.class))).thenReturn(rental1);
+        mockMvc.perform(put("rental/reject/{rentalId}",rentalId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(rental1)))
+                .andExpect(status().isOk())
+                .andExpect((ResultMatcher) jsonPath("$.status").value(rental1.getStatus()))
+                .andDo(print());
+
+    }
 
     @Test
     void cancelRentalTest() throws Exception {
+        /**
         Mockito.when(rentalService.cancelRental(rental.getRentalId()))
                 .thenReturn(rentalResponse);
         mockMvc.perform(delete("rental/cancel/{1}")
-                .contentType(MediaType.APPLICATION_JSON))
-                .content(asJsonString(rentalResponse))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(rentalResponse)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andDo(MockMvcResultHandlers.print());
+                .andDo(print());
+         */
+        long rentalId = rental1.getRentalId();
+        when(rentalRepository.findById(rentalId)).thenReturn(Optional.of(rental1));
+        rental1.setStatus("CANCELED");
+        when(rentalRepository.save(any(Rental.class))).thenReturn(rental1);
+        mockMvc.perform(put("rental/cancel/{rentalId}",rentalId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(rental1)))
+                .andExpect(status().isOk())
+                .andExpect((ResultMatcher) jsonPath("$.status").value(rental1.getStatus()))
+                .andDo(print());
+        
     }
 
     @Test
     void getAllRentalsForItemTest() throws Exception {
+        /**
         Mockito.when(rentalService.getAllRentalsForItem(rental.getRentalId())).thenReturn(rentalList);
-        mockMvc.perform(get("/retnal/for-item/{1}")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .content(asJsonString(rentalResponse))
-                .andDo(MockMvcResultHandlers.print());
+        mockMvc.perform(get("/rental/for-item/{1}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(rentalResponse)))
+                .andDo(print());
 
         verify(rentalService).getAllRentalsForItem(rentalResponse.getRentalId());
         verify(rentalService,times(1)).getAllRentalsForItem(rentalResponse.getRentalId());
+         */
+        for(Rental rental:rentalList) {
+            Item item = rental.getItem();
+            long id=rental.getItem().getItemId();
+            when(rentalRepository.findAllByItem(item)).thenReturn(rentalList);
+            mockMvc.perform(get("rental/for-item/{id}", id))
+                    .andExpect(status().isOk())
+                    .andExpect((ResultMatcher) jsonPath("$.size()").value(rentalList.size()))
+                    .andDo(print());
+        }
     }
+
+    @Test
+    void NoFoundRentalForItemTest() throws Exception {
+
+        for(Rental rental1 : rentalList) {
+            Item item=rental1.getItem();
+            long id= rental1.getItem().getItemId();
+            Mockito.when(rentalRepository.findAllByItem(item)).thenReturn(rentalList);
+            rentalList=Collections.emptyList();
+            mockMvc.perform(get("rental/for-item/{id}", id))
+                    .andExpect(status().isNoContent())
+                    .andDo(print());
+        }
+    }
+
+    @Test
+    void getAllRentalsUserTest() throws Exception {
+
+        for(Rental rental: rentalList){
+            long userId=rental.getUser().getUserId();
+            User user =rental.getUser();
+            Mockito.when(rentalRepository.findAllByUser(user)).thenReturn(rentalList);
+
+            mockMvc.perform(get("rental/get-my/{userId}",userId))
+                    .andExpect((ResultMatcher) jsonPath("$.size()").value(rentalList.size()))
+                    .andDo(print());
+        }
+    }
+
+    @Test
+    void getNoRentalsByUserTest() throws Exception {
+
+        for(Rental rental: rentalList){
+            long userId=rental.getUser().getUserId();
+            User user =rental.getUser();
+            Mockito.when(rentalRepository.findAllByUser(user)).thenReturn(rentalList);
+
+            mockMvc.perform(get("rental/get-my/{userId}",userId))
+                    .andExpect(status().isNoContent())
+                    .andDo(print());
+        }
+    }
+
 
     public static String asJsonString(final Object obj){
         try{
