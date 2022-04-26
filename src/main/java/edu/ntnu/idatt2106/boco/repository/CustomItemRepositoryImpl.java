@@ -24,6 +24,11 @@ public class CustomItemRepositoryImpl implements CustomItemRepository
 
     private final Logger logger = LoggerFactory.getLogger(CustomItemRepositoryImpl.class);
 
+    /**
+     * A method for retrieving all items connected to a search
+     * @param request what is being searched for
+     * @return returns a list of Items belonging to a search
+     */
     @Override
     public List<Item> search(SearchRequest request)
     {

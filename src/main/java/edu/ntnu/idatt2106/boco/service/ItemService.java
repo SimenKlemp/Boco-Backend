@@ -85,6 +85,8 @@ public class ItemService
 
     /**
      * A method for retrieving all the items that is stored in database
+     * @param page the page nr
+     * @param pageSize number of items per page
      * @return returns an item List
      */
     public List<ItemResponse> getAllItems(int page, int pageSize)
