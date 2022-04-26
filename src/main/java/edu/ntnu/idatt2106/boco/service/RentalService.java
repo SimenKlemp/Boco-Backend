@@ -54,7 +54,7 @@ public class RentalService
                 request.getMessage(),
                 request.getStartDate(),
                 request.getEndDate(),
-                "PENDING",
+                Rental.Status.PENDING,
                 user,
                 item,
                 request.getDeliveryInfo()
@@ -85,7 +85,7 @@ public class RentalService
      */
     public RentalResponse acceptRental(long rentalId)
     {
-        return updateRentalStatus(rentalId, "ACCEPTED");
+        return updateRentalStatus(rentalId, Rental.Status.ACCEPTED);
     }
 
     /**
@@ -95,7 +95,7 @@ public class RentalService
      */
     public RentalResponse rejectRental(long rentalId)
     {
-        return updateRentalStatus(rentalId, "REJECTED");
+        return updateRentalStatus(rentalId, Rental.Status.REJECTED);
     }
 
     /**
@@ -105,7 +105,7 @@ public class RentalService
      */
     public RentalResponse cancelRental(long rentalId)
     {
-        return updateRentalStatus(rentalId, "CANCELED");
+        return updateRentalStatus(rentalId, Rental.Status.CANCELED);
     }
 
     /**
@@ -114,7 +114,7 @@ public class RentalService
      * @param status the new status
      * @return returns the renewed Rental object 
      */
-    private RentalResponse updateRentalStatus(long rentalId, String status)
+    private RentalResponse updateRentalStatus(long rentalId, Rental.Status status)
     {
         Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
         if (optionalRental.isEmpty()) return null;

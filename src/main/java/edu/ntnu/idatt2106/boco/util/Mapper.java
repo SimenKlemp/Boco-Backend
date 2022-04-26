@@ -9,6 +9,7 @@ import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
 import edu.ntnu.idatt2106.boco.payload.response.RentalResponse;
 import edu.ntnu.idatt2106.boco.payload.response.UserResponse;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,12 +61,20 @@ public abstract class Mapper
 
     public static RentalResponse ToRentalResponse(Rental rental)
     {
+        String status = rental.getStatus().toString();
+        Date today = new Date();
+
+        if (rental.getStatus() == Rental.Status.ACCEPTED && rental.getStartDate().before(today) && rental.getEndDate().after(today))
+        {
+            status = "ACTIVE";
+        }
+
         return new RentalResponse(
                 rental.getRentalId(),
                 rental.getMessage(),
                 rental.getStartDate(),
                 rental.getEndDate(),
-                rental.getStatus(),
+                status,
                 ToUserResponse(rental.getUser()),
                 ToItemResponse(rental.getItem()),
                 rental.getDeliveryInfo()
