@@ -1,6 +1,8 @@
 package edu.ntnu.idatt2106.boco.controllers;
 
+import edu.ntnu.idatt2106.boco.payload.request.UpdateUserAdminRequest;
 import edu.ntnu.idatt2106.boco.payload.request.UpdateUserRequest;
+import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
 import edu.ntnu.idatt2106.boco.payload.response.UserResponse;
 import edu.ntnu.idatt2106.boco.token.TokenComponent;
 import edu.ntnu.idatt2106.boco.service.UserService;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import edu.ntnu.idatt2106.boco.payload.request.LoginRequest;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterUserRequest;
 import edu.ntnu.idatt2106.boco.payload.response.LoginResponse;
+
+import java.util.List;
 
 
 @RestController
@@ -128,4 +132,42 @@ public class UserController
             return new ResponseEntity("Can not update", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PutMapping (value="/updateUserAdmin")
+    public ResponseEntity<UserResponse> updateUserRoleAdmin(@RequestBody UpdateUserAdminRequest request) {
+        try
+        {
+            UserResponse user = userService.updateUserRoleAdmin(request);
+            if (user == null)
+            {
+                return new ResponseEntity("Error: User not found", HttpStatus.OK);
+            }
+            return new ResponseEntity<>(user,HttpStatus.OK);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return new ResponseEntity("Can not update", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/getUsers")
+    public ResponseEntity<List<UserResponse>> getAllUsers()
+    {
+        try
+        {
+            List<UserResponse> users = userService.getAllUsers();
+            if (users == null || users.isEmpty())
+            {
+                return new ResponseEntity(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(users, HttpStatus.OK);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            return new ResponseEntity("Could not fetch all users", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }
