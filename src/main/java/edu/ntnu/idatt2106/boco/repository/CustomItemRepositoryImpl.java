@@ -43,7 +43,7 @@ public class CustomItemRepositoryImpl implements CustomItemRepository
 
         BooleanJunction junction = getQueryBuilder().bool();
 
-        junction = shouldMatchText(junction, request.getText());
+        junction = mustMatchText(junction, request.getText());
         junction = mustHavePriceInRange(junction, request.getMinPrice(), request.getMaxPrice());
         if (request.isMustBePickupable()) junction = mustBePickupable(junction);
         if (request.isMustBeDeliverable()) junction = mustBeDeliverable(junction);
@@ -70,9 +70,9 @@ public class CustomItemRepositoryImpl implements CustomItemRepository
         return items;
     }
 
-    private BooleanJunction shouldMatchText (BooleanJunction junction, String text)
+    private BooleanJunction mustMatchText(BooleanJunction junction, String text)
     {
-        return junction.should(getQueryBuilder()
+        return junction.must(getQueryBuilder()
                 .keyword()
                 .fuzzy()
                 .withEditDistanceUpTo(2)
