@@ -133,13 +133,18 @@ public class UserService
         return Mapper.ToUserResponse(user);
     }
 
-    public UserResponse updateUserRoleAdmin(UpdateUserAdminRequest request)
+    public UserResponse updateUserRoleAdmin(long userId)
     {
-        Optional<User> optionalUser = userRepository.findById(request.getUserId());
+        Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) return null;
         User user = optionalUser.get();
 
-        if (request.getRole() != null) user.setRole(request.getRole().toUpperCase(Locale.ROOT));
+        if (user.getRole().equals("USER")){
+            user.setRole("ADMIN");
+        }
+        else {
+            user.setRole("USER");
+        }
 
         user = userRepository.save(user);
         return Mapper.ToUserResponse(user);

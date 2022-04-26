@@ -133,11 +133,11 @@ public class UserController
         }
     }
 
-    @PutMapping (value="/updateUserAdmin")
-    public ResponseEntity<UserResponse> updateUserRoleAdmin(@RequestBody UpdateUserAdminRequest request) {
+    @PutMapping (value="/updateUserAdmin/{userId}")
+    public ResponseEntity<UserResponse> updateUserRoleAdmin(@PathVariable("userId") long userId) {
         try
         {
-            UserResponse user = userService.updateUserRoleAdmin(request);
+            UserResponse user = userService.updateUserRoleAdmin(userId);
             if (user == null)
             {
                 return new ResponseEntity("Error: User not found", HttpStatus.OK);
