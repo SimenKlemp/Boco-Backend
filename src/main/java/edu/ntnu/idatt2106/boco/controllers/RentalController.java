@@ -185,6 +185,7 @@ public class RentalController
             }
 
             List<RentalResponse> rentals = rentalService.getAllRentalsForItem(itemId);
+            logger.info(rentals.get(0).getStartDate() + " " + rentals.get(0).getEndDate());
             if (rentals == null || rentals.isEmpty())
             {
                 return new ResponseEntity(HttpStatus.NO_CONTENT);
@@ -201,6 +202,8 @@ public class RentalController
     @GetMapping("/get-my/{userId}")
     public ResponseEntity<List<RentalResponse>> getAllRentalsUser(@PathVariable("userId") long userId)
     {
+        logger.info("Fetching all rentals for user " + userId);
+
         try
         {
             if (!tokenComponent.haveAccessTo(userId))

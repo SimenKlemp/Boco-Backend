@@ -20,4 +20,12 @@ public class RentalResponse
     private UserResponse user;
     private ItemResponse item;
     private int deliveryInfo;
+
+    public String getStartDate() {
+        return startDate.toString();
+    }
+
+    public String getEndDate() {
+        return endDate.toString();
+    }
 }
