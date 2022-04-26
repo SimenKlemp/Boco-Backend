@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import edu.ntnu.idatt2106.boco.token.TokenComponent;
 
 import java.util.List;
 
@@ -28,6 +29,9 @@ public class FeedbackWebPageController {
     @Autowired
     private FeedbackWebPageService feedbackWebPageService;
 
+    @Autowired
+    private TokenComponent tokenComponent;
+
     Logger logger = LoggerFactory.getLogger(FeedbackWebPageController.class);
 
 
@@ -40,6 +44,7 @@ public class FeedbackWebPageController {
     // @ResponseStatus(value = HttpStatus.CREATED)
     public ResponseEntity<FeedbackWebPageResponse> registerFeedbackWebPage(@RequestBody FeedbackWebPageRequest feedbackWebPageRequest) {
         logger.info("registration of a feedback");
+        logger.info(feedbackWebPageRequest.getMessage());
         try {
             FeedbackWebPageResponse feedback = feedbackWebPageService.registerFeedbackWebPage(feedbackWebPageRequest);
             if (feedback == null) {
@@ -56,15 +61,19 @@ public class FeedbackWebPageController {
     }
 
 
-    @GetMapping("")
+    @GetMapping("/getFeedbacks")
     public ResponseEntity<List<FeedbackWebPageResponse>> getAllFeedbacksWebPage() {
         logger.info("Fetching all all feedbacks for the web page...");
         try {
+            if (!tokenComponent.isAdmin())
+            {
+                return new ResponseEntity(HttpStatus.FORBIDDEN);
+            }
+
             List<FeedbackWebPageResponse> feedbacks = feedbackWebPageService.getAllFeedbacksWebPage();
             if (feedbacks.isEmpty()) {
                 return new ResponseEntity(0, HttpStatus.NO_CONTENT);
             }
-
             return new ResponseEntity(feedbacks, HttpStatus.OK);
         }catch(Exception e){
             return new ResponseEntity("Could not fetch all feedbacks error", HttpStatus.INTERNAL_SERVER_ERROR);

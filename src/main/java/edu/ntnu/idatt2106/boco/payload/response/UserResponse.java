@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
@@ -20,5 +19,5 @@ public class UserResponse
     private String postOffice;
     private String email;
     private String role;
-    private long imageId;
+    private Long imageId;
 }

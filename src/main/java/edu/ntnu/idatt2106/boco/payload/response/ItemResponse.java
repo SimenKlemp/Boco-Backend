@@ -23,7 +23,9 @@ public class ItemResponse
     private String description;
     private String category;
     private String title;
-    private long imageId;
-    private UserResponse user;
+    private Long imageId;
     private Date publicityDate;
+    private Boolean isPickupable;
+    private Boolean isDeliverable;
+    private UserResponse user;
 }
