@@ -18,9 +18,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
             "/user/register",
             "/user/login",
             "/image/**",
-            "/item/all",
+            "/item/all/**",
             "/item/search",
-
 
             "/v2/api-docs",
             "/v2/api-docs/**",

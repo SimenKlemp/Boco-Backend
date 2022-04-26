@@ -24,6 +24,11 @@ public class CustomItemRepositoryImpl implements CustomItemRepository
 
     private final Logger logger = LoggerFactory.getLogger(CustomItemRepositoryImpl.class);
 
+    /**
+     * A method for retrieving all items connected to a search
+     * @param request what is being searched for
+     * @return returns a list of Items belonging to a search
+     */
     @Override
     public List<Item> search(SearchRequest request)
     {
@@ -38,7 +43,7 @@ public class CustomItemRepositoryImpl implements CustomItemRepository
 
         BooleanJunction junction = getQueryBuilder().bool();
 
-        junction = shouldMatchText(junction, request.getText());
+        junction = mustMatchText(junction, request.getText());
         junction = mustHavePriceInRange(junction, request.getMinPrice(), request.getMaxPrice());
         if (request.isMustBePickupable()) junction = mustBePickupable(junction);
         if (request.isMustBeDeliverable()) junction = mustBeDeliverable(junction);
@@ -54,6 +59,9 @@ public class CustomItemRepositoryImpl implements CustomItemRepository
             fullTextQuery.setSort(sort);
         }
 
+        fullTextQuery.setFirstResult(request.getPage() * request.getPageSize());
+        fullTextQuery.setMaxResults(request.getPageSize());
+
         logger.debug(fullTextQuery.toString());
 
         List items = fullTextQuery.getResultList();
@@ -62,9 +70,9 @@ public class CustomItemRepositoryImpl implements CustomItemRepository
         return items;
     }
 
-    private BooleanJunction shouldMatchText (BooleanJunction junction, String text)
+    private BooleanJunction mustMatchText(BooleanJunction junction, String text)
     {
-        return junction.should(getQueryBuilder()
+        return junction.must(getQueryBuilder()
                 .keyword()
                 .fuzzy()
                 .withEditDistanceUpTo(2)
