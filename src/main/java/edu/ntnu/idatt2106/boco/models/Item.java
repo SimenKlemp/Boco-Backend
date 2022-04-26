@@ -3,10 +3,7 @@ package edu.ntnu.idatt2106.boco.models;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.SortableField;
+import org.hibernate.search.annotations.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -64,6 +61,8 @@ public class Item
     @Column(name = "title")
     private String title;
 
+    @Field(analyze = Analyze.NO)
+    @SortableField
     @Column(name = "publicityDate")
     private Date publicityDate;
 

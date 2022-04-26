@@ -22,7 +22,6 @@ public class Rental
     private Long rentalId;
 
     @NotBlank
-    @Size(max = 20)
     @Column(name = "message")
     private String message;
 
