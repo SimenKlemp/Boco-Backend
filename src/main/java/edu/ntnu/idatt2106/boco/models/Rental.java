@@ -43,7 +43,6 @@ public class Rental
     @ManyToOne
     private Item item;
 
-    @NotBlank
     @Column(name = "deliveryInfo")
     private DeliverInfo deliveryInfo;
 
