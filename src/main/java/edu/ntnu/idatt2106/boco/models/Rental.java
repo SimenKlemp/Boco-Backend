@@ -32,8 +32,6 @@ public class Rental
     @Column(name = "endDate")
     private Date endDate;
 
-    @NotBlank
-    @Size(max = 20)
     @Column(name = "status")
     private Status status;
 
@@ -45,7 +43,6 @@ public class Rental
     @ManyToOne
     private Item item;
 
-    @NotBlank
     @Column(name = "deliveryInfo")
     private DeliverInfo deliveryInfo;
 
