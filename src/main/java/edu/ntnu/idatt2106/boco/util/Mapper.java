@@ -46,7 +46,8 @@ public abstract class Mapper
                 item.getCategory(),
                 item.getTitle(),
                 item.getImage() != null ? item.getImage().getImageId() : -1,
-                ToUserResponse(item.getUser())
+                ToUserResponse(item.getUser()),
+                item.getPublicityDate()
         );
     }
 
@@ -64,7 +65,8 @@ public abstract class Mapper
                 rental.getEndDate(),
                 rental.getStatus(),
                 ToUserResponse(rental.getUser()),
-                ToItemResponse(rental.getItem())
+                ToItemResponse(rental.getItem()),
+                rental.getDeliveryInfo()
         );
     }
 
@@ -76,7 +78,7 @@ public abstract class Mapper
     public static FeedbackWebPageResponse ToFeedbackWebPageResponse(FeedbackWebPage feedbackWebPage) {
         return new FeedbackWebPageResponse(
                 feedbackWebPage.getFeedbackId(),
-                feedbackWebPage.getFeedbackMessage(),
+                feedbackWebPage.getMessage(),
                 ToUserResponse(feedbackWebPage.getUser())
         );
 

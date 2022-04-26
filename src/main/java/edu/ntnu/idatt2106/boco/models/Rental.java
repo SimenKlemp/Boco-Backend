@@ -45,7 +45,10 @@ public class Rental
     @ManyToOne
     private Item item;
 
-    public Rental(String message, Date startDate, Date endDate, String status, User user, Item item)
+    @Column(name = "deliveryInfo")
+    private int deliveryInfo;
+
+    public Rental(String message, Date startDate, Date endDate, String status, User user, Item item, int deliveryInfo)
     {
         this.message = message;
         this.startDate = startDate;
@@ -53,5 +56,6 @@ public class Rental
         this.status = status;
         this.user = user;
         this.item = item;
+        this.deliveryInfo = deliveryInfo;
     }
 }

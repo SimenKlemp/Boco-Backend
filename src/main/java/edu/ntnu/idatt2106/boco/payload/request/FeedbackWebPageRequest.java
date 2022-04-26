@@ -15,8 +15,8 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FeedbackWebPageRequest {
-    @NotBlank
-    private String feedbackMessage;
+
+    private String message;
 
     @NotBlank
     private Long userId;

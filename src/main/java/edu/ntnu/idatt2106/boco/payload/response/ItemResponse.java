@@ -6,6 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.Instant;
+import java.util.Date;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -22,4 +25,5 @@ public class ItemResponse
     private String title;
     private long imageId;
     private UserResponse user;
+    private Date publicityDate;
 }

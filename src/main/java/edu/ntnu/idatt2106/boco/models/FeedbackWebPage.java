@@ -24,17 +24,17 @@ public class FeedbackWebPage {
     @Column(name = "feedbackId")
     private Long feedbackId;
 
-    @NotBlank
+
     @Size(max = 20)
     @Column(name = "message")
-    private String feedbackMessage;
+    private String message;
 
     @ManyToOne
     @JoinColumn(name = "userId")
     private User user;
 
-    public FeedbackWebPage(String feedbackMessage, User user) {
-        this.feedbackMessage = feedbackMessage;
+    public FeedbackWebPage(String message, User user) {
+        this.message = message;
         this.user = user;
     }
 }

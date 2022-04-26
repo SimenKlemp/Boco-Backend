@@ -197,4 +197,28 @@ public class RentalController
             return new ResponseEntity("Could not fetch all rentals", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("/get-my/{userId}")
+    public ResponseEntity<List<RentalResponse>> getAllRentalsUser(@PathVariable("userId") long userId)
+    {
+        try
+        {
+            if (!tokenComponent.haveAccessTo(userId))
+            {
+                return new ResponseEntity(HttpStatus.FORBIDDEN);
+            }
+
+            List<RentalResponse> rentals = rentalService.getAllRentalsUser(userId);
+            if (rentals == null || rentals.isEmpty())
+            {
+                return new ResponseEntity(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(rentals, HttpStatus.OK);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            return new ResponseEntity("Error",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

@@ -28,4 +28,7 @@ public class RegisterRentalRequest
 
     @NotBlank
     private Long itemId;
+
+    @NotBlank
+    private int deliveryInfo;
 }

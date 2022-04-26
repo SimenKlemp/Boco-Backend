@@ -36,7 +36,7 @@ public class ItemServiceTest {
     public void setUp() {
 
         User user = new User("Name",true,"streetAddress", "postalCode", "postOffice", "email", "password", "Admin", null);
-        Item item1 = new Item("streetAddress", "postalCode", "postOffice", 200,"Description", "Category", "Title", null, user);
+        Item item1 = new Item("streetAddress", "postalCode", "postOffice", 200,"Description", "Category", "Title", null, user, null);
 
         ArrayList<Item> items = new ArrayList<>();
         items.add(item1);

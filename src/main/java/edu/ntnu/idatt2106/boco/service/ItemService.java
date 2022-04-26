@@ -7,15 +7,18 @@ import edu.ntnu.idatt2106.boco.models.User;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterItemRequest;
 import edu.ntnu.idatt2106.boco.payload.request.UpdateItemRequest;
 import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
+import edu.ntnu.idatt2106.boco.repository.ImageRepository;
 import edu.ntnu.idatt2106.boco.repository.ItemRepository;
 import edu.ntnu.idatt2106.boco.repository.RentalRepository;
 import edu.ntnu.idatt2106.boco.repository.UserRepository;
 import edu.ntnu.idatt2106.boco.util.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,6 +39,9 @@ public class ItemService
     RentalRepository rentalRepository;
 
     @Autowired
+    ImageRepository imageRepository;
+
+    @Autowired
     ImageService imageService;
 
     /**
@@ -50,12 +56,14 @@ public class ItemService
         if (optionalUser.isEmpty()) return null;
         User user = optionalUser.get();
 
-        MultipartFile imageFile = request.getImage();
         Image image = null;
-        if (imageFile != null && !imageFile.isEmpty())
+        Optional<Image> optionalImage = imageRepository.findById(request.getImageId());
+        if (optionalImage.isPresent())
         {
-            image = imageService.createImage(imageFile);
+            image = optionalImage.get();
         }
+
+        Date currentDate = new Date();
 
         Item item = new Item(
                 request.getStreetAddress(),
@@ -66,7 +74,8 @@ public class ItemService
                 request.getCategory(),
                 request.getTitle(),
                 image,
-                user
+                user,
+                currentDate
         );
         item = itemRepository.save(item);
         return Mapper.ToItemResponse(item);
@@ -116,12 +125,13 @@ public class ItemService
         if (request.getDescription() != null) item.setDescription(request.getDescription());
         if (request.getCategory() != null) item.setCategory(request.getCategory());
         if (request.getTitle() != null) item.setTitle(request.getTitle());
-
-        if (request.getImage() != null)
+        if (request.getImageId() != null)
         {
-            MultipartFile imageFile = request.getImage();
-            Image image = imageService.createImage(imageFile);
-            item.setImage(image);
+            Image prevImage = item.getImage();
+            imageRepository.delete(prevImage);
+
+            Optional<Image> optionalImage = imageRepository.findById(request.getImageId());
+            if (optionalImage.isPresent()) item.setImage(optionalImage.get());
         }
 
         item = itemRepository.save(item);
@@ -151,6 +161,7 @@ public class ItemService
      * @param category the category that is being searched for
      * @return returns a list of Items belonging to a category
      */
+
     public List<ItemResponse> getAllSearchedItems(String category)
     {
         List<Item> items = itemRepository.findAllByCategory(category);
@@ -163,4 +174,16 @@ public class ItemService
         if(optionalItem.isEmpty()) return null;
         return Mapper.ToItemResponse(optionalItem.get());
     }
+
+    /*
+    public List<ItemResponse> getAllSearchedItemsTest(String searchWord, float greaterThan, float lessThan)
+    {
+        List<Item> items = itemRepository.findAllByCategoryContainingOrTitleContainingAndPriceGreaterThanAndPriceLessThan(searchWord, searchWord, greaterThan, lessThan);
+        return Mapper.ToItemResponses(items);
+    }
+
+     */
+
+
+
 }

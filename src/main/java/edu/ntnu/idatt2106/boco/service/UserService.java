@@ -62,11 +62,11 @@ public class UserService
     {
         if (userRepository.existsByEmail(request.getEmail())) return null;
 
-        MultipartFile imageFile = request.getImage();
         Image image = null;
-        if (imageFile != null && !imageFile.isEmpty())
+        Optional<Image> optionalImage = imageRepository.findById(request.getImageId());
+        if (optionalImage.isPresent())
         {
-            image = imageService.createImage(imageFile);
+            image = optionalImage.get();
         }
 
         User user = new User(
@@ -114,11 +114,13 @@ public class UserService
             user.setPassword(encodedPassword);
         }
 
-        MultipartFile imageFile = request.getImage();
-        if (imageFile != null && !imageFile.isEmpty())
+        if (request.getImageId() != null)
         {
-            if (user.getImage() != null) imageRepository.delete(user.getImage());
-            user.setImage(imageService.createImage(imageFile));
+            Image prevImage = user.getImage();
+            imageRepository.delete(prevImage);
+
+            Optional<Image> optionalImage = imageRepository.findById(request.getImageId());
+            if (optionalImage.isPresent()) user.setImage(optionalImage.get());
         }
 
         user = userRepository.save(user);

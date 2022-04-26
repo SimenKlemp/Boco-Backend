@@ -39,20 +39,25 @@ public class FeedbackWebPageController {
     @PostMapping(value = "registerFeedback", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     // @ResponseStatus(value = HttpStatus.CREATED)
     public ResponseEntity<FeedbackWebPageResponse> registerFeedbackWebPage(@RequestBody FeedbackWebPageRequest feedbackWebPageRequest) {
+        logger.info("registration of a feedback");
+        logger.info(feedbackWebPageRequest.getMessage());
         try {
             FeedbackWebPageResponse feedback = feedbackWebPageService.registerFeedbackWebPage(feedbackWebPageRequest);
             if (feedback == null) {
                 return new ResponseEntity("Error: No feedbacks can be found ", HttpStatus.NO_CONTENT);
             }
+            logger.info("Managed to post feedback");
             return new ResponseEntity(feedback, HttpStatus.CREATED);
+
         }
         catch(Exception e){
+            e.printStackTrace();
             return new ResponseEntity("Error: Cannot create a new feedback ", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
 
-    @GetMapping("")
+    @GetMapping("/getFeedbacks")
     public ResponseEntity<List<FeedbackWebPageResponse>> getAllFeedbacksWebPage() {
         logger.info("Fetching all all feedbacks for the web page...");
         try {
@@ -60,6 +65,7 @@ public class FeedbackWebPageController {
             if (feedbacks.isEmpty()) {
                 return new ResponseEntity(0, HttpStatus.NO_CONTENT);
             }
+
             return new ResponseEntity(feedbacks, HttpStatus.OK);
         }catch(Exception e){
             return new ResponseEntity("Could not fetch all feedbacks error", HttpStatus.INTERNAL_SERVER_ERROR);

@@ -37,5 +37,5 @@ public class UpdateUserRequest
     @Size(max = 120)
     private String password;
 
-    private MultipartFile image;
+    private Long imageId;
 }

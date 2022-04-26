@@ -19,5 +19,5 @@ public class UpdateItemRequest
     private String category;
     private String title;
     private Long userId;
-    private MultipartFile image;
+    private Long imageId;
 }
