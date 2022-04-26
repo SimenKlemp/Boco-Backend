@@ -4,7 +4,6 @@ import edu.ntnu.idatt2106.boco.models.Item;
 import edu.ntnu.idatt2106.boco.models.Rental;
 import edu.ntnu.idatt2106.boco.models.User;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterRentalRequest;
-import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
 import edu.ntnu.idatt2106.boco.payload.response.RentalResponse;
 import edu.ntnu.idatt2106.boco.repository.ItemRepository;
 import edu.ntnu.idatt2106.boco.repository.RentalRepository;
@@ -47,6 +46,9 @@ public class RentalService
         Optional<Item> optionalItem = itemRepository.findById(request.getItemId());
         if (optionalItem.isEmpty()) return null;
         Item item = optionalItem.get();
+
+        if (request.getDeliveryInfo() == Rental.DeliverInfo.PICKUP && !item.getIsPickupable()) return null;
+        if (request.getDeliveryInfo() == Rental.DeliverInfo.DELIVERED && !item.getIsDeliverable()) return null;
 
         Rental rental = new Rental(
                 request.getMessage(),

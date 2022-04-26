@@ -3,8 +3,11 @@ package edu.ntnu.idatt2106.boco.models;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.SortableField;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -38,6 +41,8 @@ public class Item
     @Column(name = "postOffice")
     private String postOffice;
 
+    @Field
+    @SortableField
     @Column(name = "price")
     private float price;
 
@@ -59,6 +64,17 @@ public class Item
     @Column(name = "title")
     private String title;
 
+    @Column(name = "publicityDate")
+    private Date publicityDate;
+
+    @Field(analyze=Analyze.NO)
+    @Column(name = "isPickupable")
+    private Boolean isPickupable;
+
+    @Field(analyze= Analyze.NO)
+    @Column(name = "isDeliverable")
+    private Boolean isDeliverable;
+
     @JoinColumn(name = "imageId")
     @OneToOne
     private Image image;
@@ -66,9 +82,6 @@ public class Item
     @ManyToOne
     @JoinColumn(name="userId")
     private User user;
-
-    @Column(name = "publicityDate")
-    private Date publicityDate;
 
     public Item(String streetAddress, String postalCode, String postOffice, float price, String description, String category, String title, Image image, User user, Date publicityDate){
         this.streetAddress = streetAddress;

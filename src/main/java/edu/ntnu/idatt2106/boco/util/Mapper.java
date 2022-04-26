@@ -25,7 +25,7 @@ public abstract class Mapper
                 user.getPostOffice(),
                 user.getEmail(),
                 user.getRole(),
-                user.getImage() != null ? user.getImage().getImageId() : -1
+                user.getImage() != null ? user.getImage().getImageId() : null
         );
     }
 
@@ -45,9 +45,11 @@ public abstract class Mapper
                 item.getDescription(),
                 item.getCategory(),
                 item.getTitle(),
-                item.getImage() != null ? item.getImage().getImageId() : -1,
-                ToUserResponse(item.getUser()),
-                item.getPublicityDate()
+                item.getImage() != null ? item.getImage().getImageId() : null,
+                item.getPublicityDate(),
+                item.getIsPickupable(),
+                item.getIsDeliverable(),
+                ToUserResponse(item.getUser())
         );
     }
 
