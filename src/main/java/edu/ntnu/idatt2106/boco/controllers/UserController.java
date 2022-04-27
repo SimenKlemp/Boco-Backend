@@ -1,8 +1,6 @@
 package edu.ntnu.idatt2106.boco.controllers;
 
-import edu.ntnu.idatt2106.boco.payload.request.UpdateUserAdminRequest;
 import edu.ntnu.idatt2106.boco.payload.request.UpdateUserRequest;
-import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
 import edu.ntnu.idatt2106.boco.payload.response.UserResponse;
 import edu.ntnu.idatt2106.boco.token.TokenComponent;
 import edu.ntnu.idatt2106.boco.service.UserService;
@@ -142,7 +140,7 @@ public class UserController
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            UserResponse user = userService.updateUserRoleAdmin(userId);
+            UserResponse user = userService.toggleRole(userId);
             if (user == null)
             {
                 return new ResponseEntity("Error: User not found", HttpStatus.OK);

@@ -2,7 +2,8 @@ package edu.ntnu.idatt2106.boco.service;
 
 import edu.ntnu.idatt2106.boco.models.Item;
 import edu.ntnu.idatt2106.boco.models.User;
-import edu.ntnu.idatt2106.boco.repository.ItemRepository;
+import edu.ntnu.idatt2106.boco.repository.*;
+import edu.ntnu.idatt2106.boco.util.RepositoryMock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,25 +20,24 @@ public class ItemServiceTest
     private ItemService itemService;
 
     @Mock
+    private UserRepository userRepository;
+
+    @Mock
+    private ImageRepository imageRepository;
+
+    @Mock
     private ItemRepository itemRepository;
 
     @Mock
-    private ItemRepository userRepository;
+    private RentalRepository rentalRepository;
 
     @BeforeEach
-    public void setUp() {
-
-        User user = new User("Name",true,"streetAddress", "postalCode", "postOffice", "email", "password", "Admin", null);
-        Item item1 = new Item("streetAddress", "postalCode", "postOffice", 200,"Description", "Category", "Title",null, true, true, null, user);
-
-        ArrayList<Item> items = new ArrayList<>();
-        items.add(item1);
-
-        Mockito.lenient().when(itemRepository.findAllByUser(Mockito.any())).thenReturn(items);
-        Mockito.lenient().when(itemRepository.findAll()).thenReturn(items);
-        Mockito.lenient().when(itemRepository.save(Mockito.any())).thenReturn(0);
-        Mockito.lenient().when(itemRepository.findById(Mockito.anyLong())).thenReturn(java.util.Optional.of(item1));
-        //Mockito.lenient().when(userRepository.findById(Mockito.anyLong())).thenReturn(user);
+    public void beforeEach()
+    {
+        RepositoryMock.mockUserRepository(userRepository);
+        RepositoryMock.mockImageRepository(imageRepository);
+        RepositoryMock.mockItemRepository(itemRepository);
+        RepositoryMock.mockRentalRepository(rentalRepository);
     }
 
     @Test

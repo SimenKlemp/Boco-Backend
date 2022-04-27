@@ -19,6 +19,9 @@ public abstract class RepositoryMock
                         u -> u.getUserId().equals(i.getArguments()[0])
                 ).findFirst());
 
+        Mockito.lenient().when(repository.findAll())
+                .then(i -> list);
+
         Mockito.lenient()
                 .doAnswer(i -> {
                     User user = (User) i.getArguments()[0];
@@ -59,6 +62,9 @@ public abstract class RepositoryMock
                         u -> u.getImageId().equals(i.getArguments()[0])
                 ).findFirst());
 
+        Mockito.lenient().when(repository.findAll())
+                .then(i -> list);
+
         Mockito.lenient()
                 .doAnswer(i -> {
                     Image image = (Image) i.getArguments()[0];
@@ -88,6 +94,9 @@ public abstract class RepositoryMock
                 .then(i -> list.stream().filter(
                         u -> u.getItemId().equals(i.getArguments()[0])
                 ).findFirst());
+
+        Mockito.lenient().when(repository.findAll())
+                .then(i -> list);
 
         Mockito.lenient()
                 .doAnswer(i -> {
@@ -124,6 +133,9 @@ public abstract class RepositoryMock
                         u -> u.getRentalId().equals(i.getArguments()[0])
                 ).findFirst());
 
+        Mockito.lenient().when(repository.findAll())
+                .then(i -> list);
+
         Mockito.lenient()
                 .doAnswer(i -> {
                     Rental rental = (Rental) i.getArguments()[0];
@@ -153,6 +165,9 @@ public abstract class RepositoryMock
                 .then(i -> list.stream().filter(
                         u -> u.getFeedbackId().equals(i.getArguments()[0])
                 ).findFirst());
+
+        Mockito.lenient().when(repository.findAll())
+                .then(i -> list);
 
         Mockito.lenient()
                 .doAnswer(i -> {

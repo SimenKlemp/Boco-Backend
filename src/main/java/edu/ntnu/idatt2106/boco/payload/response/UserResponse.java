@@ -13,7 +13,7 @@ public class UserResponse
 {
     private Long userId;
     private String name;
-    private boolean isPerson;
+    private Boolean isPerson;
     private String streetAddress;
     private String postalCode;
     private String postOffice;

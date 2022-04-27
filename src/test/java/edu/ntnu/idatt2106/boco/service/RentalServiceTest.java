@@ -1,6 +1,11 @@
 package edu.ntnu.idatt2106.boco.service;
 
+import edu.ntnu.idatt2106.boco.repository.ImageRepository;
+import edu.ntnu.idatt2106.boco.repository.ItemRepository;
 import edu.ntnu.idatt2106.boco.repository.RentalRepository;
+import edu.ntnu.idatt2106.boco.repository.UserRepository;
+import edu.ntnu.idatt2106.boco.util.RepositoryMock;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,7 +19,25 @@ public class RentalServiceTest
     private RentalService rentalService;
 
     @Mock
+    private UserRepository userRepository;
+
+    @Mock
+    private ImageRepository imageRepository;
+
+    @Mock
+    private ItemRepository itemRepository;
+
+    @Mock
     private RentalRepository rentalRepository;
+
+    @BeforeEach
+    public void beforeEach()
+    {
+        RepositoryMock.mockUserRepository(userRepository);
+        RepositoryMock.mockImageRepository(imageRepository);
+        RepositoryMock.mockItemRepository(itemRepository);
+        RepositoryMock.mockRentalRepository(rentalRepository);
+    }
 
     @Test
     public void registerCorrect()

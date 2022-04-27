@@ -18,7 +18,8 @@ public class RegisterUserRequest
     @Size(max = 20)
     private String name;
 
-    private boolean isPerson;
+    @NotBlank
+    private Boolean isPerson;
 
     @NotBlank
     @Size(max = 20)

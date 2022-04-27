@@ -4,7 +4,6 @@ import edu.ntnu.idatt2106.boco.models.Image;
 import edu.ntnu.idatt2106.boco.models.User;
 import edu.ntnu.idatt2106.boco.payload.request.LoginRequest;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterUserRequest;
-import edu.ntnu.idatt2106.boco.payload.request.UpdateUserAdminRequest;
 import edu.ntnu.idatt2106.boco.payload.request.UpdateUserRequest;
 import edu.ntnu.idatt2106.boco.payload.response.UserResponse;
 import edu.ntnu.idatt2106.boco.repository.ImageRepository;
@@ -15,7 +14,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -79,7 +77,7 @@ public class UserService
 
         User user = new User(
                 request.getName(),
-                request.isPerson(),
+                request.getIsPerson(),
                 request.getStreetAddress(),
                 request.getPostalCode(),
                 request.getPostOffice(),
@@ -109,7 +107,7 @@ public class UserService
         User user = optionalUser.get();
 
         if (request.getName() != null) user.setName(request.getName());
-        if (request.getIsPerson() != null) user.setPerson(request.getIsPerson());
+        if (request.getIsPerson() != null) user.setIsPerson(request.getIsPerson());
         if (request.getEmail() != null) user.setEmail(request.getEmail());
         if (request.getStreetAddress() != null) user.setStreetAddress(request.getStreetAddress());
         if (request.getPostalCode() != null) user.setPostalCode(request.getPostalCode());
@@ -139,7 +137,7 @@ public class UserService
         return Mapper.ToUserResponse(user);
     }
 
-    public UserResponse updateUserRoleAdmin(long userId)
+    public UserResponse toggleRole(long userId)
     {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) return null;

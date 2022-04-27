@@ -1,6 +1,7 @@
 package edu.ntnu.idatt2106.boco.service;
 
 import edu.ntnu.idatt2106.boco.models.*;
+import edu.ntnu.idatt2106.boco.payload.request.UpdateUserRequest;
 import edu.ntnu.idatt2106.boco.repository.*;
 import edu.ntnu.idatt2106.boco.util.ModelFactory;
 import edu.ntnu.idatt2106.boco.util.RepositoryMock;
@@ -13,8 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
@@ -64,12 +63,14 @@ public class UserServiceTest
 
         UserResponse response = userService.register(request);
 
-        assertThat(response.getName()).isEqualTo(request.getName());
-        assertThat(response.isPerson()).isEqualTo(request.isPerson());
-        assertThat(response.getStreetAddress()).isEqualTo(request.getStreetAddress());
-        assertThat(response.getPostalCode()).isEqualTo(request.getPostalCode());
-        assertThat(response.getPostOffice()).isEqualTo(request.getPostOffice());
-        assertThat(response.getEmail()).isEqualTo(request.getEmail());
+        User user = userRepository.findById(response.getUserId()).orElseThrow();
+        assertThat(user.getName()).isEqualTo(response.getName()).isEqualTo(request.getName());
+        assertThat(user.getIsPerson()).isEqualTo(response.getIsPerson()).isEqualTo(request.getIsPerson());
+        assertThat(user.getStreetAddress()).isEqualTo(response.getStreetAddress()).isEqualTo(request.getStreetAddress());
+        assertThat(user.getPostalCode()).isEqualTo(response.getPostalCode()).isEqualTo(request.getPostalCode());
+        assertThat(user.getPostOffice()).isEqualTo(response.getPostOffice()).isEqualTo(request.getPostOffice());
+        assertThat(user.getEmail()).isEqualTo(response.getEmail()).isEqualTo(request.getEmail());
+        assertThat(user.getImage()).isNull();
         assertThat(response.getImageId()).isEqualTo(request.getImageId());
     }
 
@@ -92,13 +93,14 @@ public class UserServiceTest
 
         UserResponse response = userService.register(request);
 
-        assertThat(response.getName()).isEqualTo(request.getName());
-        assertThat(response.isPerson()).isEqualTo(request.isPerson());
-        assertThat(response.getStreetAddress()).isEqualTo(request.getStreetAddress());
-        assertThat(response.getPostalCode()).isEqualTo(request.getPostalCode());
-        assertThat(response.getPostOffice()).isEqualTo(request.getPostOffice());
-        assertThat(response.getEmail()).isEqualTo(request.getEmail());
-        assertThat(response.getImageId()).isEqualTo(image.getImageId());
+        User user = userRepository.findById(response.getUserId()).orElseThrow();
+        assertThat(user.getName()).isEqualTo(response.getName()).isEqualTo(request.getName());
+        assertThat(user.getIsPerson()).isEqualTo(response.getIsPerson()).isEqualTo(request.getIsPerson());
+        assertThat(user.getStreetAddress()).isEqualTo(response.getStreetAddress()).isEqualTo(request.getStreetAddress());
+        assertThat(user.getPostalCode()).isEqualTo(response.getPostalCode()).isEqualTo(request.getPostalCode());
+        assertThat(user.getPostOffice()).isEqualTo(response.getPostOffice()).isEqualTo(request.getPostOffice());
+        assertThat(user.getEmail()).isEqualTo(response.getEmail()).isEqualTo(request.getEmail());
+        assertThat(user.getImage().getImageId()).isEqualTo(response.getImageId()).isEqualTo(image.getImageId());
     }
 
     @Test
@@ -117,12 +119,13 @@ public class UserServiceTest
 
         UserResponse response = userService.register(request);
 
-        assertThat(response.getName()).isEqualTo(request.getName());
-        assertThat(response.isPerson()).isEqualTo(request.isPerson());
-        assertThat(response.getStreetAddress()).isEqualTo(request.getStreetAddress());
-        assertThat(response.getPostalCode()).isEqualTo(request.getPostalCode());
-        assertThat(response.getPostOffice()).isEqualTo(request.getPostOffice());
-        assertThat(response.getEmail()).isEqualTo(request.getEmail());
+        User user = userRepository.findById(response.getUserId()).orElseThrow();
+        assertThat(user.getName()).isEqualTo(response.getName()).isEqualTo(request.getName());
+        assertThat(user.getIsPerson()).isEqualTo(response.getIsPerson()).isEqualTo(request.getIsPerson());
+        assertThat(user.getStreetAddress()).isEqualTo(response.getStreetAddress()).isEqualTo(request.getStreetAddress());
+        assertThat(user.getPostalCode()).isEqualTo(response.getPostalCode()).isEqualTo(request.getPostalCode());
+        assertThat(user.getPostOffice()).isEqualTo(response.getPostOffice()).isEqualTo(request.getPostOffice());
+        assertThat(user.getEmail()).isEqualTo(response.getEmail()).isEqualTo(request.getEmail());
         assertThat(response.getImageId()).isNull();
     }
 
@@ -162,13 +165,13 @@ public class UserServiceTest
 
         UserResponse response = userService.login(request);
 
-        assertThat(response.getUserId()).isEqualTo(user.getUserId());
-        assertThat(response.getName()).isEqualTo(user.getName());
-        assertThat(response.isPerson()).isEqualTo(user.isPerson());
-        assertThat(response.getStreetAddress()).isEqualTo(user.getStreetAddress());
-        assertThat(response.getPostalCode()).isEqualTo(user.getPostalCode());
-        assertThat(response.getPostOffice()).isEqualTo(user.getPostOffice());
-        assertThat(response.getEmail()).isEqualTo(user.getEmail());
+        assertThat(user.getName()).isEqualTo(response.getName());
+        assertThat(user.getIsPerson()).isEqualTo(response.getIsPerson());
+        assertThat(user.getStreetAddress()).isEqualTo(response.getStreetAddress());
+        assertThat(user.getPostalCode()).isEqualTo(response.getPostalCode());
+        assertThat(user.getPostOffice()).isEqualTo(response.getPostOffice());
+        assertThat(user.getEmail()).isEqualTo(response.getEmail()).isEqualTo(request.getEmail());
+        assertThat(response.getImageId()).isNull();
     }
 
     @Test
@@ -288,43 +291,100 @@ public class UserServiceTest
     @Test
     public void deleteWrongUserId()
     {
-
+        boolean success = userService.deleteUser(1);
+        assertThat(success).isFalse();
     }
 
     @Test
     public void updateAll()
     {
+        User user = ModelFactory.getUser(null);
+        user = userRepository.save(user);
 
+        Image image = ModelFactory.getImage();
+        image = imageRepository.save(image);
+
+        UpdateUserRequest request = new UpdateUserRequest(
+                "new name",
+                false,
+                "new streetAddress",
+                "new postalCode",
+                "new postOffice",
+                "new email",
+                "new password",
+                image.getImageId()
+        );
+
+        UserResponse response = userService.updateUser(user.getUserId(), request);
+
+        assertThat(user.getName()).isEqualTo(response.getName()).isEqualTo(request.getName());
+        assertThat(user.getIsPerson()).isEqualTo(response.getIsPerson()).isEqualTo(request.getIsPerson());
+        assertThat(user.getStreetAddress()).isEqualTo(response.getStreetAddress()).isEqualTo(request.getStreetAddress());
+        assertThat(user.getPostalCode()).isEqualTo(response.getPostalCode()).isEqualTo(request.getPostalCode());
+        assertThat(user.getPostOffice()).isEqualTo(response.getPostOffice()).isEqualTo(request.getPostOffice());
+        assertThat(user.getEmail()).isEqualTo(response.getEmail()).isEqualTo(request.getEmail());
+        assertThat(user.getImage().getImageId()).isEqualTo(response.getImageId()).isEqualTo(image.getImageId());
     }
 
     @Test
     public void updateNothing()
     {
+        User user = ModelFactory.getUser(null);
+        user = userRepository.save(user);
 
+        User oldUser = ModelFactory.getUser(null);
+
+        UpdateUserRequest request = new UpdateUserRequest();
+
+        UserResponse response = userService.updateUser(user.getUserId(), request);
+
+        assertThat(user.getName()).isEqualTo(response.getName()).isEqualTo(oldUser.getName());
+        assertThat(user.getIsPerson()).isEqualTo(response.getIsPerson()).isEqualTo(oldUser.getIsPerson());
+        assertThat(user.getStreetAddress()).isEqualTo(response.getStreetAddress()).isEqualTo(oldUser.getStreetAddress());
+        assertThat(user.getPostalCode()).isEqualTo(response.getPostalCode()).isEqualTo(oldUser.getPostalCode());
+        assertThat(user.getPostOffice()).isEqualTo(response.getPostOffice()).isEqualTo(oldUser.getPostOffice());
+        assertThat(user.getEmail()).isEqualTo(response.getEmail()).isEqualTo(oldUser.getEmail());
     }
 
     @Test
     public void updateWrongUserId()
     {
+        UpdateUserRequest request = new UpdateUserRequest();
 
+        UserResponse response = userService.updateUser(1, request);
+
+        assertThat(response).isNull();
     }
 
     @Test
     public void toggleRoleToAdmin()
     {
+        User user = ModelFactory.getUser(null);
+        user = userRepository.save(user);
 
+        UserResponse response = userService.toggleRole(user.getUserId());
+
+        assertThat(user.getRole()).isEqualTo(response.getRole()).isEqualTo("ADMIN");
     }
 
     @Test
     public void toggleRoleToUser()
     {
+        User user = ModelFactory.getUser(null);
+        user.setRole("ADMIN");
+        user = userRepository.save(user);
 
+        UserResponse response = userService.toggleRole(user.getUserId());
+
+        assertThat(user.getRole()).isEqualTo(response.getRole()).isEqualTo("USER");
     }
 
     @Test
     public void toggleRoleWrongUserId()
     {
+        UserResponse response = userService.toggleRole(1);
 
+        assertThat(response).isNull();
     }
 
     @Test

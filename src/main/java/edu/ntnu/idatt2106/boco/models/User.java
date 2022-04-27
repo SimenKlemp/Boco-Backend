@@ -26,8 +26,9 @@ public class User
     @Column(name = "name")
     private String name;
 
+    @NotBlank
     @Column(name = "isPerson")
-    private boolean isPerson;
+    private Boolean isPerson;
 
     @NotBlank
     @Size(max = 20)
@@ -64,7 +65,7 @@ public class User
     @OneToOne
     private Image image;
 
-    public User(String name, boolean isPerson, String streetAddress, String postalCode, String postOffice, String email, String password, String role, Image image)
+    public User(String name, Boolean isPerson, String streetAddress, String postalCode, String postOffice, String email, String password, String role, Image image)
     {
         this.name = name;
         this.isPerson = isPerson;
