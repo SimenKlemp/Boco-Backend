@@ -24,17 +24,14 @@ public class Item
     private Long itemId;
 
     @NotBlank
-    @Size(max = 20)
     @Column(name = "streetAddress")
     private String streetAddress;
 
     @NotBlank
-    @Size(max = 20)
     @Column(name = "postalCode")
     private String postalCode;
 
     @NotBlank
-    @Size(max = 20)
     @Column(name = "postOffice")
     private String postOffice;
 
@@ -44,19 +41,16 @@ public class Item
     private float price;
 
     @NotBlank
-    @Size(max = 20)
     @Field
     @Column(name = "description")
     private String description;
 
     @NotBlank
-    @Size(max = 20)
     @Field
     @Column(name = "category")
     private String category;
 
     @NotBlank
-    @Size(max = 20)
     @Field
     @Column(name = "title")
     private String title;

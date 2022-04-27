@@ -185,7 +185,7 @@ public class RentalController
             }
 
             List<RentalResponse> rentals = rentalService.getAllRentalsForItem(itemId);
-            logger.info(rentals.get(0).getStartDate() + " " + rentals.get(0).getEndDate());
+            //logger.info(rentals.get(0).getStartDate() + " " + rentals.get(0).getEndDate());
             if (rentals == null || rentals.isEmpty())
             {
                 return new ResponseEntity(HttpStatus.NO_CONTENT);
