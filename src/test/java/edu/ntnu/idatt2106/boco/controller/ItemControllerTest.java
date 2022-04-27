@@ -50,7 +50,7 @@ public class ItemControllerTest {
         // Det er en del forskjellige libs som brukes her, se static imports øverst
         // En har også tilsvarende metoder for POST/PUT/DELETE osv.
 
-        RegisterItemRequest itemRequest = new RegisterItemRequest("streetAddress", "postalCode", "postOffice", 200, "This is a item made from test", "Category", "Title", 1L, 0);
+        RegisterItemRequest itemRequest = new RegisterItemRequest("streetAddress", "postalCode", "postOffice", 200f, "This is a item made from test", "Category", "Title", true, true, 1L, null);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/item").header("Authorization", "Bearer " + token)
                         .content(objectMapper.writeValueAsString(itemRequest))
