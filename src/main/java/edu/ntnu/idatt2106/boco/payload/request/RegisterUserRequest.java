@@ -41,5 +41,5 @@ public class RegisterUserRequest
     @Size(max = 120)
     private String password;
 
-    private long imageId;
+    private Long imageId;
 }

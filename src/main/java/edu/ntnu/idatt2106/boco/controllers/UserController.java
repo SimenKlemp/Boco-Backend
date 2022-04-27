@@ -150,6 +150,11 @@ public class UserController
     public ResponseEntity<UserResponse> updateUserRoleAdmin(@PathVariable("userId") long userId) {
         try
         {
+            if (!tokenComponent.isAdmin())
+            {
+                return new ResponseEntity(HttpStatus.FORBIDDEN);
+            }
+
             UserResponse user = userService.updateUserRoleAdmin(userId);
             if (user == null)
             {
