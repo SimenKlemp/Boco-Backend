@@ -133,13 +133,14 @@ public class ItemService
         if (request.getImageId() != null)
         {
             Image prevImage = item.getImage();
+
+            Optional<Image> optionalImage = imageRepository.findById(request.getImageId());
+            if (optionalImage.isPresent()) item.setImage(optionalImage.get());
+
             if (prevImage != null && !Objects.equals(request.getImageId(), prevImage.getImageId()))
             {
                 imageRepository.delete(prevImage);
             }
-
-            Optional<Image> optionalImage = imageRepository.findById(request.getImageId());
-            if (optionalImage.isPresent()) item.setImage(optionalImage.get());
         }
 
         item = itemRepository.save(item);
