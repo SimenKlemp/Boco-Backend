@@ -64,9 +64,16 @@ public abstract class Mapper
         String status = rental.getStatus().toString();
         Date today = new Date();
 
-        if (rental.getStatus() == Rental.Status.ACCEPTED && rental.getStartDate().before(today) && rental.getEndDate().after(today))
+        if (rental.getStatus() == Rental.Status.ACCEPTED)
         {
-            status = "ACTIVE";
+            if (rental.getStartDate().before(today) && rental.getEndDate().after(today))
+            {
+                status = "ACTIVE";
+            }
+            else if (rental.getEndDate().before(today))
+            {
+                status = "FINISHED";
+            }
         }
 
         return new RentalResponse(

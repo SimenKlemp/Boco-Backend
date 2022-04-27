@@ -57,10 +57,13 @@ public class ItemService
         User user = optionalUser.get();
 
         Image image = null;
-        Optional<Image> optionalImage = imageRepository.findById(request.getImageId());
-        if (optionalImage.isPresent())
+        if (request.getImageId() != null)
         {
-            image = optionalImage.get();
+            Optional<Image> optionalImage = imageRepository.findById(request.getImageId());
+            if (optionalImage.isPresent())
+            {
+                image = optionalImage.get();
+            }
         }
 
         Date currentDate = new Date();
@@ -91,7 +94,9 @@ public class ItemService
      */
     public List<ItemResponse> getAllItems(int page, int pageSize)
     {
-        List<Item> items = itemRepository.findAll(PageRequest.of(page, pageSize)).getContent();
+        Sort sort = Sort.by("publicityDate").descending();
+        PageRequest pageRequest = PageRequest.of(page, pageSize).withSort(sort);
+        List<Item> items = itemRepository.findAll(pageRequest).getContent();
         return Mapper.ToItemResponses(items);
     }
 
@@ -129,17 +134,20 @@ public class ItemService
         if (request.getDescription() != null) item.setDescription(request.getDescription());
         if (request.getCategory() != null) item.setCategory(request.getCategory());
         if (request.getTitle() != null) item.setTitle(request.getTitle());
+        if (request.getIsPickupable() != null) item.setIsPickupable(request.getIsPickupable());
+        if (request.getIsDeliverable() != null) item.setIsDeliverable(request.getIsDeliverable());
 
         if (request.getImageId() != null)
         {
             Image prevImage = item.getImage();
+
+            Optional<Image> optionalImage = imageRepository.findById(request.getImageId());
+            if (optionalImage.isPresent()) item.setImage(optionalImage.get());
+
             if (prevImage != null && !Objects.equals(request.getImageId(), prevImage.getImageId()))
             {
                 imageRepository.delete(prevImage);
             }
-
-            Optional<Image> optionalImage = imageRepository.findById(request.getImageId());
-            if (optionalImage.isPresent()) item.setImage(optionalImage.get());
         }
 
         item = itemRepository.save(item);
