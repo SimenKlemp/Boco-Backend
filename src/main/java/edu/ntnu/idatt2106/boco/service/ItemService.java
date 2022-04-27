@@ -91,7 +91,9 @@ public class ItemService
      */
     public List<ItemResponse> getAllItems(int page, int pageSize)
     {
-        List<Item> items = itemRepository.findAll(PageRequest.of(page, pageSize)).getContent();
+        Sort sort = Sort.by("publicityDate").descending();
+        PageRequest pageRequest = PageRequest.of(page, pageSize).withSort(sort);
+        List<Item> items = itemRepository.findAll(pageRequest).getContent();
         return Mapper.ToItemResponses(items);
     }
 
