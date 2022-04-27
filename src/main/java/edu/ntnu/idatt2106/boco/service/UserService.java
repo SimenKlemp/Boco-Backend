@@ -67,11 +67,15 @@ public class UserService
         if (userRepository.existsByEmail(request.getEmail())) return null;
 
         Image image = null;
-        Optional<Image> optionalImage = imageRepository.findById(request.getImageId());
-        if (optionalImage.isPresent())
+        if (request.getImageId() != null)
         {
-            image = optionalImage.get();
+            Optional<Image> optionalImage = imageRepository.findById(request.getImageId());
+            if (optionalImage.isPresent())
+            {
+                image = optionalImage.get();
+            }
         }
+
 
         User user = new User(
                 request.getName(),

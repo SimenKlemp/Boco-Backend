@@ -57,10 +57,13 @@ public class ItemService
         User user = optionalUser.get();
 
         Image image = null;
-        Optional<Image> optionalImage = imageRepository.findById(request.getImageId());
-        if (optionalImage.isPresent())
+        if (request.getImageId() != null)
         {
-            image = optionalImage.get();
+            Optional<Image> optionalImage = imageRepository.findById(request.getImageId());
+            if (optionalImage.isPresent())
+            {
+                image = optionalImage.get();
+            }
         }
 
         Date currentDate = new Date();
@@ -131,6 +134,8 @@ public class ItemService
         if (request.getDescription() != null) item.setDescription(request.getDescription());
         if (request.getCategory() != null) item.setCategory(request.getCategory());
         if (request.getTitle() != null) item.setTitle(request.getTitle());
+        if (request.getIsPickupable() != null) item.setIsPickupable(request.getIsPickupable());
+        if (request.getIsDeliverable() != null) item.setIsDeliverable(request.getIsDeliverable());
 
         if (request.getImageId() != null)
         {
