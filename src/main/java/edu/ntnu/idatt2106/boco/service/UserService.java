@@ -4,6 +4,7 @@ import edu.ntnu.idatt2106.boco.models.Image;
 import edu.ntnu.idatt2106.boco.models.User;
 import edu.ntnu.idatt2106.boco.payload.request.LoginRequest;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterUserRequest;
+import edu.ntnu.idatt2106.boco.payload.request.UpdateUserAdminRequest;
 import edu.ntnu.idatt2106.boco.payload.request.UpdateUserRequest;
 import edu.ntnu.idatt2106.boco.payload.response.UserResponse;
 import edu.ntnu.idatt2106.boco.repository.ImageRepository;
@@ -12,7 +13,10 @@ import edu.ntnu.idatt2106.boco.util.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -117,7 +121,10 @@ public class UserService
         if (request.getImageId() != null)
         {
             Image prevImage = user.getImage();
-            imageRepository.delete(prevImage);
+            if (prevImage != null && !Objects.equals(request.getImageId(), prevImage.getImageId()))
+            {
+                imageRepository.delete(prevImage);
+            }
 
             Optional<Image> optionalImage = imageRepository.findById(request.getImageId());
             if (optionalImage.isPresent()) user.setImage(optionalImage.get());
@@ -127,29 +134,27 @@ public class UserService
         return Mapper.ToUserResponse(user);
     }
 
-    public boolean updateResetPasswordToken(String token, String email)  {
-        User user= userRepository.findUserByEmail(email);
-        if (user != null) {
-            user.setResetPasswordToken(token);
-            userRepository.save(user);
-            return true;
-        } else {
-            return  false;
+    public UserResponse updateUserRoleAdmin(long userId)
+    {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) return null;
+        User user = optionalUser.get();
+
+        if (user.getRole().equals("USER")){
+            user.setRole("ADMIN");
         }
+        else {
+            user.setRole("USER");
+        }
+
+        user = userRepository.save(user);
+        return Mapper.ToUserResponse(user);
     }
 
-    public User getByResetPasswordToken(String token) {
-        return userRepository.findByResetPasswordToken(token);
+    public List<UserResponse> getAllUsers()
+    {
+        List<User> users = userRepository.findAll();
+        return Mapper.ToUserResponses(users);
     }
-
-    public void updatePassword(User user , String newPassword) {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String encodedPassword = passwordEncoder.encode(newPassword);
-        user.setPassword(encodedPassword);
-
-        user.setResetPasswordToken(null);
-        userRepository.save(user);
-
-    }
-
 }
+

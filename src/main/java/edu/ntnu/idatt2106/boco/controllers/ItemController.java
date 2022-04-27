@@ -1,8 +1,8 @@
 package edu.ntnu.idatt2106.boco.controllers;
 
 
-import edu.ntnu.idatt2106.boco.models.Item;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterItemRequest;
+import edu.ntnu.idatt2106.boco.payload.request.SearchRequest;
 import edu.ntnu.idatt2106.boco.payload.request.UpdateItemRequest;
 import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
 import edu.ntnu.idatt2106.boco.service.ItemService;
@@ -70,13 +70,13 @@ public class ItemController
      * A method for retrieving all items posts that is stored in database
      * @return Returns a list of items
      */
-    @GetMapping("/all")
-    public ResponseEntity<List<ItemResponse>> getAllItems()
+    @GetMapping("/all/{page}/{pageSize}")
+    public ResponseEntity<List<ItemResponse>> getAllItems(@PathVariable("page") int page, @PathVariable("pageSize") int pageSize)
     {
         logger.info("Fetching all all items...");
         try
         {
-            List<ItemResponse> items = itemService.getAllItems();
+            List<ItemResponse> items = itemService.getAllItems(page, pageSize);
             if (items == null || items.isEmpty())
             {
                 return new ResponseEntity(HttpStatus.NO_CONTENT);
@@ -189,17 +189,17 @@ public class ItemController
     }
 
     /**
-     * A method for retrieving all items connected to a search on category
-     * @param category The category the item belongs
-     * @return returns a list of items belonging to a category
+     * A method for retrieving all items connected to a search
+     * @param request The search request
+     * @return returns a list of items belonging to a search
      */
-    @GetMapping("getAllSearchedItems/{category}")
-    public ResponseEntity<List<ItemResponse>> getAllSearchedItems(@PathVariable("category") String category)
+    @PutMapping("search")
+    public ResponseEntity<List<ItemResponse>> search(@RequestBody SearchRequest request)
     {
         logger.info("Fetching all items connected to a search ...");
         try
         {
-            List<ItemResponse> items = itemService.getAllSearchedItems(category);
+            List<ItemResponse> items = itemService.search(request);
 
             if (items.isEmpty())
             {
@@ -239,9 +239,5 @@ public class ItemController
     }
 
      */
-
-
-
-
 
 }

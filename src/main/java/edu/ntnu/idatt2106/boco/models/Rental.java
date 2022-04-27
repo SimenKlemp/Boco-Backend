@@ -22,7 +22,6 @@ public class Rental
     private Long rentalId;
 
     @NotBlank
-    @Size(max = 20)
     @Column(name = "message")
     private String message;
 
@@ -32,10 +31,8 @@ public class Rental
     @Column(name = "endDate")
     private Date endDate;
 
-    @NotBlank
-    @Size(max = 20)
     @Column(name = "status")
-    private String status;
+    private Status status;
 
     @ManyToOne
     @JoinColumn(name="userId")
@@ -46,9 +43,9 @@ public class Rental
     private Item item;
 
     @Column(name = "deliveryInfo")
-    private int deliveryInfo;
+    private DeliverInfo deliveryInfo;
 
-    public Rental(String message, Date startDate, Date endDate, String status, User user, Item item, int deliveryInfo)
+    public Rental(String message, Date startDate, Date endDate, Status status, User user, Item item, DeliverInfo deliveryInfo)
     {
         this.message = message;
         this.startDate = startDate;
@@ -57,5 +54,19 @@ public class Rental
         this.user = user;
         this.item = item;
         this.deliveryInfo = deliveryInfo;
+    }
+
+    public enum Status
+    {
+        PENDING,
+        ACCEPTED,
+        REJECTED,
+        CANCELED
+    }
+
+    public enum DeliverInfo
+    {
+        PICKUP,
+        DELIVERED
     }
 }

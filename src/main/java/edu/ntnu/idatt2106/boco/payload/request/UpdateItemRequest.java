@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -18,6 +18,8 @@ public class UpdateItemRequest
     private String description;
     private String category;
     private String title;
+    private Boolean isPickupable;
+    private Boolean isDeliverable;
     private Long userId;
     private Long imageId;
 }

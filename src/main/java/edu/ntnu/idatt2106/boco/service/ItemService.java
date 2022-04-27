@@ -5,6 +5,7 @@ import edu.ntnu.idatt2106.boco.models.Item;
 import edu.ntnu.idatt2106.boco.models.Rental;
 import edu.ntnu.idatt2106.boco.models.User;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterItemRequest;
+import edu.ntnu.idatt2106.boco.payload.request.SearchRequest;
 import edu.ntnu.idatt2106.boco.payload.request.UpdateItemRequest;
 import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
 import edu.ntnu.idatt2106.boco.repository.ImageRepository;
@@ -13,14 +14,13 @@ import edu.ntnu.idatt2106.boco.repository.RentalRepository;
 import edu.ntnu.idatt2106.boco.repository.UserRepository;
 import edu.ntnu.idatt2106.boco.util.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * A class that represents an ItemService
@@ -73,9 +73,11 @@ public class ItemService
                 request.getDescription(),
                 request.getCategory(),
                 request.getTitle(),
+                currentDate,
+                request.getIsPickupable(),
+                request.getIsDeliverable(),
                 image,
-                user,
-                currentDate
+                user
         );
         item = itemRepository.save(item);
         return Mapper.ToItemResponse(item);
@@ -83,11 +85,13 @@ public class ItemService
 
     /**
      * A method for retrieving all the items that is stored in database
+     * @param page the page nr
+     * @param pageSize number of items per page
      * @return returns an item List
      */
-    public List<ItemResponse> getAllItems()
+    public List<ItemResponse> getAllItems(int page, int pageSize)
     {
-        List<Item> items = itemRepository.findAll();
+        List<Item> items = itemRepository.findAll(PageRequest.of(page, pageSize)).getContent();
         return Mapper.ToItemResponses(items);
     }
 
@@ -125,10 +129,14 @@ public class ItemService
         if (request.getDescription() != null) item.setDescription(request.getDescription());
         if (request.getCategory() != null) item.setCategory(request.getCategory());
         if (request.getTitle() != null) item.setTitle(request.getTitle());
+
         if (request.getImageId() != null)
         {
             Image prevImage = item.getImage();
-            imageRepository.delete(prevImage);
+            if (prevImage != null && !Objects.equals(request.getImageId(), prevImage.getImageId()))
+            {
+                imageRepository.delete(prevImage);
+            }
 
             Optional<Image> optionalImage = imageRepository.findById(request.getImageId());
             if (optionalImage.isPresent()) item.setImage(optionalImage.get());
@@ -158,13 +166,12 @@ public class ItemService
 
     /**
      * A method for retrieving all items connected to a search
-     * @param category the category that is being searched for
-     * @return returns a list of Items belonging to a category
+     * @param request what is being searched for
+     * @return returns a list of Items belonging to a search
      */
-
-    public List<ItemResponse> getAllSearchedItems(String category)
+    public List<ItemResponse> search(SearchRequest request)
     {
-        List<Item> items = itemRepository.findAllByCategory(category);
+        List<Item> items = itemRepository.search(request);
         return Mapper.ToItemResponses(items);
     }
 
@@ -174,16 +181,4 @@ public class ItemService
         if(optionalItem.isEmpty()) return null;
         return Mapper.ToItemResponse(optionalItem.get());
     }
-
-    /*
-    public List<ItemResponse> getAllSearchedItemsTest(String searchWord, float greaterThan, float lessThan)
-    {
-        List<Item> items = itemRepository.findAllByCategoryContainingOrTitleContainingAndPriceGreaterThanAndPriceLessThan(searchWord, searchWord, greaterThan, lessThan);
-        return Mapper.ToItemResponses(items);
-    }
-
-     */
-
-
-
 }
