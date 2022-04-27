@@ -1,5 +1,5 @@
 package edu.ntnu.idatt2106.boco.controller;
-
+/**
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterItemRequest;
 import edu.ntnu.idatt2106.boco.payload.request.LoginRequest;
@@ -50,7 +50,7 @@ public class ItemControllerTest {
         // Det er en del forskjellige libs som brukes her, se static imports øverst
         // En har også tilsvarende metoder for POST/PUT/DELETE osv.
 
-        RegisterItemRequest itemRequest = new RegisterItemRequest("streetAddress", "postalCode", "postOffice", 200, "This is a item made from test", "Category", "Title", 1L, 0);
+        RegisterItemRequest itemRequest = new RegisterItemRequest("streetAddress", "postalCode", "postOffice", 200, "This is a item made from test", "Category", "Title", 1L,);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/item").header("Authorization", "Bearer " + token)
                         .content(objectMapper.writeValueAsString(itemRequest))
@@ -91,4 +91,6 @@ public class ItemControllerTest {
                 .andExpect(jsonPath("$[0].category", is("Category")))
                 .andExpect(jsonPath("$[0].title", is("Title")));
     }
+
 }
+*/

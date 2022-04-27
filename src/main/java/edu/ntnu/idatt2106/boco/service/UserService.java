@@ -156,5 +156,32 @@ public class UserService
         List<User> users = userRepository.findAll();
         return Mapper.ToUserResponses(users);
     }
+
+    public boolean updateResetPasswordToken(String token, String email)  {
+        User user= userRepository.findUserByEmail(email);
+        if (user != null) {
+            user.setResetPasswordToken(token);
+            userRepository.save(user);
+            return true;
+        } else {
+            return  false;
+        }
+    }
+
+    public User getByResetPasswordToken(String token) {
+        return userRepository.findByResetPasswordToken(token);
+    }
+
+    public void updatePassword(User user , String newPassword) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        user.setPassword(encodedPassword);
+
+        user.setResetPasswordToken(null);
+        userRepository.save(user);
+
+    }
+
+
 }
 

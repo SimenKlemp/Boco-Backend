@@ -88,16 +88,16 @@ class RentalControllerTest {
 
         item=new ItemResponse();
 
-        request1=new RegisterRentalRequest("message",new Date(),new Date(),1L,1L,1);
-        RegisterRentalRequest request2 = new RegisterRentalRequest("message", new Date(), new Date(), 2L, 2L, 2);
-        rental1=new Rental(request1.getMessage(), request1.getStartDate(),request1.getEndDate(),"status",user,new Item(),request1.getDeliveryInfo());
-        rental1=new Rental(request2.getMessage(), request2.getStartDate(),request2.getEndDate(),"status",user,new Item(),request2.getDeliveryInfo());
+        request1=new RegisterRentalRequest("message",new Date(),new Date(),1L,1L, Rental.DeliverInfo.DELIVERED);
+        RegisterRentalRequest request2 = new RegisterRentalRequest("message", new Date(), new Date(), 2L, 2L, Rental.DeliverInfo.DELIVERED);
+        rental1=new Rental(request1.getMessage(), request1.getStartDate(),request1.getEndDate(), Rental.Status.ACCEPTED,user,new Item(),request1.getDeliveryInfo());
+        rental1=new Rental(request2.getMessage(), request2.getStartDate(),request2.getEndDate(), Rental.Status.ACCEPTED,user,new Item(),request2.getDeliveryInfo());
 
         rentalResponse=new RentalResponse(rental1.getRentalId(), rental1.getMessage()
-                , rental1.getStartDate(),rental1.getEndDate(),rental1.getStatus(),userResponse,item,rental1.getDeliveryInfo());
+                , rental1.getStartDate(),rental1.getEndDate(), "ACCEPTED",userResponse,item,rental1.getDeliveryInfo());
 
         rentalResponse=new RentalResponse(rental2.getRentalId(), rental2.getMessage()
-                , rental2.getStartDate(),rental2.getEndDate(),rental2.getStatus(),userResponse,item,rental2.getDeliveryInfo());
+                , rental2.getStartDate(),rental2.getEndDate(),"ACCEPTED",userResponse,item,rental2.getDeliveryInfo());
 
         rental1.getUser().setUserId(1L);
         rental1.getUser().setUserId(1L);
@@ -149,7 +149,7 @@ class RentalControllerTest {
     void acceptRental() throws Exception {
         long rentalId = rental1.getRentalId();
         when(rentalRepository.findById(rentalId)).thenReturn(Optional.of(rental1));
-        rental1.setStatus("ACCEPTED");
+        rental1.setStatus(Rental.Status.ACCEPTED);
         when(rentalRepository.save(any(Rental.class))).thenReturn(rental1);
         mockMvc.perform(put("rental/accept/{rentalId}",rentalId)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -164,7 +164,7 @@ class RentalControllerTest {
 
         long rentalId = rental1.getRentalId();
         when(rentalRepository.findById(rentalId)).thenReturn(Optional.of(rental1));
-        rental1.setStatus("REJECTED");
+        rental1.setStatus(Rental.Status.PENDING);
         when(rentalRepository.save(any(Rental.class))).thenReturn(rental1);
         mockMvc.perform(put("rental/reject/{rentalId}",rentalId)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -188,7 +188,7 @@ class RentalControllerTest {
          */
         long rentalId = rental1.getRentalId();
         when(rentalRepository.findById(rentalId)).thenReturn(Optional.of(rental1));
-        rental1.setStatus("CANCELED");
+        rental1.setStatus(Rental.Status.ACCEPTED);
         when(rentalRepository.save(any(Rental.class))).thenReturn(rental1);
         mockMvc.perform(put("rental/cancel/{rentalId}",rentalId)
                 .contentType(MediaType.APPLICATION_JSON)

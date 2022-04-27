@@ -40,7 +40,8 @@ class RentalServiceTest {
     private RegisterRentalRequest request2;
     List<Rental> rentalList;
 
-    Rental rental1;
+    private Rental rental1;
+    private Rental rental2;
 
     Item item;
 
@@ -53,16 +54,16 @@ class RentalServiceTest {
 
         item =new Item();
 
-        request1 =new RegisterRentalRequest("message", new Date(),new Date(),1l,1l,1);
-        request2 =new RegisterRentalRequest("message", new Date(),new Date(),1l,1l,2);
+        request1 =new RegisterRentalRequest("message", new Date(),new Date(),1l,1l, Rental.DeliverInfo.DELIVERED);
+        request2 =new RegisterRentalRequest("message", new Date(),new Date(),1l,1l, Rental.DeliverInfo.DELIVERED);
 
         rental1 =new Rental(request1.getMessage(),request1.getStartDate(),
-                request1.getEndDate(),"status1",user,item,request1.getDeliveryInfo());
+                request1.getEndDate(), Rental.Status.REJECTED,user,item,request1.getDeliveryInfo());
 
-        rental1 =new Rental(request2.getMessage(),request2.getStartDate(),
-                request2.getEndDate(),"status1",user,item,request1.getDeliveryInfo());
+        rental2 =new Rental(request2.getMessage(),request2.getStartDate(),
+                request2.getEndDate(), Rental.Status.ACCEPTED,user,item,request1.getDeliveryInfo());
         rentalList.add(rental1);
-        rentalList.add(rental1);
+        rentalList.add(rental2);
 
     }
 

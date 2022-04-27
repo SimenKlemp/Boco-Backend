@@ -11,6 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,10 +22,10 @@ import java.util.Optional;
 import static org.junit.Assert.assertEquals;
 
 
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(MockitoExtension.class)
 class RentalRepositoryTest {
 
-    @Mock
+    @MockBean
     private RentalRepository rentalRepository;
 
 
@@ -39,11 +42,10 @@ class RentalRepositoryTest {
 
         Item item =new Item();
         rental1 =new Rental("message1",new Date(),
-                new Date(),"status1",user,item,1);
+                new Date(), Rental.Status.ACCEPTED,user,item, Rental.DeliverInfo.DELIVERED);
 
         rentalList.add(rental1);
         rentalList.add(rental2);
-
     }
 
     @AfterEach

@@ -2,97 +2,114 @@ package edu.ntnu.idatt2106.boco.controllers;
 
 import edu.ntnu.idatt2106.boco.models.Image;
 import edu.ntnu.idatt2106.boco.models.Item;
-import edu.ntnu.idatt2106.boco.models.Rental;
+
 import edu.ntnu.idatt2106.boco.models.User;
-import edu.ntnu.idatt2106.boco.payload.request.RegisterItemRequest;
-import edu.ntnu.idatt2106.boco.payload.request.UpdateItemRequest;
+import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
 import edu.ntnu.idatt2106.boco.repository.ItemRepository;
-import edu.ntnu.idatt2106.boco.token.TokenComponent;
+import edu.ntnu.idatt2106.boco.service.ItemService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
-import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
+
 
 import static edu.ntnu.idatt2106.boco.controllers.RentalControllerTest.asJsonString;
+import static edu.ntnu.idatt2106.boco.util.Mapper.ToUserResponse;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-class ItemControllerTest {
-
-    @Mock
+@RunWith(SpringRunner.class)
+@WebMvcTest(ItemController.class)
+class ItemControllerTest{
+    @MockBean
+    ItemService itemService;
+    @MockBean
     ItemRepository itemRepository;
 
     private Item item1;
     private Item item2;
-    private List<Item> itemList;
     private User user;
-    private RegisterItemRequest request1;
-    private UpdateItemRequest updateRequest;
-
-    @Autowired
-    private TokenComponent tokenComponent;
+    private List<ItemResponse> itemList;
+    private ItemResponse itemResponse1;
+    private ItemResponse itemResponse2;
 
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private WebApplicationContext context;
 
     @BeforeEach
-    void setUp() throws UnsupportedEncodingException {
-        user =new User("name",true,"address"
-                ,"email","password","role",
-                new Image());
+    void setUp()  {
+        this.mockMvc = MockMvcBuilders
+                .webAppContextSetup(this.context)
+                .apply(springSecurity())
+                .build();
+
+        user=new User("name",true,"address","email"
+                ,"password","role",new Image());
         user.setUserId(1L);
-        tokenComponent.generateToken(user.getUserId(),"USER");
 
         item1=new Item("streetAddress1",
                 "postalCode1","postOffice1",1f,"description1"
-                ,"category1","title1",new Image(),user,new Date());
+                ,"category1","title1",new Date(),true,true,new Image(),user);
 
         item2=new Item("streetAddress2",
                 "postalCode2","postOffice2",1f,"description2"
-                ,"category2","title1",new Image(),user,new Date());
+                ,"category2","title1",new Date(),true,false,new Image(),user);
 
-        request1=new RegisterItemRequest(item1.getStreetAddress()
-                ,item1.getPostalCode(),item1.getPostOffice(),item1.getPrice()
-                ,item1.getDescription(),item1.getCategory(),item1.getTitle(),item1
-                .getUser().getUserId(), item1.getItemId());
+        itemResponse1=new ItemResponse(item1.getItemId(),item1.getStreetAddress()
+                ,item2.getPostalCode(),item1.getPostOffice(),
+                item1.getPrice(),item1.getDescription(),item1.getCategory(),
+                item1.getTitle(),item1.getImage().getImageId(), item1.getPublicityDate(),
+                item1.getIsPickupable(),item1.getIsPickupable(),ToUserResponse(item1.getUser()));
 
-        updateRequest=new UpdateItemRequest("Updated"
-                ,"updated","Updated",2f
-                ,"Updated","Updated","Updated",item1
-                .getUser().getUserId(), item1.getItemId());
-
-        itemList.add(item1);
-        itemList.add(item2);
+        itemResponse2=new ItemResponse(item1.getItemId(),item1.getStreetAddress()
+                ,item2.getPostalCode(),item1.getPostOffice(),
+                item1.getPrice(),item1.getDescription(),item1.getCategory(),
+                item1.getTitle(),item1.getImage().getImageId(), item1.getPublicityDate(),
+                item1.getIsPickupable(),item1.getIsPickupable(),ToUserResponse(item1.getUser()));
+        itemList=new ArrayList<>();
+        itemList.add(itemResponse1);
+        itemList.add(itemResponse2);
     }
 
     @AfterEach
     void cleanUp(){
-        item1=item2=null;
+        itemResponse1=itemResponse2=null;
         itemList=null;
         itemRepository.deleteAll();
-
-
     }
 
     @Test
     void registerItem() throws Exception {
+        Mockito.when(itemService.registerItem(any())).thenReturn(itemResponse1);
         mockMvc.perform(post("item/register")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(request1)))
+                        .content(asJsonString(itemResponse1))
+                        .with(csrf()))
                 .andExpect(status().isCreated())
                 .andDo(print());
     }
@@ -100,7 +117,7 @@ class ItemControllerTest {
     @Test
     void getAllItems() throws Exception {
 
-            when(itemRepository.findAll()).thenReturn(itemList);
+            when(itemService.registerItem(any())).thenReturn(new ItemResponse());
             mockMvc.perform(get("item/all"))
                     .andExpect(status().isOk())
                     .andExpect((ResultMatcher) jsonPath("$.size()").value(itemList.size()))
@@ -109,37 +126,54 @@ class ItemControllerTest {
 
     @Test
     void getMyItems() throws Exception {
-        for(Item item: itemList) {
-            Long userId = item.getUser().getUserId();
-            when(itemRepository.findById(userId)).thenReturn(Optional.of(item));
-            mockMvc.perform(get("/get-my/{userId}", userId)
+        int page=1;
+        int pageSize=1;
+        when(itemService.getAllItems(any(),any())).thenReturn(itemList);
+            mockMvc.perform(get("/all/{page}/{pageSize}", page, pageSize)
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(asJsonString(item1)))
+                            .content(asJsonString(itemList)))
                     .andExpect(status().isOk())
-                    .andExpect((ResultMatcher) jsonPath("$.itemId").value(item.getItemId()))
-                            .andExpect((ResultMatcher) jsonPath("$.streetAddress").value(item.getStreetAddress()))
-                    .andExpect((ResultMatcher) jsonPath("$.postalCode").value(item.getPostalCode()))
-                    .andExpect((ResultMatcher) jsonPath("$.postOffice").value(item.getPostOffice()))
-                    .andExpect((ResultMatcher) jsonPath("$.price").value(item.getPrice()))
-                    .andExpect((ResultMatcher) jsonPath("$.description").value(item.getDescription()))
-                    .andExpect((ResultMatcher) jsonPath("$.category").value(item.getCategory()))
-                    .andExpect((ResultMatcher) jsonPath("$.title").value(item.getTitle()))
-                    .andExpect((ResultMatcher) jsonPath("$.imageId").value(item.getImage()))
-                    .andExpect((ResultMatcher) jsonPath("$.userId").value(item.getUser()))
+                    .andExpect( jsonPath("$.size()").value(itemList.size()))
                     .andDo(print());
-        }
-        
+
     }
 
     @Test
-    void updateItem() {
+    void updateItem() throws Exception {
+        when(itemService.updateItem(any(),any())).thenReturn(itemResponse1);
+        itemResponse1.setCategory("Updated");
+        itemResponse1.setIsDeliverable(false);
+        itemResponse1.setTitle("Updated");
+        when(itemService.registerItem(any())).thenReturn(itemResponse1);
+
+        mockMvc.perform(put("/update/{itemId}")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(itemResponse1)))
+                .andExpect(status().isOk())
+                .andExpect( jsonPath("$.category").value(itemResponse1.getCategory()))
+                .andExpect( jsonPath("$.isDeliverable").value(itemResponse1.getIsDeliverable()))
+                .andExpect( jsonPath("$.title").value(itemResponse1.getTitle()))
+                .andDo(print());
     }
 
     @Test
-    void deleteItem() {
+    void deleteItem() throws Exception {
+        Long itemId=itemResponse1.getItemId();
+        doNothing().when(itemService.deleteItem(any()));
+        mockMvc.perform(delete("/delete/{itemId}",itemId))
+                .andExpect(status().isNoContent())
+                .andDo(print());
     }
 
     @Test
-    void getAllSearchedItems() {
+    void getAllSearchedItems() throws Exception {
+
+        when(itemService.search(any())).thenReturn(itemList);
+        mockMvc.perform(get("search")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(itemList)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.size()").value(itemList.size()))
+                        .andDo(print());
     }
 }
