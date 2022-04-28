@@ -26,7 +26,7 @@ class TokenComponentTest {
 
     @Test
     public void shouldNotAllowAccessToUnauthenticatedUsers() throws Exception {
-        mvc.perform(get("/test")).andExpect(status().isForbidden());
+        mvc.perform(get("/user")).andExpect(status().isForbidden());
     }
 
     @Test
@@ -34,7 +34,7 @@ class TokenComponentTest {
         String token = tokenComponent.generateToken(1L,"ADMIN");
 
         assertNotNull(token);
-        mvc.perform(get("/test").header("Authorization", token))
+        mvc.perform(get("/user").header("Authorization", token))
                 .andExpect(status().isOk());
     }
 
@@ -46,7 +46,7 @@ class TokenComponentTest {
     @Test
     @WithMockUser(username = "email", password = "password", roles = {"USER","ADMIN"})
     void isThisUserTest() throws Exception {
-        this.mvc.perform(get("\"/user\"")).andExpect(status().isOk());
+        this.mvc.perform(get("/user")).andExpect(status().isOk());
     }
 
     /**
@@ -56,6 +56,6 @@ class TokenComponentTest {
     @Test
     @WithMockUser(username = "email", password = "password", roles = {"ADMIN"})
     void isAdminTest() throws Exception {
-        this.mvc.perform(get("\"/user\"")).andExpect(status().isOk());
+        this.mvc.perform(get("/user")).andExpect(status().isOk());
     }
 }

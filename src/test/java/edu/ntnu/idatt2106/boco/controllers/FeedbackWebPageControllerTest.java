@@ -8,6 +8,7 @@ import edu.ntnu.idatt2106.boco.payload.response.FeedbackWebPageResponse;
 import edu.ntnu.idatt2106.boco.payload.response.UserResponse;
 import edu.ntnu.idatt2106.boco.repository.FeedbackWebPageRepository;
 import edu.ntnu.idatt2106.boco.service.FeedbackWebPageService;
+import edu.ntnu.idatt2106.boco.token.TokenComponent;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,12 +51,16 @@ class FeedbackWebPageControllerTest {
     @MockBean
     private FeedbackWebPageService feedbackWebPageService;
 
+    @MockBean
+    private TokenComponent tokenComponent;
+
     private FeedbackWebPageResponse feedbackWebPageResponse1;
     private FeedbackWebPage feedbackWebPage1;
     private FeedbackWebPage feedbackWebPage2;
     private FeedbackWebPageResponse feedbackWebPageResponse2;
     private List<FeedbackWebPageResponse> feedbackWebPageList;
     private User user;
+    private String token;
 
 
     @BeforeEach
@@ -66,9 +71,10 @@ class FeedbackWebPageControllerTest {
                 .build();
 
         user=new User("name",true,"address","email"
-                ,"password","role",new Image());
+                ,"password","ADMIN",new Image());
         user.setUserId(1L);
 
+        token= tokenComponent.generateToken(user.getUserId(),user.getRole());
         UserResponse userResponse = new UserResponse(user.getUserId(), user.getName(), user.isPerson(),
                 user.getStreetAddress(), user.getPostalCode(), user.getPostOffice(), user.getEmail(),
                 user.getRole(), user.getImage() != null ? user.getImage().getImageId() : null);
@@ -77,6 +83,7 @@ class FeedbackWebPageControllerTest {
         feedbackWebPage2=new FeedbackWebPage("message2",user);
         feedbackWebPageResponse1=new FeedbackWebPageResponse(feedbackWebPage1.getFeedbackId(),feedbackWebPage1.getMessage(),userResponse);
         feedbackWebPageResponse1=new FeedbackWebPageResponse(feedbackWebPage2.getFeedbackId(),feedbackWebPage2.getMessage(),userResponse);
+
 
         feedbackWebPageList=new ArrayList();
         feedbackWebPageList.add(feedbackWebPageResponse1);
@@ -97,7 +104,7 @@ class FeedbackWebPageControllerTest {
         mockMvc.perform(post("/registerFeedback")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(feedbackWebPageResponse1))
-                                .with(csrf()))
+                .with(csrf()))
                 .andExpect(status().isCreated())
                 .andDo(print());
     }
@@ -109,7 +116,7 @@ class FeedbackWebPageControllerTest {
         mockMvc.perform(get("/feedbackWebPage/getFeedbacks")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(feedbackWebPageList))
-                        .with(csrf()))
+                        .header("Authentication","Bearer " + token))
                 .andExpect(status().isOk())
                         .andExpect(jsonPath("$.size").value(feedbackWebPageList.size()))
                 .andDo(print());
