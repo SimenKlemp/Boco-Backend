@@ -1,116 +1,149 @@
 package edu.ntnu.idatt2106.boco.service;
 
-import edu.ntnu.idatt2106.boco.models.Image;
-import edu.ntnu.idatt2106.boco.models.Item;
-import edu.ntnu.idatt2106.boco.models.Rental;
-import edu.ntnu.idatt2106.boco.models.User;
-import edu.ntnu.idatt2106.boco.payload.request.RegisterRentalRequest;
-import edu.ntnu.idatt2106.boco.payload.response.RentalResponse;
+import edu.ntnu.idatt2106.boco.repository.ImageRepository;
+import edu.ntnu.idatt2106.boco.repository.ItemRepository;
 import edu.ntnu.idatt2106.boco.repository.RentalRepository;
-import org.junit.jupiter.api.AfterEach;
+import edu.ntnu.idatt2106.boco.repository.UserRepository;
+import edu.ntnu.idatt2106.boco.util.RepositoryMock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
 
 @ExtendWith(MockitoExtension.class)
-class RentalServiceTest {
+public class RentalServiceTest
+{
+    @InjectMocks
+    private RentalService rentalService;
+
+    @Mock
+    private UserRepository userRepository;
+
+    @Mock
+    private ImageRepository imageRepository;
+
+    @Mock
+    private ItemRepository itemRepository;
 
     @Mock
     private RentalRepository rentalRepository;
 
-    @Autowired
-    @InjectMocks
-    private RentalService rentalService;
-
-    private RegisterRentalRequest request1;
-    private RegisterRentalRequest request2;
-    List<Rental> rentalList;
-
-    private Rental rental1;
-    private Rental rental2;
-
-    Item item;
-
     @BeforeEach
-    public void setUp(){
-        rentalList=new ArrayList<>();
-        User user =new User("name",true,"address"
-                ,"email","password","role",
-                new Image());
-
-        item =new Item();
-
-        request1 =new RegisterRentalRequest("message", new Date(),new Date(),1l,1l, Rental.DeliverInfo.DELIVERED);
-        request2 =new RegisterRentalRequest("message", new Date(),new Date(),1l,1l, Rental.DeliverInfo.DELIVERED);
-
-        rental1 =new Rental(request1.getMessage(),request1.getStartDate(),
-                request1.getEndDate(), Rental.Status.REJECTED,user,item,request1.getDeliveryInfo());
-
-        rental2 =new Rental(request2.getMessage(),request2.getStartDate(),
-                request2.getEndDate(), Rental.Status.ACCEPTED,user,item,request1.getDeliveryInfo());
-        rentalList.add(rental1);
-        rentalList.add(rental2);
-
-    }
-
-    @AfterEach
-    public void tearDown(){
-        request1 = request2=null;
-        rentalList=null;
-    }
-
-    @Test
-    void registerRental() throws Exception
+    public void beforeEach()
     {
-        Mockito.when(rentalRepository.save(Mockito.any(Rental.class))).thenReturn(rental1);
-        rentalService.registerRental(request1);
-        verify(rentalRepository,times(1)).save(Mockito.any(Rental.class));
+        RepositoryMock.mockUserRepository(userRepository);
+        RepositoryMock.mockImageRepository(imageRepository);
+        RepositoryMock.mockItemRepository(itemRepository);
+        RepositoryMock.mockRentalRepository(rentalRepository);
     }
 
     @Test
-    void getAllRentalsForItem() {
-
-        rentalRepository.save(rental1);
-       Mockito.when(rentalRepository.findAll()).thenReturn(rentalList);
-        List<RentalResponse> rentalList1=rentalService.getAllRentalsForItem(item.getItemId());
-        assertEquals(rentalList1,rentalList);
-        verify(rentalRepository,times(1)).save(rental1);
-        verify(rentalRepository,times(1)).findAll();
+    public void registerCorrect()
+    {
 
     }
 
     @Test
-    void acceptRental() {
+    public void registerWrongUserId()
+    {
 
     }
 
     @Test
-    void rejectRental() {
+    public void registerWrongItemId()
+    {
+
     }
 
     @Test
-    void cancelRental() {
-       Mockito.when (rentalService.cancelRental(rental1.getRentalId()));
-       verify(rentalRepository,times(1)).findAll();
+    public void registerWrongDeliveryInfo()
+    {
+
     }
 
     @Test
-    void getRental() {
-        Mockito.when(rentalRepository.findById(1L)).thenReturn(Optional.ofNullable(rental1));
-        assertThat(rentalService.getRental(rental1.getRentalId())).isEqualTo(rental1);
+    public void getAllForItemWithRentals()
+    {
+
+    }
+
+    @Test
+    public void getAllForItemEmpty()
+    {
+
+    }
+
+    @Test
+    public void getAllForItemWrongItemId()
+    {
+
+    }
+
+    @Test
+    public void acceptCorrect()
+    {
+
+    }
+
+    @Test
+    public void acceptWrongRentalId()
+    {
+
+    }
+
+    @Test
+    public void rejectCorrect()
+    {
+
+    }
+
+    @Test
+    public void rejectWrongRentalId()
+    {
+
+    }
+
+    @Test
+    public void cancelCorrect()
+    {
+
+    }
+
+    @Test
+    public void cancelWrongRentalId()
+    {
+
+    }
+
+    @Test
+    public void getCorrect()
+    {
+
+    }
+
+    @Test
+    public void getWrongRentalId()
+    {
+
+    }
+
+    @Test
+    public void getAllForUserWithRentals()
+    {
+
+    }
+
+    @Test
+    public void getAllForUserEmpty()
+    {
+
+    }
+
+    @Test
+    public void getAllForUserWrongUserId()
+    {
+
     }
 }

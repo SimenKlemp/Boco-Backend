@@ -20,7 +20,7 @@ public abstract class Mapper
         return new UserResponse(
                 user.getUserId(),
                 user.getName(),
-                user.isPerson(),
+                user.getIsPerson(),
                 user.getStreetAddress(),
                 user.getPostalCode(),
                 user.getPostOffice(),

@@ -1,5 +1,5 @@
 package edu.ntnu.idatt2106.boco.controller;
-/**
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterItemRequest;
 import edu.ntnu.idatt2106.boco.payload.request.LoginRequest;
@@ -44,13 +44,14 @@ public class ItemControllerTest {
         //set the token
     }
 
+    /*
     //Denne testen lager nye fag hver gang du kjører
     @Test
     void createItemTest() throws Exception {
         // Det er en del forskjellige libs som brukes her, se static imports øverst
         // En har også tilsvarende metoder for POST/PUT/DELETE osv.
 
-        RegisterItemRequest itemRequest = new RegisterItemRequest("streetAddress", "postalCode", "postOffice", 200, "This is a item made from test", "Category", "Title", 1L,);
+        RegisterItemRequest itemRequest = new RegisterItemRequest("streetAddress", "postalCode", "postOffice", 200f, "This is a item made from test", "Category", "Title", true, true, 1L, null);
 
         mockMvc.perform(MockMvcRequestBuilders.post("/item").header("Authorization", "Bearer " + token)
                         .content(objectMapper.writeValueAsString(itemRequest))
@@ -60,6 +61,8 @@ public class ItemControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.itemId").exists());
     }
 
+
+     */
 
     @Test
     void getAllItemsTest() throws Exception {
@@ -91,6 +94,4 @@ public class ItemControllerTest {
                 .andExpect(jsonPath("$[0].category", is("Category")))
                 .andExpect(jsonPath("$[0].title", is("Title")));
     }
-
 }
-*/

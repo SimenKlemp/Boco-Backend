@@ -21,4 +21,12 @@ public class RentalResponse
     private UserResponse user;
     private ItemResponse item;
     private Rental.DeliverInfo deliveryInfo;
+
+    public String getStartDate() {
+        return startDate.toString();
+    }
+
+    public String getEndDate() {
+        return endDate.toString();
+    }
 }

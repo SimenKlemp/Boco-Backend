@@ -24,7 +24,6 @@ public class Image
     private Long imageId;
 
     @NotBlank
-    @Size(max = 20)
     @Column(name = "name")
     private String name;
 

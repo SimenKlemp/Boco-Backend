@@ -98,6 +98,8 @@ public class ItemController
     @GetMapping("/get-my/{userId}")
     public ResponseEntity<List<ItemResponse>> getMyItems(@PathVariable("userId") long userId)
     {
+        logger.info("Fetching all items for a user...");
+
         try
         {
             if (!tokenComponent.haveAccessTo(userId))
@@ -193,7 +195,7 @@ public class ItemController
      * @param request The search request
      * @return returns a list of items belonging to a search
      */
-    @PutMapping("search")
+    @PutMapping("/search")
     public ResponseEntity<List<ItemResponse>> search(@RequestBody SearchRequest request)
     {
         logger.info("Fetching all items connected to a search ...");

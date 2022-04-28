@@ -19,7 +19,8 @@ import javax.validation.constraints.Size;
                 @UniqueConstraint(columnNames = "feedbackId")
         })
 
-public class FeedbackWebPage {
+public class FeedbackWebPage
+{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,7 +28,6 @@ public class FeedbackWebPage {
     private Long feedbackId;
 
 
-    @Size(max = 20)
     @Column(name = "message")
     private String message;
 
