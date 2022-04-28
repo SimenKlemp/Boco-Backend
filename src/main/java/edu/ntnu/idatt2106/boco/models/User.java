@@ -22,7 +22,6 @@ public class User
     private Long userId;
 
     @NotBlank
-    @Size(max = 20)
     @Column(name = "name")
     private String name;
 
@@ -31,33 +30,27 @@ public class User
     private Boolean isPerson;
 
     @NotBlank
-    @Size(max = 20)
     @Column(name = "streetAddress")
     private String streetAddress;
 
     @NotBlank
-    @Size(max = 20)
     @Column(name = "postalCode")
     private String postalCode;
 
     @NotBlank
-    @Size(max = 20)
     @Column(name = "postOffice")
     private String postOffice;
 
     @NotBlank
-    @Size(max = 50)
     @Column(name = "email")
     @Email
     private String email;
 
     @NotBlank
-    @Size(max = 120)
     @Column(name = "password")
     private String password;
 
     @NotBlank
-    @Size(max = 120)
     @Column(name = "role")
     private String role;
 

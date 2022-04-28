@@ -14,6 +14,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
@@ -165,6 +169,7 @@ public class UserServiceTest
 
         UserResponse response = userService.login(request);
 
+        assertThat(user.getUserId()).isEqualTo(response.getUserId());
         assertThat(user.getName()).isEqualTo(response.getName());
         assertThat(user.getIsPerson()).isEqualTo(response.getIsPerson());
         assertThat(user.getStreetAddress()).isEqualTo(response.getStreetAddress());
@@ -338,6 +343,7 @@ public class UserServiceTest
 
         UserResponse response = userService.updateUser(user.getUserId(), request);
 
+        assertThat(user.getUserId()).isEqualTo(response.getUserId()).isEqualTo(oldUser.getUserId());
         assertThat(user.getName()).isEqualTo(response.getName()).isEqualTo(oldUser.getName());
         assertThat(user.getIsPerson()).isEqualTo(response.getIsPerson()).isEqualTo(oldUser.getIsPerson());
         assertThat(user.getStreetAddress()).isEqualTo(response.getStreetAddress()).isEqualTo(oldUser.getStreetAddress());
@@ -390,12 +396,37 @@ public class UserServiceTest
     @Test
     public void getAllWithUsers()
     {
+        User user1 = ModelFactory.getUser(null);
+        user1 = userRepository.save(user1);
+        User user2 = ModelFactory.getUser(null);
+        user2 = userRepository.save(user2);
+        List<User> users = new ArrayList<>();
+        users.add(user1);
+        users.add(user2);
 
+        List<UserResponse> responses = userService.getAllUsers();
+
+        assertThat(users.size()).isEqualTo(2);
+        for (int i = 0; i < 2; i++)
+        {
+            User user = users.get(i);
+            UserResponse response = responses.get(i);
+
+            assertThat(user.getUserId()).isEqualTo(response.getUserId());
+            assertThat(user.getName()).isEqualTo(response.getName());
+            assertThat(user.getIsPerson()).isEqualTo(response.getIsPerson());
+            assertThat(user.getStreetAddress()).isEqualTo(response.getStreetAddress());
+            assertThat(user.getPostalCode()).isEqualTo(response.getPostalCode());
+            assertThat(user.getPostOffice()).isEqualTo(response.getPostOffice());
+            assertThat(user.getEmail()).isEqualTo(response.getEmail());
+        }
     }
 
     @Test
     public void getAllEmpty()
     {
+        List<UserResponse> responses = userService.getAllUsers();
 
+        assertThat(responses.size()).isZero();
     }
 }

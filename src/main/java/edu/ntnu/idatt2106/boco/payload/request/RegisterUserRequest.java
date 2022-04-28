@@ -15,31 +15,25 @@ import javax.validation.constraints.*;
 public class RegisterUserRequest
 {
     @NotBlank
-    @Size(max = 20)
     private String name;
 
     @NotBlank
     private Boolean isPerson;
 
     @NotBlank
-    @Size(max = 20)
     private String streetAddress;
 
     @NotBlank
-    @Size(max = 20)
     private String postalCode;
 
     @NotBlank
-    @Size(max = 20)
     private String postOffice;
 
     @NotBlank
-    @Size(max = 50)
     @Email
     private String email;
 
     @NotBlank
-    @Size(max = 120)
     private String password;
 
     private Long imageId;
