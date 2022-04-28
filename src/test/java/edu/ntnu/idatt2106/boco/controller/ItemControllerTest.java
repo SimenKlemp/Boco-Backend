@@ -44,6 +44,7 @@ public class ItemControllerTest {
         //set the token
     }
 
+    /*
     //Denne testen lager nye fag hver gang du kjører
     @Test
     void createItemTest() throws Exception {
@@ -60,6 +61,8 @@ public class ItemControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.itemId").exists());
     }
 
+
+     */
 
     @Test
     void getAllItemsTest() throws Exception {

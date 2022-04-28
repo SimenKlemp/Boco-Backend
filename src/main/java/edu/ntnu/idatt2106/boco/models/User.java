@@ -25,7 +25,7 @@ public class User
     @Column(name = "name")
     private String name;
 
-    @NotBlank
+
     @Column(name = "isPerson")
     private Boolean isPerson;
 

@@ -29,6 +29,9 @@ class ItemRepositoryTest {
     @Autowired
     ItemRepository itemRepository;
 
+    /*
+
+
     @Test
     public void  saveItem(){
         User user = new User("name",true,"streetAddress","postalCode", "postOffice","example@example.com","password","USER", null);
@@ -37,4 +40,6 @@ class ItemRepositoryTest {
         assertThat(actualItem).usingRecursiveComparison()
                 .ignoringFields("itemId").isEqualTo(expectedItem);
     }
+
+     */
 }
