@@ -16,25 +16,19 @@ import java.util.Optional;
 @NoArgsConstructor
 public class UpdateUserRequest
 {
-    @Size(max = 20)
     private String name;
 
     private Boolean isPerson;
 
-    @Size(max = 20)
     private String streetAddress;
 
-    @Size(max = 20)
     private String postalCode;
 
-    @Size(max = 20)
     private String postOffice;
 
-    @Size(max = 50)
     @Email
     private String email;
 
-    @Size(max = 120)
     private String password;
 
     private Long imageId;

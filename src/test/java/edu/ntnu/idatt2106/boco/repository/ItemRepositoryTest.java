@@ -10,6 +10,8 @@ import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.util.Date;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -30,7 +32,7 @@ class ItemRepositoryTest {
     @Test
     public void  saveItem(){
         User user = new User("name",true,"streetAddress","postalCode", "postOffice","example@example.com","password","USER", null);
-        Item expectedItem = new Item("streetAddress", "postalCode", "postOffice",1F,"category","description","title",null, user, null);
+        Item expectedItem = new Item("streetAddress", "postalCode", "postOffice",1F,"category","description","title", new Date(), true, true, null, user);
         Item actualItem=itemRepository.save(expectedItem);
         assertThat(actualItem).usingRecursiveComparison()
                 .ignoringFields("itemId").isEqualTo(expectedItem);

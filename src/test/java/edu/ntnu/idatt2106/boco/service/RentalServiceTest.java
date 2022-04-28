@@ -1,23 +1,22 @@
 package edu.ntnu.idatt2106.boco.service;
 
-import edu.ntnu.idatt2106.boco.models.Item;
-import edu.ntnu.idatt2106.boco.models.User;
-import edu.ntnu.idatt2106.boco.repository.*;
+import edu.ntnu.idatt2106.boco.repository.ImageRepository;
+import edu.ntnu.idatt2106.boco.repository.ItemRepository;
+import edu.ntnu.idatt2106.boco.repository.RentalRepository;
+import edu.ntnu.idatt2106.boco.repository.UserRepository;
 import edu.ntnu.idatt2106.boco.util.RepositoryMock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import java.util.ArrayList;
 
 @ExtendWith(MockitoExtension.class)
-public class ItemServiceTest
+public class RentalServiceTest
 {
     @InjectMocks
-    private ItemService itemService;
+    private RentalService rentalService;
 
     @Mock
     private UserRepository userRepository;
@@ -41,13 +40,7 @@ public class ItemServiceTest
     }
 
     @Test
-    public void registerWithoutImage()
-    {
-
-    }
-
-    @Test
-    public void registerWithImage()
+    public void registerCorrect()
     {
 
     }
@@ -59,79 +52,67 @@ public class ItemServiceTest
     }
 
     @Test
-    public void getAllSorted()
+    public void registerWrongItemId()
     {
 
     }
 
     @Test
-    public void getAllPage()
+    public void registerWrongDeliveryInfo()
     {
 
     }
 
     @Test
-    public void getAllEmpty()
+    public void getAllForItemWithRentals()
     {
 
     }
 
     @Test
-    public void getMyWithItems()
+    public void getAllForItemEmpty()
     {
 
     }
 
     @Test
-    public void getMyEmpty()
+    public void getAllForItemWrongItemId()
     {
 
     }
 
     @Test
-    public void getMyWrongUserId()
+    public void acceptCorrect()
     {
 
     }
 
     @Test
-    public void updateAll()
+    public void acceptWrongRentalId()
     {
 
     }
 
     @Test
-    public void updateNothing()
+    public void rejectCorrect()
     {
 
     }
 
     @Test
-    public void updateWrongItemId()
+    public void rejectWrongRentalId()
     {
 
     }
 
     @Test
-    public void deleteWithoutAnything()
+    public void cancelCorrect()
     {
 
     }
 
     @Test
-    public void deleteWithImage()
-    {
-
-    }
-
-    @Test
-    public void deleteWithRental()
-    {
-
-    }
-
-    @Test
-    public void deleteWrongItemId()
+    public void cancelWrongRentalId()
     {
 
     }
@@ -143,7 +124,25 @@ public class ItemServiceTest
     }
 
     @Test
-    public void getWrongItemId()
+    public void getWrongRentalId()
+    {
+
+    }
+
+    @Test
+    public void getAllForUserWithRentals()
+    {
+
+    }
+
+    @Test
+    public void getAllForUserEmpty()
+    {
+
+    }
+
+    @Test
+    public void getAllForUserWrongUserId()
     {
 
     }
