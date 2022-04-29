@@ -72,7 +72,6 @@ public abstract class Mapper
 
         return new RentalResponse(
                 rental.getRentalId(),
-                rental.getMessage(),
                 rental.getStartDate(),
                 rental.getEndDate(),
                 status,
@@ -116,5 +115,17 @@ public abstract class Mapper
         return notifications.stream().map(Mapper::ToNotificationResponse).collect(Collectors.toList());
     }
 
+    public static MessageResponse ToMessageResponse(Message message)
+    {
+        return new MessageResponse(
+                message.getText(),
+                message.getIsByUser(),
+                message.getUser().getUserId()
+        );
+    }
 
+    public static List<MessageResponse> ToMessageResponses(List<Message> messages)
+    {
+        return messages.stream().map(Mapper::ToMessageResponse).collect(Collectors.toList());
+    }
 }

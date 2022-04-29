@@ -51,7 +51,6 @@ public abstract class ModelFactory
     public static Rental getRental(User user, Item item)
     {
         return new Rental(
-                "message",
                 new Date(),
                 new Date(),
                 Rental.Status.PENDING,
