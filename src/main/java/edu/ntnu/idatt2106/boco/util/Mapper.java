@@ -1,13 +1,7 @@
 package edu.ntnu.idatt2106.boco.util;
 
-import edu.ntnu.idatt2106.boco.models.FeedbackWebPage;
-import edu.ntnu.idatt2106.boco.models.Item;
-import edu.ntnu.idatt2106.boco.models.Rental;
-import edu.ntnu.idatt2106.boco.models.User;
-import edu.ntnu.idatt2106.boco.payload.response.FeedbackWebPageResponse;
-import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
-import edu.ntnu.idatt2106.boco.payload.response.RentalResponse;
-import edu.ntnu.idatt2106.boco.payload.response.UserResponse;
+import edu.ntnu.idatt2106.boco.models.*;
+import edu.ntnu.idatt2106.boco.payload.response.*;
 
 import java.util.Date;
 import java.util.List;
@@ -78,7 +72,6 @@ public abstract class Mapper
 
         return new RentalResponse(
                 rental.getRentalId(),
-                rental.getMessage(),
                 rental.getStartDate(),
                 rental.getEndDate(),
                 status,
@@ -106,5 +99,25 @@ public abstract class Mapper
         return feedbacks.stream().map(Mapper::ToFeedbackWebPageResponse).collect(Collectors.toList());
     }
 
+    public static MessageResponse ToMessageResponse(Message message)
+    {
+        return new MessageResponse(
+                message.getText(),
+                message.getIsByUser(),
+                message.getUser().getUserId()
+        );
+    }
 
+    public static List<MessageResponse> ToMessageResponses(List<Message> messages)
+    {
+        return messages.stream().map(Mapper::ToMessageResponse).collect(Collectors.toList());
+    }
+
+    public static ChatResponse ToChatResponse(Rental rental)
+    {
+        return new ChatResponse(
+                ToRentalResponse(rental),
+                ToMessageResponses(rental.getMessages())
+        );
+    }
 }
