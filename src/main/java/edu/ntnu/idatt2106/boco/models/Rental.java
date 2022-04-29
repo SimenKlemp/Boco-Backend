@@ -37,10 +37,6 @@ public class Rental
     @ManyToOne
     private Item item;
 
-    @JoinColumn(name = "messageId")
-    @OneToMany
-    private List<Message> messages;
-
     @Column(name = "deliveryInfo")
     private DeliverInfo deliveryInfo;
 

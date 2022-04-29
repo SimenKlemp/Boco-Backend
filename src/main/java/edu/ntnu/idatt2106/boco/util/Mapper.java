@@ -112,12 +112,4 @@ public abstract class Mapper
     {
         return messages.stream().map(Mapper::ToMessageResponse).collect(Collectors.toList());
     }
-
-    public static ChatResponse ToChatResponse(Rental rental)
-    {
-        return new ChatResponse(
-                ToRentalResponse(rental),
-                ToMessageResponses(rental.getMessages())
-        );
-    }
 }
