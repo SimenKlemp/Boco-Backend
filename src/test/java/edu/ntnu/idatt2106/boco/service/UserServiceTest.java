@@ -8,6 +8,7 @@ import edu.ntnu.idatt2106.boco.util.RepositoryMock;
 import edu.ntnu.idatt2106.boco.payload.request.LoginRequest;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterUserRequest;
 import edu.ntnu.idatt2106.boco.payload.response.UserResponse;
+import edu.ntnu.idatt2106.boco.util.RequestFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -54,16 +55,7 @@ public class UserServiceTest
     @Test
     public void registerWithoutImage()
     {
-        RegisterUserRequest request = new RegisterUserRequest(
-                "name",
-                true,
-                "streetAddress",
-                "postalCode",
-                "postOffice",
-                "email",
-                "password",
-                null
-        );
+        RegisterUserRequest request = RequestFactory.getRegisterUserRequest(null);
 
         UserResponse response = userService.register(request);
 
@@ -84,16 +76,7 @@ public class UserServiceTest
         Image image = new Image("name", null);
         image = imageRepository.save(image);
 
-        RegisterUserRequest request = new RegisterUserRequest(
-                "name",
-                true,
-                "streetAddress",
-                "postalCode",
-                "postOffice",
-                "email",
-                "password",
-                image.getImageId()
-        );
+        RegisterUserRequest request = RequestFactory.getRegisterUserRequest(image.getImageId());
 
         UserResponse response = userService.register(request);
 
@@ -110,16 +93,7 @@ public class UserServiceTest
     @Test
     public void registerWrongImage()
     {
-        RegisterUserRequest request = new RegisterUserRequest(
-                "name",
-                true,
-                "streetAddress",
-                "postalCode",
-                "postOffice",
-                "email",
-                "password",
-                1L
-        );
+        RegisterUserRequest request = RequestFactory.getRegisterUserRequest(1L);
 
         UserResponse response = userService.register(request);
 
@@ -139,16 +113,8 @@ public class UserServiceTest
         User existingUser = ModelFactory.getUser(null);
         existingUser = userRepository.save(existingUser);
 
-        RegisterUserRequest request = new RegisterUserRequest(
-                "name",
-                true,
-                "streetAddress",
-                "postalCode",
-                "postOffice",
-                existingUser.getEmail(),
-                "password",
-                1L
-        );
+        RegisterUserRequest request = RequestFactory.getRegisterUserRequest(null);
+        request.setEmail(existingUser.getEmail());
 
         userService.register(request);
         UserResponse response = userService.register(request);
@@ -303,22 +269,16 @@ public class UserServiceTest
     @Test
     public void updateAll()
     {
-        User user = ModelFactory.getUser(null);
+        Image oldImage = new Image("name", null);
+        oldImage = imageRepository.save(oldImage);
+
+        User user = ModelFactory.getUser(oldImage);
         user = userRepository.save(user);
 
         Image image = ModelFactory.getImage();
         image = imageRepository.save(image);
 
-        UpdateUserRequest request = new UpdateUserRequest(
-                "new name",
-                false,
-                "new streetAddress",
-                "new postalCode",
-                "new postOffice",
-                "new email",
-                "new password",
-                image.getImageId()
-        );
+        UpdateUserRequest request = RequestFactory.getUpdateUserRequest(image.getImageId());
 
         UserResponse response = userService.updateUser(user.getUserId(), request);
 
@@ -329,15 +289,20 @@ public class UserServiceTest
         assertThat(user.getPostOffice()).isEqualTo(response.getPostOffice()).isEqualTo(request.getPostOffice());
         assertThat(user.getEmail()).isEqualTo(response.getEmail()).isEqualTo(request.getEmail());
         assertThat(user.getImage().getImageId()).isEqualTo(response.getImageId()).isEqualTo(image.getImageId());
+        assertThat(imageRepository.findById(oldImage.getImageId()).isEmpty()).isTrue();
     }
 
     @Test
     public void updateNothing()
     {
-        User user = ModelFactory.getUser(null);
+        Image image = new Image("name", null);
+        image = imageRepository.save(image);
+
+        User user = ModelFactory.getUser(image);
         user = userRepository.save(user);
 
         User oldUser = ModelFactory.getUser(null);
+        oldUser.setUserId(user.getUserId());
 
         UpdateUserRequest request = new UpdateUserRequest();
 
@@ -350,6 +315,7 @@ public class UserServiceTest
         assertThat(user.getPostalCode()).isEqualTo(response.getPostalCode()).isEqualTo(oldUser.getPostalCode());
         assertThat(user.getPostOffice()).isEqualTo(response.getPostOffice()).isEqualTo(oldUser.getPostOffice());
         assertThat(user.getEmail()).isEqualTo(response.getEmail()).isEqualTo(oldUser.getEmail());
+        assertThat(user.getImage().getImageId()).isEqualTo(response.getImageId()).isEqualTo(image.getImageId());
     }
 
     @Test
@@ -400,16 +366,14 @@ public class UserServiceTest
         user1 = userRepository.save(user1);
         User user2 = ModelFactory.getUser(null);
         user2 = userRepository.save(user2);
-        List<User> users = new ArrayList<>();
-        users.add(user1);
-        users.add(user2);
+        User[] users = {user1, user2};
 
         List<UserResponse> responses = userService.getAllUsers();
 
-        assertThat(users.size()).isEqualTo(2);
+        assertThat(users.length).isEqualTo(2);
         for (int i = 0; i < 2; i++)
         {
-            User user = users.get(i);
+            User user = users[i];
             UserResponse response = responses.get(i);
 
             assertThat(user.getUserId()).isEqualTo(response.getUserId());

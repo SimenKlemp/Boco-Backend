@@ -1,9 +1,14 @@
 package edu.ntnu.idatt2106.boco.service;
 
+import edu.ntnu.idatt2106.boco.models.Image;
 import edu.ntnu.idatt2106.boco.models.Item;
 import edu.ntnu.idatt2106.boco.models.User;
+import edu.ntnu.idatt2106.boco.payload.request.RegisterItemRequest;
+import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
 import edu.ntnu.idatt2106.boco.repository.*;
+import edu.ntnu.idatt2106.boco.util.ModelFactory;
 import edu.ntnu.idatt2106.boco.util.RepositoryMock;
+import edu.ntnu.idatt2106.boco.util.RequestFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,6 +17,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 public class ItemServiceTest
@@ -43,31 +51,92 @@ public class ItemServiceTest
     @Test
     public void registerWithoutImage()
     {
+        User user = ModelFactory.getUser(null);
+        user = userRepository.save(user);
 
+        RegisterItemRequest request = RequestFactory.getRegisterItemRequest(user.getUserId(), null);
+
+        ItemResponse response = itemService.registerItem(request);
+
+        Item item = itemRepository.findById(response.getItemId()).orElseThrow();
+        assertThat(item.getItemId()).isEqualTo(response.getItemId());
+        assertThat(item.getStreetAddress()).isEqualTo(response.getStreetAddress()).isEqualTo(request.getStreetAddress());
+        assertThat(item.getPostalCode()).isEqualTo(response.getPostalCode()).isEqualTo(request.getPostalCode());
+        assertThat(item.getPostOffice()).isEqualTo(response.getPostOffice()).isEqualTo(request.getPostOffice());
+        assertThat(item.getPrice()).isEqualTo(response.getPrice()).isEqualTo(request.getPrice());
+        assertThat(item.getDescription()).isEqualTo(response.getDescription()).isEqualTo(request.getDescription());
+        assertThat(item.getCategory()).isEqualTo(response.getCategory()).isEqualTo(request.getCategory());
+        assertThat(item.getTitle()).isEqualTo(response.getTitle()).isEqualTo(request.getTitle());
+        assertThat(item.getIsPickupable()).isEqualTo(response.getIsPickupable()).isEqualTo(request.getIsPickupable());
+        assertThat(item.getUser().getUserId()).isEqualTo(response.getUser().getUserId()).isEqualTo(request.getUserId());
     }
 
     @Test
     public void registerWithImage()
     {
+        User user = ModelFactory.getUser(null);
+        user = userRepository.save(user);
 
+        Image image = new Image("name", null);
+        image = imageRepository.save(image);
+
+        RegisterItemRequest request = RequestFactory.getRegisterItemRequest(user.getUserId(), image.getImageId());
+
+        ItemResponse response = itemService.registerItem(request);
+
+        Item item = itemRepository.findById(response.getItemId()).orElseThrow();
+        assertThat(item.getItemId()).isEqualTo(response.getItemId());
+        assertThat(item.getStreetAddress()).isEqualTo(response.getStreetAddress()).isEqualTo(request.getStreetAddress());
+        assertThat(item.getPostalCode()).isEqualTo(response.getPostalCode()).isEqualTo(request.getPostalCode());
+        assertThat(item.getPostOffice()).isEqualTo(response.getPostOffice()).isEqualTo(request.getPostOffice());
+        assertThat(item.getPrice()).isEqualTo(response.getPrice()).isEqualTo(request.getPrice());
+        assertThat(item.getDescription()).isEqualTo(response.getDescription()).isEqualTo(request.getDescription());
+        assertThat(item.getCategory()).isEqualTo(response.getCategory()).isEqualTo(request.getCategory());
+        assertThat(item.getTitle()).isEqualTo(response.getTitle()).isEqualTo(request.getTitle());
+        assertThat(item.getIsPickupable()).isEqualTo(response.getIsPickupable()).isEqualTo(request.getIsPickupable());
+        assertThat(item.getUser().getUserId()).isEqualTo(response.getUser().getUserId()).isEqualTo(request.getUserId());
+        assertThat(item.getImage().getImageId()).isEqualTo(response.getImageId()).isEqualTo(request.getImageId());
     }
 
     @Test
     public void registerWrongUserId()
     {
+        RegisterItemRequest request = new RegisterItemRequest();
 
+        ItemResponse response = itemService.registerItem(request);
+
+        assertThat(response).isNull();
     }
 
     @Test
-    public void getAllSorted()
+    public void getAllWithItems()
     {
+        User user = ModelFactory.getUser(null);
+        Item item1 = ModelFactory.getItem(null, user);
+        item1 = itemRepository.save(item1);
+        Item item2 = ModelFactory.getItem(null, user);
+        item2 = itemRepository.save(item2);
+        Item[] items = {item1, item2};
 
-    }
+        List<ItemResponse> responses = itemService.getAllItems(0, Integer.MAX_VALUE);
 
-    @Test
-    public void getAllPage()
-    {
+        assertThat(items.length).isEqualTo(responses.size());
+        for (int i = 0; i < items.length; i++)
+        {
+            Item item = items[i];
+            ItemResponse response = responses.get(i);
 
+            assertThat(item.getItemId()).isEqualTo(response.getItemId());
+            assertThat(item.getStreetAddress()).isEqualTo(response.getStreetAddress());
+            assertThat(item.getPostalCode()).isEqualTo(response.getPostalCode());
+            assertThat(item.getPostOffice()).isEqualTo(response.getPostOffice());
+            assertThat(item.getPrice()).isEqualTo(response.getPrice());
+            assertThat(item.getDescription()).isEqualTo(response.getDescription());
+            assertThat(item.getCategory()).isEqualTo(response.getCategory());
+            assertThat(item.getTitle()).isEqualTo(response.getTitle());
+            assertThat(item.getIsPickupable()).isEqualTo(response.getIsPickupable());
+            assertThat(item.getUser().getUserId()).isEqualTo(response.getUser().getUserId());
+        }
     }
 
     @Test
