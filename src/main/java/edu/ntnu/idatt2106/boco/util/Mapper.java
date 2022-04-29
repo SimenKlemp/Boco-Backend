@@ -1,13 +1,7 @@
 package edu.ntnu.idatt2106.boco.util;
 
-import edu.ntnu.idatt2106.boco.models.FeedbackWebPage;
-import edu.ntnu.idatt2106.boco.models.Item;
-import edu.ntnu.idatt2106.boco.models.Rental;
-import edu.ntnu.idatt2106.boco.models.User;
-import edu.ntnu.idatt2106.boco.payload.response.FeedbackWebPageResponse;
-import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
-import edu.ntnu.idatt2106.boco.payload.response.RentalResponse;
-import edu.ntnu.idatt2106.boco.payload.response.UserResponse;
+import edu.ntnu.idatt2106.boco.models.*;
+import edu.ntnu.idatt2106.boco.payload.response.*;
 
 import java.util.Date;
 import java.util.List;
@@ -104,6 +98,22 @@ public abstract class Mapper
     public static List<FeedbackWebPageResponse> ToFeedbackWebPageResponses(List<FeedbackWebPage> feedbacks)
     {
         return feedbacks.stream().map(Mapper::ToFeedbackWebPageResponse).collect(Collectors.toList());
+    }
+
+    public static NotificationResponse ToNotificationResponse(Notification notification)
+    {
+        return new NotificationResponse(
+                notification.getNotificationId(),
+                notification.getNotificationStatus(),
+                notification.isPressed(),
+                ToRentalResponse(notification.getRental()),
+                ToUserResponse(notification.getUser())
+        );
+    }
+
+    public static List<NotificationResponse> ToNotificationResponses(List<Notification> notifications)
+    {
+        return notifications.stream().map(Mapper::ToNotificationResponse).collect(Collectors.toList());
     }
 
 
