@@ -25,7 +25,6 @@ public class Notification {
     @Column(name = "notificationStatus")
     private String notificationStatus;
 
-    @NotBlank
     @Column(name = "isPressed")
     private boolean isPressed;
 

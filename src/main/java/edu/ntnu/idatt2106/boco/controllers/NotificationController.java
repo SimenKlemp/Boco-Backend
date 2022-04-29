@@ -89,7 +89,7 @@ public class NotificationController {
     }
 
 
-    @PutMapping(value = "/update/{notificationId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/update/{notificationId}")
     public ResponseEntity<NotificationResponse> updateNotificationIsPressed(@PathVariable("notificationId") long notificationId)
     {
         try
