@@ -128,4 +128,18 @@ public abstract class Mapper
     {
         return messages.stream().map(Mapper::ToMessageResponse).collect(Collectors.toList());
     }
+
+    public static RatingResponse ToRatingResponse(Rating rating)
+    {
+        return new RatingResponse(
+                rating.getRatingId(),
+                rating.getRate(),
+                rating.getFeedback(),
+                ToRentalResponse(rating.getRental())
+        );
+    }
+    public static List<RatingResponse> ToRatingResponses(List<Rating> ratings)
+    {
+        return ratings.stream().map(Mapper::ToRatingResponse).collect(Collectors.toList());
+    }
 }
