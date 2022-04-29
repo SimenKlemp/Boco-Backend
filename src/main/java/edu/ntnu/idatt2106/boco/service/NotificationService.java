@@ -32,15 +32,14 @@ public class NotificationService {
     @Autowired
     UserRepository userRepository;
 
-    public NotificationResponse registerNotification(NotificationRequest request)
+    public NotificationResponse registerNotification(String notificationStatus, Long rentalId)
     {
-        System.out.println(request.getRentalId());
-        Optional<Rental> optionalRental = rentalRepository.findById(request.getRentalId());
+        Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
         if (optionalRental.isEmpty()) return null;
         Rental rental = optionalRental.get();
 
         User user = null;
-        switch(request.getNotificationStatus()) {
+        switch(notificationStatus) {
 
             case "REQUEST":
             case "CANCELED":
@@ -63,7 +62,7 @@ public class NotificationService {
         }
 
         Notification notification = new Notification(
-                request.getNotificationStatus(),
+                notificationStatus,
                 false,
                 rental,
                 user
