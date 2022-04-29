@@ -36,13 +36,11 @@ public class NotificationController {
     private NotificationService notificationService;
 
     @Autowired
-    private RentalService rentalService;
-
-    @Autowired
     private TokenComponent tokenComponent;
 
     Logger logger = LoggerFactory.getLogger(RentalController.class);
 
+    /*
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<NotificationResponse> registerNotification(@RequestBody NotificationRequest request)
     {
@@ -62,10 +60,12 @@ public class NotificationController {
         }
     }
 
+     */
+
     @GetMapping("/get-my/{userId}")
     public ResponseEntity<List<NotificationResponse>> getNotifications(@PathVariable("userId") long userId)
     {
-        logger.info("Fetching all items for a user...");
+        logger.info("Fetching all notifications for for a user...");
 
         try
         {
