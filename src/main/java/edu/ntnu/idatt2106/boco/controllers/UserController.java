@@ -173,4 +173,20 @@ public class UserController
         }
     }
 
+    @GetMapping("/getMeanRating/{userId}")
+    public ResponseEntity<UserResponse> getMeanRating(@PathVariable("userId") Long userId)
+    {
+        try
+        {
+            userService.getMeanRating(userId);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            return new ResponseEntity("Could not fetch user", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+
 }
