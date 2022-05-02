@@ -74,8 +74,7 @@ public class NotificationServiceTest {
 
         Notification notification = notificationRepository.findById(response.getNotificationId()).orElseThrow();
         assertThat(notification.getNotificationStatus()).isEqualTo(response.getNotificationStatus());
-        assertThat(notification.getUser().getUserId()).isEqualTo(response.getUser().getUserId());
-        assertThat(notification.getRental().getUser().getUserId()).isEqualTo(response.getRental().getUser().getUserId());
+        assertThat(notification.getRental().getItem().getUser().getUserId()).isEqualTo(existingRental.getUser().getUserId());
     }
 
     @Test
@@ -93,7 +92,6 @@ public class NotificationServiceTest {
 
         Notification notification = notificationRepository.findById(response.getNotificationId()).orElseThrow();
         assertThat(notification.getNotificationStatus()).isEqualTo(response.getNotificationStatus());
-        assertThat(notification.getUser().getUserId()).isEqualTo(response.getUser().getUserId());
         assertThat(notification.getRental().getUser().getUserId()).isEqualTo(response.getRental().getUser().getUserId());
     }
 

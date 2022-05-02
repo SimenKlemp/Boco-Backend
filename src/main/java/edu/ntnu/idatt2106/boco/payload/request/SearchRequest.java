@@ -25,6 +25,7 @@ public class SearchRequest
     private boolean mustBePickupable = false;
     private boolean mustBeDeliverable = false;
 
+
     public enum SortField
     {
         RELEVANCE,
