@@ -14,10 +14,7 @@ import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class RatingService {
@@ -71,11 +68,36 @@ public class RatingService {
         rating = ratingRepository.save(rating);
         return Mapper.ToRatingResponse(rating);
     }
-    public List<RatingResponse> getRatings(long userId)
+    public List<RatingResponse> getRatingsOwner(long userId)
     {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) return null;
-        List<Rating> ratings = ratingRepository.findAllByUser(optionalUser.get());
+        List<Rating> allRatings = ratingRepository.findAllByUser(optionalUser.get());
+
+        if (allRatings.isEmpty()) return null;
+
+        ArrayList<Rating> ratings = new ArrayList<>();
+        for(int i=0; i < allRatings.size(); i++){
+            if(allRatings.get(i).getRental().getItem().getUser().getUserId() == userId){
+                ratings.add(allRatings.get(i));
+            }
+        }
+        return Mapper.ToRatingResponses(ratings);
+    }
+
+    public List<RatingResponse> getRatingsUser(long userId)
+    {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) return null;
+        List<Rating> allRatings = ratingRepository.findAllByUser(optionalUser.get());
+
+        ArrayList<Rating> ratings = new ArrayList<>();
+
+        for(int i=0; i < allRatings.size(); i++){
+            if(allRatings.get(i).getRental().getUser().getUserId() == userId){
+                ratings.add(allRatings.get(i));
+            }
+        }
         return Mapper.ToRatingResponses(ratings);
     }
 }
