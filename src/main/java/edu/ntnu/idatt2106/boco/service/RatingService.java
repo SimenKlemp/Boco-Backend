@@ -31,6 +31,9 @@ public class RatingService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    NotificationService notificationService;
+
     public RatingResponse registerRating(RatingRequest request)
     {
         Optional<Rental> optionalRental = rentalRepository.findById(request.getRentalId());
@@ -50,6 +53,7 @@ public class RatingService {
                     rental,
                     user
             );
+            notificationService.registerNotification("RECEIVED_RATING_OWNER", request.getRentalId());
         }else{
             Optional<User> optionalUser = userRepository.findById(rental.getItem().getUser().getUserId());
             if (optionalRental.isEmpty()) return null;
@@ -61,7 +65,7 @@ public class RatingService {
                     rental,
                     user
             );
-
+            notificationService.registerNotification("RECEIVED_RATING_USER", request.getRentalId());
         }
 
         rating = ratingRepository.save(rating);

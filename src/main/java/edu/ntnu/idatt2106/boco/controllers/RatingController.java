@@ -34,9 +34,6 @@ public class RatingController {
     private RatingService ratingService;
 
     @Autowired
-    private RentalService rentalService;
-
-    @Autowired
     private TokenComponent tokenComponent;
 
     Logger logger = LoggerFactory.getLogger(RentalController.class);
