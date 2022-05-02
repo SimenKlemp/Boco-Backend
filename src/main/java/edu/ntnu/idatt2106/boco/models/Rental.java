@@ -40,6 +40,10 @@ public class Rental
     @Column(name = "deliveryInfo")
     private DeliverInfo deliveryInfo;
 
+    @JoinColumn(name = "rentalId")
+    @OneToMany
+    private List<Message> messages;
+
     public Rental(Date startDate, Date endDate, Status status, User user, Item item, DeliverInfo deliveryInfo)
     {
         this.startDate = startDate;

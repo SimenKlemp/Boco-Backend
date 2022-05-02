@@ -20,6 +20,7 @@ public class RentalResponse
     private UserResponse user;
     private ItemResponse item;
     private Rental.DeliverInfo deliveryInfo;
+    private String lastMessage;
 
     public String getStartDate() {
         return startDate.toString();
