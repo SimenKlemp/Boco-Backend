@@ -9,9 +9,11 @@ import edu.ntnu.idatt2106.boco.payload.request.UpdateUserRequest;
 import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
 import edu.ntnu.idatt2106.boco.payload.response.UserResponse;
 import edu.ntnu.idatt2106.boco.repository.ImageRepository;
+import edu.ntnu.idatt2106.boco.repository.RatingRepository;
 import edu.ntnu.idatt2106.boco.repository.UserRepository;
 import edu.ntnu.idatt2106.boco.util.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +32,10 @@ public class UserService
 
     @Autowired
     ImageRepository imageRepository;
+
+    @Autowired
+    RatingRepository ratingRepository;
+
 
     private final BCryptPasswordEncoder encoder;
 
@@ -162,13 +168,11 @@ public class UserService
         return Mapper.ToUserResponses(users);
     }
 
-    public int getMeanRating(long userId)
-    {
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) return 0;
-        int rating = userRepository.getMeanRating(userId);
 
-        return rating;
-    }
+
+
+
+
+
 }
 

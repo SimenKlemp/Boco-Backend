@@ -15,6 +15,7 @@ public interface UserRepository extends JpaRepository<User, Long>
 
     Boolean existsByEmail(String email);
 
-    @Query("SELECT AVG(Rating) FROM Rating WHERE Rating.userId = ?1")
-    int getMeanRating(Long userId);
+
+
+
 }

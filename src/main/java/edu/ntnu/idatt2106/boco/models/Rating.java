@@ -13,7 +13,7 @@ import javax.validation.constraints.NotBlank;
 @Setter
 @NoArgsConstructor
 @Indexed
-@Entity
+@Entity(name = "rating")
 @Table(name = "rating", uniqueConstraints = { @UniqueConstraint(columnNames = "ratingId") })
 public class Rating {
     @Id
