@@ -17,7 +17,7 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping(value = "")
+@RequestMapping(value = "/chat")
 @EnableAutoConfiguration
 @CrossOrigin
 public class ChatController
@@ -30,19 +30,14 @@ public class ChatController
 
     Logger logger = LoggerFactory.getLogger(ChatController.class);
 
-
-    @MessageMapping("/chat")
-    @SendTo("/topic/messages")
+    @MessageMapping("/chat-incoming")
+    @SendTo("/chat-outgoing")
     public MessageResponse send(MessageRequest request) throws Exception
     {
-        logger.info("In message endpoint");
-        logger.info(String.valueOf(request));
-        logger.info(request.getText());
-
         return new MessageResponse(request.getText(), true, request.getUserId());
     }
 
-    @GetMapping("/chat/get/{rentalId}")
+    @GetMapping("/get/{rentalId}")
     public ResponseEntity<ChatResponse> getChat(@PathVariable("rentalId") long rentalId)
     {
         try
