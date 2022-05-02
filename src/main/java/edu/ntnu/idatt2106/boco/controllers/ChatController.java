@@ -4,6 +4,7 @@ import edu.ntnu.idatt2106.boco.payload.request.MessageRequest;
 import edu.ntnu.idatt2106.boco.payload.response.MessageResponse;
 import edu.ntnu.idatt2106.boco.payload.response.ChatResponse;
 import edu.ntnu.idatt2106.boco.payload.response.RentalResponse;
+import edu.ntnu.idatt2106.boco.service.ChatService;
 import edu.ntnu.idatt2106.boco.service.RentalService;
 import edu.ntnu.idatt2106.boco.token.TokenComponent;
 import org.slf4j.Logger;
@@ -24,6 +25,9 @@ import org.springframework.web.bind.annotation.*;
 public class ChatController
 {
     @Autowired
+    private ChatService chatService;
+
+    @Autowired
     private RentalService rentalService;
 
     @Autowired
@@ -37,8 +41,21 @@ public class ChatController
     @MessageMapping("/chat-incoming")
     public void handleMessage(@Payload MessageRequest request)
     {
-        MessageResponse out = new MessageResponse(request.getText(), true, request.getUserId());
-        simpMessagingTemplate.convertAndSend( "/chat-outgoing/" + request.getRentalId(), out);
+        try
+        {
+            MessageResponse response = chatService.handleMessage(request);
+
+            if (response == null)
+            {
+                throw new NullPointerException("chatService.handleMessage return null");
+            }
+
+            simpMessagingTemplate.convertAndSend( "/chat-outgoing/" + request.getRentalId(), response);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @GetMapping("/get/{rentalId}")
@@ -55,7 +72,7 @@ public class ChatController
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            ChatResponse response = rentalService.getChat(rentalId);
+            ChatResponse response = chatService.getChat(rentalId);
             if (response == null)
             {
                 return new ResponseEntity(HttpStatus.NO_CONTENT);

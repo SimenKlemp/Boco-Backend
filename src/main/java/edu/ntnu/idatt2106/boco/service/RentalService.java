@@ -156,18 +156,4 @@ public class RentalService
         List<Rental> rentals = rentalRepository.findAllByUser(optionalUser.get());
         return Mapper.ToRentalResponses(rentals);
     }
-
-    public ChatResponse getChat(long rentalId)
-    {
-        Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
-        if (optionalRental.isEmpty()) return null;
-        Rental rental = optionalRental.get();
-
-        List<Message> messages = messageRepository.findAllByRental(rental);
-
-        RentalResponse rentalResponse = Mapper.ToRentalResponse(rental);
-        List<MessageResponse> messageResponses = Mapper.ToMessageResponses(messages);
-
-        return new ChatResponse(rentalResponse, messageResponses);
-    }
 }
