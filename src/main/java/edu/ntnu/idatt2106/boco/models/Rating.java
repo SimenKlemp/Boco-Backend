@@ -36,7 +36,7 @@ public class Rating {
     private User user;
 
 
-    public Rating(int rate, String feedback, Rental rental, User user){
+    public Rating(double rate, String feedback, Rental rental, User user){
         this.rate = rate;
         this.feedback = feedback;
         this.rental = rental;
