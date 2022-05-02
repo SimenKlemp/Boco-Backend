@@ -189,4 +189,37 @@ public abstract class RepositoryMock
                 .when(repository)
                 .delete(Mockito.any(FeedbackWebPage.class));
     }
+
+    public static void mockNotificationRepository(NotificationRepository repository)
+    {
+        List<Notification> list = new ArrayList<>();
+
+        Mockito.lenient().when(repository.findById(Mockito.anyLong()))
+                .then(i -> list.stream().filter(
+                        u -> u.getNotificationId().equals(i.getArguments()[0])
+                ).findFirst());
+
+        Mockito.lenient().when(repository.findAll())
+                .then(i -> list);
+
+        Mockito.lenient()
+                .doAnswer(i -> {
+                    Notification notification = (Notification) i.getArguments()[0];
+                    if (notification.getNotificationId() == null)
+                    {
+                        notification.setNotificationId((long) (list.size() + 1));
+                        list.add(notification);
+                    }
+                    return notification;
+                })
+                .when(repository)
+                .save(Mockito.any(Notification.class));
+
+        Mockito.lenient()
+                .doAnswer(i ->
+                        list.remove(i.getArguments()[0])
+                )
+                .when(repository)
+                .delete(Mockito.any(Notification.class));
+    }
 }
