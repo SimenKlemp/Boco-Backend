@@ -1,4 +1,4 @@
-package edu.ntnu.idatt2106.boco.utils;
+package edu.ntnu.idatt2106.boco.util;
 
 import java.util.Random;
 

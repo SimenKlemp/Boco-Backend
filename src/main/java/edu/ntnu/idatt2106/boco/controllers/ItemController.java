@@ -45,25 +45,25 @@ public class ItemController
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ItemResponse> registerItem(@RequestBody RegisterItemRequest request)
     {
-       try
-       {
-           if (!tokenComponent.haveAccessTo(request.getUserId()))
-           {
-               return new ResponseEntity(HttpStatus.FORBIDDEN);
-           }
+        try
+        {
+            if (!tokenComponent.haveAccessTo(request.getUserId()))
+            {
+                return new ResponseEntity(HttpStatus.FORBIDDEN);
+            }
 
-           ItemResponse item = itemService.registerItem(request);
-           if (item == null)
-           {
-               return new ResponseEntity("Error: User can not be found ", HttpStatus.NO_CONTENT);
-           }
-           return new ResponseEntity<>(item, HttpStatus.CREATED);
-       }
-       catch(Exception e)
-       {
-           e.printStackTrace();
-           return new ResponseEntity("Error: Cannot create a new item ",HttpStatus.INTERNAL_SERVER_ERROR);
-       }
+            ItemResponse item = itemService.registerItem(request);
+            if (item == null)
+            {
+                return new ResponseEntity("Error: User can not be found ", HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(item, HttpStatus.CREATED);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            return new ResponseEntity("Error: Cannot create a new item ",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**

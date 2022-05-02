@@ -11,8 +11,10 @@ import edu.ntnu.idatt2106.boco.payload.response.UserResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
+@RunWith(MockitoJUnitRunner.class)
 public class UserServiceTest
 {
     @InjectMocks
@@ -428,5 +431,24 @@ public class UserServiceTest
         List<UserResponse> responses = userService.getAllUsers();
 
         assertThat(responses.size()).isZero();
+    }
+
+
+    @Test()
+    public void when_user_register_without_email_it_should_throw_exception(){
+        RegisterUserRequest registerUserRequest = new RegisterUserRequest();
+        registerUserRequest.setName("test user");
+        registerUserRequest.setEmail("testemail");
+    }
+    @Test
+    public void when_save_user_it_should_return_user() {
+        RegisterUserRequest registerUserRequest = new RegisterUserRequest();
+        registerUserRequest.setEmail("testmail");
+        registerUserRequest.setPassword("password");
+
+
+        UserResponse register = userService.register(registerUserRequest);
+
+        assertThat(register.getEmail()).isSameAs(registerUserRequest.getEmail());
     }
 }

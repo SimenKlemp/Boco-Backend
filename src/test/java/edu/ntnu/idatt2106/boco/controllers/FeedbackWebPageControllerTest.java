@@ -1,5 +1,11 @@
 package edu.ntnu.idatt2106.boco.controllers;
 
+import edu.ntnu.idatt2106.boco.factories.modelFactroies.FeedBackWebPageFactory;
+import edu.ntnu.idatt2106.boco.factories.modelFactroies.UserFactory;
+import edu.ntnu.idatt2106.boco.factories.requestFactroies.FeedbackWebPageRequestFactory;
+import edu.ntnu.idatt2106.boco.factories.responseFactroies.FeedBackWebPageResponseFactory;
+import edu.ntnu.idatt2106.boco.factories.responseFactroies.ResponseFactories;
+import edu.ntnu.idatt2106.boco.factories.responseFactroies.UserResponseFactory;
 import edu.ntnu.idatt2106.boco.models.FeedbackWebPage;
 import edu.ntnu.idatt2106.boco.models.Image;
 import edu.ntnu.idatt2106.boco.models.User;
@@ -7,6 +13,7 @@ import edu.ntnu.idatt2106.boco.payload.request.FeedbackWebPageRequest;
 import edu.ntnu.idatt2106.boco.payload.response.FeedbackWebPageResponse;
 import edu.ntnu.idatt2106.boco.payload.response.UserResponse;
 import edu.ntnu.idatt2106.boco.repository.FeedbackWebPageRepository;
+import edu.ntnu.idatt2106.boco.repository.UserRepository;
 import edu.ntnu.idatt2106.boco.service.FeedbackWebPageService;
 import edu.ntnu.idatt2106.boco.token.TokenComponent;
 import org.junit.jupiter.api.AfterEach;
@@ -22,8 +29,10 @@ import org.springframework.http.MediaType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static edu.ntnu.idatt2106.boco.controllers.RentalControllerTest.asJsonString;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -54,14 +63,17 @@ class FeedbackWebPageControllerTest {
     @MockBean
     private TokenComponent tokenComponent;
 
-    private FeedbackWebPageResponse feedbackWebPageResponse1;
-    private FeedbackWebPage feedbackWebPage1;
-    private FeedbackWebPage feedbackWebPage2;
-    private FeedbackWebPageResponse feedbackWebPageResponse2;
-    private List<FeedbackWebPageResponse> feedbackWebPageList;
-    private User user;
-    private String token;
+    @MockBean
+    private UserRepository userRepository;
 
+    private FeedBackWebPageResponseFactory feedbackWebPageResponse1;
+    private FeedBackWebPageResponseFactory feedbackWebPageResponse2;
+    private List<FeedbackWebPageResponse> feedbackWebPageList;
+    private String token;
+    private UserResponseFactory userResponse;
+    private FeedbackWebPageRequestFactory feedbackWebPageRequest;
+    private UserFactory user;
+    private ResponseFactories responseFactories;
 
     @BeforeEach
     void setUp() throws Exception{
@@ -70,24 +82,30 @@ class FeedbackWebPageControllerTest {
                 .apply(springSecurity())
                 .build();
 
-        user=new User("name",true,"address","email"
-                ,"password","ADMIN",new Image());
-        user.setUserId(1L);
+        user=new UserFactory();
+        assert user != null;
+        userRepository.save(user.getObject());
 
-        token= tokenComponent.generateToken(user.getUserId(),user.getRole());
-        UserResponse userResponse = new UserResponse(user.getUserId(), user.getName(), user.isPerson(),
-                user.getStreetAddress(), user.getPostalCode(), user.getPostOffice(), user.getEmail(),
-                user.getRole(), user.getImage() != null ? user.getImage().getImageId() : null);
+        userResponse=new UserResponseFactory();
+       assert userResponse != null;
 
-        feedbackWebPage1=new FeedbackWebPage("message1",user);
-        feedbackWebPage2=new FeedbackWebPage("message2",user);
-        feedbackWebPageResponse1=new FeedbackWebPageResponse(feedbackWebPage1.getFeedbackId(),feedbackWebPage1.getMessage(),userResponse);
-        feedbackWebPageResponse1=new FeedbackWebPageResponse(feedbackWebPage2.getFeedbackId(),feedbackWebPage2.getMessage(),userResponse);
 
+        feedbackWebPageResponse1=new FeedBackWebPageResponseFactory();
+       assert feedbackWebPageResponse1 !=null;
+
+        feedbackWebPageResponse2=new FeedBackWebPageResponseFactory();
+       assert feedbackWebPageResponse2 !=null;
+
+
+        feedbackWebPageRequest=new FeedbackWebPageRequestFactory();
+       assert feedbackWebPageRequest !=null;
+       FeedBackWebPageFactory feedBackWebPage=new FeedBackWebPageFactory();
+
+       feedbackWebPageRepository.save (feedBackWebPage.getObject());
 
         feedbackWebPageList=new ArrayList();
-        feedbackWebPageList.add(feedbackWebPageResponse1);
-        feedbackWebPageList.add(feedbackWebPageResponse2);
+        feedbackWebPageList.add(feedbackWebPageResponse1.getObject());
+        feedbackWebPageList.add(feedbackWebPageResponse2.getObject());
 
     }
 
@@ -95,15 +113,17 @@ class FeedbackWebPageControllerTest {
     void  tearDown() {
         feedbackWebPageResponse1=feedbackWebPageResponse2=null;
         feedbackWebPageList=null;
+        feedbackWebPageRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
     void registerFeedbackWebPage() throws Exception {
-        when(feedbackWebPageService.registerFeedbackWebPage(new FeedbackWebPageRequest("message1",user.getUserId())))
-                .thenReturn(feedbackWebPageResponse1);
+        when(feedbackWebPageService.registerFeedbackWebPage(any()))
+               .thenReturn(feedbackWebPageResponse1.getObject());
         mockMvc.perform(post("/registerFeedback")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(feedbackWebPageResponse1))
+                .content(asJsonString(feedbackWebPageResponse1.getObject()))
                 .with(csrf()))
                 .andExpect(status().isCreated())
                 .andDo(print());
@@ -112,7 +132,7 @@ class FeedbackWebPageControllerTest {
     @Test
     void getAllFeedbacksWebPage() throws Exception {
 
-        when(feedbackWebPageService.getAllFeedbacksWebPage()).thenReturn(feedbackWebPageList);
+       when(feedbackWebPageService.getAllFeedbacksWebPage()).thenReturn(feedbackWebPageList);
         mockMvc.perform(get("/feedbackWebPage/getFeedbacks")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(feedbackWebPageList))

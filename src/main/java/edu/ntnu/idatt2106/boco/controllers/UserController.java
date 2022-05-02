@@ -1,13 +1,12 @@
 package edu.ntnu.idatt2106.boco.controllers;
 
 import edu.ntnu.idatt2106.boco.models.User;
-import edu.ntnu.idatt2106.boco.payload.request.UpdateUserAdminRequest;
 import edu.ntnu.idatt2106.boco.payload.request.UpdateUserRequest;
-import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
 import edu.ntnu.idatt2106.boco.payload.response.UserResponse;
 import edu.ntnu.idatt2106.boco.token.TokenComponent;
 import edu.ntnu.idatt2106.boco.service.UserService;
 import edu.ntnu.idatt2106.boco.utility.Utility;
+import lombok.experimental.SuperBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpStatus;
@@ -31,6 +30,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping(value = "/user")
 @EnableAutoConfiguration
+@SuperBuilder
 @CrossOrigin
 public class UserController
 {
@@ -42,8 +42,6 @@ public class UserController
 
     @Autowired
     private JavaMailSender mailSender;
-
-
     /**
      * A method for login and returning token in login response
      * @param request Email and password
@@ -155,7 +153,7 @@ public class UserController
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            UserResponse user = userService.updateUserRoleAdmin(userId);
+            UserResponse user = userService.toggleRole(userId);
             if (user == null)
             {
                 return new ResponseEntity("Error: User not found", HttpStatus.OK);
@@ -187,6 +185,7 @@ public class UserController
             return new ResponseEntity("Could not fetch all users", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @PostMapping("/forgot_password")
     public ResponseEntity<String> processForgotPassword(HttpServletRequest request) {
         String email = request.getParameter("email");

@@ -185,6 +185,8 @@ public class UserService
 
     }
 
-
+    public UserResponse updateUserRoleAdmin(long userId) {
+        return null;
+    }
 }
 

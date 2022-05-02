@@ -1,15 +1,15 @@
-package edu.ntnu.idatt2106.boco.Factories;
-import edu.ntnu.idatt2106.boco.models.Image;
+package edu.ntnu.idatt2106.boco.factories.modelFactroies;
 import edu.ntnu.idatt2106.boco.models.User;
 
 
 import org.springframework.beans.factory.FactoryBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 
-import static edu.ntnu.idatt2106.boco.utils.Randomization.getEmailRandomly;
-import static edu.ntnu.idatt2106.boco.utils.Randomization.getStringRandomly;
+import java.util.UUID;
+
+import static edu.ntnu.idatt2106.boco.util.Randomization.getEmailRandomly;
+import static edu.ntnu.idatt2106.boco.util.Randomization.getStringRandomly;
 
 
 
@@ -22,6 +22,7 @@ public class UserFactory implements FactoryBean<User> {
 
         ImageFactory imageFactory = new ImageFactory();
         return  User.builder()
+                .userId(UUID.randomUUID().getLeastSignificantBits())
                 .name(getStringRandomly(6))
                 .isPerson(true)
                 .streetAddress(getStringRandomly(6))

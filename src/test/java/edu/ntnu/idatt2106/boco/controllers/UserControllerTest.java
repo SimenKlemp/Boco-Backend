@@ -2,6 +2,7 @@ package edu.ntnu.idatt2106.boco.controllers;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.ntnu.idatt2106.boco.factories.modelFactroies.UserFactory;
 import edu.ntnu.idatt2106.boco.models.Image;
 import edu.ntnu.idatt2106.boco.models.User;
 import edu.ntnu.idatt2106.boco.payload.request.LoginRequest;
@@ -71,7 +72,7 @@ public class UserControllerTest {
     @Autowired
     private WebApplicationContext context;
 
-    private User user;
+    private UserFactory user;
     private LoginRequest loginRequest;
     private LoginResponse loginResponse;
     private UserResponse userResponse;
@@ -83,7 +84,7 @@ public class UserControllerTest {
 
 
     @BeforeEach
-    public void setUp() throws UnsupportedEncodingException {
+    public void setUp() throws Exception {
 
         JacksonTester.initFields(this, new ObjectMapper());
         this.mockMvc = MockMvcBuilders
@@ -92,10 +93,8 @@ public class UserControllerTest {
                 .build();
 
         Image image =new Image();
-        user=new User("name",true,"address","email"
-                ,"password","role",image);
-        user.setUserId(1L);
-        token=tokenComponent.generateToken(user.getUserId(),token);
+        user=new UserFactory();
+        token=tokenComponent.generateToken(user.getObject().getUserId(),"ADMIN");
         loginRequest=new LoginRequest("email1","password");
 
         userResponse = new UserResponse(1l,"name",true,"streetAddress"
@@ -108,7 +107,7 @@ public class UserControllerTest {
        updatedRegisterUserRequest = new UpdateUserRequest("updated", true, "updated", "updated", "postOffice"
                 , "email", "password", image.getImageId());
 
-        updateUserResponse = new UserResponse(user.getUserId(), "updated", true, "updated", "updated",
+        updateUserResponse = new UserResponse(user.getObject().getUserId(), "updated", true, "updated", "updated",
                 "postOffice", "email", "role", new Image().getImageId());
     }
     @AfterEach
@@ -153,7 +152,7 @@ public class UserControllerTest {
 
     @Test
     public void updateUserTest() throws Exception {
-        long userId=user.getUserId();
+        long userId=user.getObject().getUserId();
         when(userService.updateUser(userId,updatedRegisterUserRequest));
     }
 
