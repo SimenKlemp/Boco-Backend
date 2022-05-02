@@ -1,20 +1,23 @@
 package edu.ntnu.idatt2106.boco.controllers;
 
+import edu.ntnu.idatt2106.boco.payload.request.MessageRequest;
+import edu.ntnu.idatt2106.boco.payload.response.MessageResponse;
 import edu.ntnu.idatt2106.boco.payload.response.ChatResponse;
-import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
 import edu.ntnu.idatt2106.boco.payload.response.RentalResponse;
 import edu.ntnu.idatt2106.boco.service.RentalService;
 import edu.ntnu.idatt2106.boco.token.TokenComponent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping(value = "/chat")
+@RequestMapping(value = "")
 @EnableAutoConfiguration
 @CrossOrigin
 public class ChatController
@@ -25,7 +28,21 @@ public class ChatController
     @Autowired
     private TokenComponent tokenComponent;
 
-    @GetMapping("/{rentalId}")
+    Logger logger = LoggerFactory.getLogger(ChatController.class);
+
+
+    @MessageMapping("/chat")
+    @SendTo("/topic/messages")
+    public MessageResponse send(MessageRequest request) throws Exception
+    {
+        logger.info("In message endpoint");
+        logger.info(String.valueOf(request));
+        logger.info(request.getText());
+
+        return new MessageResponse(request.getText(), true, request.getUserId());
+    }
+
+    @GetMapping("/chat/get/{rentalId}")
     public ResponseEntity<ChatResponse> getChat(@PathVariable("rentalId") long rentalId)
     {
         try

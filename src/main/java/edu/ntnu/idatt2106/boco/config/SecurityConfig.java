@@ -20,6 +20,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
             "/image/**",
             "/item/all/**",
             "/item/search",
+            "/chat",
+            "/chat/**",
+            "/request",
+            "/request/**",
 
             "/v2/api-docs",
             "/v2/api-docs/**",
