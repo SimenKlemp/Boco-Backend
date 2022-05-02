@@ -63,8 +63,34 @@ public class RatingController {
         }
     }
 
-    @GetMapping("/get-my/{userId}")
-    public ResponseEntity<List<RatingResponse>> getNotifications(@PathVariable("userId") long userId)
+    @GetMapping("/get-my-owner/{userId}")
+    public ResponseEntity<List<RatingResponse>> getRatingOwner(@PathVariable("userId") long userId)
+    {
+        logger.info("Fetching all ratings for a user...");
+
+        try
+        {
+            if (!tokenComponent.haveAccessTo(userId))
+            {
+                return new ResponseEntity(HttpStatus.FORBIDDEN);
+            }
+
+            List<RatingResponse> ratings = ratingService.getRatingsOwner(userId);
+            if (ratings == null || ratings.isEmpty())
+            {
+                return new ResponseEntity(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(ratings, HttpStatus.OK);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            return new ResponseEntity("Error",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/get-my-user/{userId}")
+    public ResponseEntity<List<RatingResponse>> getRatingUser(@PathVariable("userId") long userId)
     {
         logger.info("Fetching all items for a user...");
 
@@ -75,7 +101,7 @@ public class RatingController {
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            List<RatingResponse> ratings = ratingService.getRatings(userId);
+            List<RatingResponse> ratings = ratingService.getRatingsUser(userId);
             if (ratings == null || ratings.isEmpty())
             {
                 return new ResponseEntity(HttpStatus.NO_CONTENT);

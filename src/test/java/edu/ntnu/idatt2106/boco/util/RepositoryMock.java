@@ -189,6 +189,38 @@ public abstract class RepositoryMock
                 .when(repository)
                 .delete(Mockito.any(FeedbackWebPage.class));
     }
+    public static void mockRatingRepository(RatingRepository repository)
+    {
+        List<Rating> list = new ArrayList<>();
+
+        Mockito.lenient().when(repository.findById(Mockito.anyLong()))
+                .then(i -> list.stream().filter(
+                        u -> u.getRatingId().equals(i.getArguments()[0])
+                ).findFirst());
+
+        Mockito.lenient().when(repository.findAll())
+                .then(i -> list);
+
+        Mockito.lenient()
+                .doAnswer(i -> {
+                    Rating rating = (Rating) i.getArguments()[0];
+                    if (rating.getRatingId() == null)
+                    {
+                        rating.setRatingId((long) (list.size() + 1));
+                        list.add(rating);
+                    }
+                    return rating;
+                })
+                .when(repository)
+                .save(Mockito.any(Rating.class));
+
+        Mockito.lenient()
+                .doAnswer(i ->
+                        list.remove(i.getArguments()[0])
+                )
+                .when(repository)
+                .delete(Mockito.any(Rating.class));
+    }
 
     public static void mockNotificationRepository(NotificationRepository repository)
     {
@@ -221,5 +253,8 @@ public abstract class RepositoryMock
                 )
                 .when(repository)
                 .delete(Mockito.any(Notification.class));
+
     }
+
+
 }

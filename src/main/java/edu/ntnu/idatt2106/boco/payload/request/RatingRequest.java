@@ -15,7 +15,7 @@ public class RatingRequest {
     @NotBlank
     private String feedback;
 
-    private int rate;
+    private double rate;
 
     @NotBlank
     private Long rentalId;

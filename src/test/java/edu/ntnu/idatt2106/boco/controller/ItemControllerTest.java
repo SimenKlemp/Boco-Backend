@@ -1,3 +1,4 @@
+/*
 package edu.ntnu.idatt2106.boco.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,7 +45,7 @@ public class ItemControllerTest {
         //set the token
     }
 
-    /*
+
     //Denne testen lager nye fag hver gang du kjører
     @Test
     void createItemTest() throws Exception {
@@ -62,7 +63,7 @@ public class ItemControllerTest {
     }
 
 
-     */
+
 
     @Test
     void getAllItemsTest() throws Exception {
@@ -95,3 +96,4 @@ public class ItemControllerTest {
                 .andExpect(jsonPath("$[0].title", is("Title")));
     }
 }
+*/
