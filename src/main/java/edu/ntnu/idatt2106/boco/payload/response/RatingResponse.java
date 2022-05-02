@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class RatingResponse {
     private Long ratingId;
-    private int rate;
+    private double rate;
     private String feedback;
     private RentalResponse rental;
 }

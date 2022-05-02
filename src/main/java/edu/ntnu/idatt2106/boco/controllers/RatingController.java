@@ -61,9 +61,9 @@ public class RatingController {
     }
 
     @GetMapping("/get-my/{userId}")
-    public ResponseEntity<List<RatingResponse>> getNotifications(@PathVariable("userId") long userId)
+    public ResponseEntity<List<RatingResponse>> getRatings(@PathVariable("userId") long userId)
     {
-        logger.info("Fetching all items for a user...");
+        logger.info("Fetching all ratings for a user...");
 
         try
         {

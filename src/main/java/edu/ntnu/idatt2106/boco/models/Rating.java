@@ -22,7 +22,7 @@ public class Rating {
     private Long ratingId;
 
     @Column(name = "rate")
-    private int rate;
+    private double rate;
 
     @Column(name = "feedback")
     private String feedback;

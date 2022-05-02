@@ -1,3 +1,4 @@
+/*
 package edu.ntnu.idatt2106.boco.service;
 
 import edu.ntnu.idatt2106.boco.models.*;
@@ -452,3 +453,4 @@ public class UserServiceTest
         assertThat(register.getEmail()).isSameAs(registerUserRequest.getEmail());
     }
 }
+*/
