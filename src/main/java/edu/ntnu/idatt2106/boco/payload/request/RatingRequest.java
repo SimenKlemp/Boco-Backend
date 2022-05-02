@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.NotBlank;
 
@@ -12,7 +11,6 @@ import javax.validation.constraints.NotBlank;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder
 public class RatingRequest {
     @NotBlank
     private String feedback;
@@ -24,5 +22,7 @@ public class RatingRequest {
 
     @NotBlank
     private Long userId;
-}
 
+
+
+}

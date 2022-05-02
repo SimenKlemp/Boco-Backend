@@ -16,4 +16,3 @@ public class ChatResponse
     private RentalResponse rental;
     private List<MessageResponse> messages;
 }
-

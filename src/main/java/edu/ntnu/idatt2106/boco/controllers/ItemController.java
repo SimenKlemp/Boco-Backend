@@ -73,7 +73,7 @@ public class ItemController
     @GetMapping("/all/{page}/{pageSize}")
     public ResponseEntity<List<ItemResponse>> getAllItems(@PathVariable("page") int page, @PathVariable("pageSize") int pageSize)
     {
-        logger.info("Fetching all all items...");
+        logger.info("Fetching all items...");
         try
         {
             List<ItemResponse> items = itemService.getAllItems(page, pageSize);
@@ -117,7 +117,7 @@ public class ItemController
         catch(Exception e)
         {
             e.printStackTrace();
-            return new ResponseEntity("Error",HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity("Error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

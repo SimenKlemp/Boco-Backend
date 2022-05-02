@@ -12,3 +12,4 @@ public interface RatingRepository extends JpaRepository<Rating, Long> {
     List<Rating> findAllByUser(User user);
 
 }
+

@@ -43,16 +43,13 @@ public class NotificationService {
 
             case "REQUEST":
             case "CANCELED":
-
             case "SEND_RATING_OWNER":
-
             case "RECEIVED_RATING_USER":
                 user = rental.getItem().getUser();
                 break;
             case "ACCEPTED":
             case "REJECTED":
             case "SEND_RATING_USER":
-
             case "RECEIVED_RATING_OWNER":
                 user = rental.getUser();
                 break;
