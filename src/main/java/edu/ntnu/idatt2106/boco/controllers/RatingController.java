@@ -2,12 +2,15 @@ package edu.ntnu.idatt2106.boco.controllers;
 
 import edu.ntnu.idatt2106.boco.payload.request.NotificationRequest;
 import edu.ntnu.idatt2106.boco.payload.request.RatingRequest;
+import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
 import edu.ntnu.idatt2106.boco.payload.response.NotificationResponse;
 
 import edu.ntnu.idatt2106.boco.payload.response.RatingResponse;
+import edu.ntnu.idatt2106.boco.payload.response.UserResponse;
 import edu.ntnu.idatt2106.boco.service.NotificationService;
 import edu.ntnu.idatt2106.boco.service.RatingService;
 import edu.ntnu.idatt2106.boco.service.RentalService;
+import edu.ntnu.idatt2106.boco.service.UserService;
 import edu.ntnu.idatt2106.boco.token.TokenComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,6 +36,9 @@ public class RatingController {
     @Autowired
     private RatingService ratingService;
 
+   @Autowired
+   private UserService userService;
+
     @Autowired
     private TokenComponent tokenComponent;
 
@@ -57,10 +63,10 @@ public class RatingController {
         }
     }
 
-    @GetMapping("/get-my/{userId}")
-    public ResponseEntity<List<RatingResponse>> getNotifications(@PathVariable("userId") long userId)
+    @GetMapping("/get-my-owner/{userId}")
+    public ResponseEntity<List<RatingResponse>> getRatingOwner(@PathVariable("userId") long userId)
     {
-        logger.info("Fetching all items for a user...");
+        logger.info("Fetching all ratings for a user...");
 
         try
         {
@@ -69,7 +75,7 @@ public class RatingController {
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            List<RatingResponse> ratings = ratingService.getRatings(userId);
+            List<RatingResponse> ratings = ratingService.getRatingsOwner(userId);
             if (ratings == null || ratings.isEmpty())
             {
                 return new ResponseEntity(HttpStatus.NO_CONTENT);
@@ -80,6 +86,49 @@ public class RatingController {
         {
             e.printStackTrace();
             return new ResponseEntity("Error",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/get-my-user/{userId}")
+    public ResponseEntity<List<RatingResponse>> getRatingUser(@PathVariable("userId") long userId)
+    {
+        logger.info("Fetching all items for a user...");
+
+        try
+        {
+            if (!tokenComponent.haveAccessTo(userId))
+            {
+                return new ResponseEntity(HttpStatus.FORBIDDEN);
+            }
+
+            List<RatingResponse> ratings = ratingService.getRatingsUser(userId);
+            if (ratings == null || ratings.isEmpty())
+            {
+                return new ResponseEntity(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(ratings, HttpStatus.OK);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            return new ResponseEntity("Error",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/getMeanRating/{userId}")
+    public ResponseEntity<Integer> getMeanRating(@PathVariable("userId") long userId)
+    {
+        try
+        {
+            if (!tokenComponent.haveAccessTo(userId))
+            {
+                return new ResponseEntity(HttpStatus.FORBIDDEN);
+            }
+            return new ResponseEntity<>(ratingService.getMeanRating(userId), HttpStatus.OK);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity("Error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

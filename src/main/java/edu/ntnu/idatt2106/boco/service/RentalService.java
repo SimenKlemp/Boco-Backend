@@ -4,9 +4,9 @@ import edu.ntnu.idatt2106.boco.models.Item;
 import edu.ntnu.idatt2106.boco.models.Message;
 import edu.ntnu.idatt2106.boco.models.Rental;
 import edu.ntnu.idatt2106.boco.models.User;
+import edu.ntnu.idatt2106.boco.payload.response.MessageResponse;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterRentalRequest;
 import edu.ntnu.idatt2106.boco.payload.response.ChatResponse;
-import edu.ntnu.idatt2106.boco.payload.response.MessageResponse;
 import edu.ntnu.idatt2106.boco.payload.response.RentalResponse;
 import edu.ntnu.idatt2106.boco.repository.ItemRepository;
 import edu.ntnu.idatt2106.boco.repository.MessageRepository;
@@ -155,19 +155,5 @@ public class RentalService
         if (optionalUser.isEmpty()) return null;
         List<Rental> rentals = rentalRepository.findAllByUser(optionalUser.get());
         return Mapper.ToRentalResponses(rentals);
-    }
-
-    public ChatResponse getChat(long rentalId)
-    {
-        Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
-        if (optionalRental.isEmpty()) return null;
-        Rental rental = optionalRental.get();
-
-        List<Message> messages = messageRepository.findAllByRental(rental);
-
-        RentalResponse rentalResponse = Mapper.ToRentalResponse(rental);
-        List<MessageResponse> messageResponses = Mapper.ToMessageResponses(messages);
-
-        return new ChatResponse(rentalResponse, messageResponses);
     }
 }

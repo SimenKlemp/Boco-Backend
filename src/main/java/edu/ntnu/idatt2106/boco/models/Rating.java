@@ -13,7 +13,7 @@ import javax.validation.constraints.NotBlank;
 @Setter
 @NoArgsConstructor
 @Indexed
-@Entity
+@Entity(name = "rating")
 @Table(name = "rating", uniqueConstraints = { @UniqueConstraint(columnNames = "ratingId") })
 public class Rating {
     @Id
@@ -22,7 +22,7 @@ public class Rating {
     private Long ratingId;
 
     @Column(name = "rate")
-    private int rate;
+    private double rate;
 
     @Column(name = "feedback")
     private String feedback;
@@ -36,7 +36,7 @@ public class Rating {
     private User user;
 
 
-    public Rating(int rate, String feedback, Rental rental, User user){
+    public Rating(double rate, String feedback, Rental rental, User user){
         this.rate = rate;
         this.feedback = feedback;
         this.rental = rental;

@@ -5,24 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RatingRequest {
-    @NotBlank
-    private String feedback;
-
-    private double rate;
-
-    @NotBlank
-    private Long rentalId;
-
-    @NotBlank
+public class MessageRequest
+{
+    private String text;
     private Long userId;
-
-
-
+    private Long rentalId;
 }
