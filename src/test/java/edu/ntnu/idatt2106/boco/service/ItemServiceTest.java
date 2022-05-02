@@ -2,14 +2,20 @@ package edu.ntnu.idatt2106.boco.service;
 
 import edu.ntnu.idatt2106.boco.factories.modelFactroies.ImageFactory;
 import edu.ntnu.idatt2106.boco.factories.modelFactroies.ItemFactory;
+import edu.ntnu.idatt2106.boco.factories.modelFactroies.RentalFactory;
 import edu.ntnu.idatt2106.boco.factories.modelFactroies.UserFactory;
+import edu.ntnu.idatt2106.boco.factories.requestFactroies.UpdateItemRequestFactory;
 import edu.ntnu.idatt2106.boco.models.Image;
 import edu.ntnu.idatt2106.boco.models.Item;
+import edu.ntnu.idatt2106.boco.models.Rental;
 import edu.ntnu.idatt2106.boco.models.User;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterItemRequest;
+import edu.ntnu.idatt2106.boco.payload.request.UpdateItemRequest;
 import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
 import edu.ntnu.idatt2106.boco.repository.*;
 import edu.ntnu.idatt2106.boco.util.RepositoryMock;
+import org.hamcrest.MatcherAssert;
+import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,16 +23,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.hamcrest.core.IsNull.nullValue;
-import static org.hibernate.validator.internal.util.Contracts.assertTrue;
-import static org.springframework.test.util.AssertionErrors.assertFalse;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -62,6 +63,9 @@ public class ItemServiceTest
     private ItemResponse itemResponse1 =new ItemResponse();
     private ItemResponse itemResponse2 =new ItemResponse();
     private List<ItemResponse> itemList;
+    private List<Item> items;
+    Rental rental=new Rental();
+    RentalFactory rentalFactory =new RentalFactory();
 
     @BeforeEach
     public void beforeEach() throws Exception {
@@ -74,27 +78,46 @@ public class ItemServiceTest
         item1 = itemFactory1.getObject();
         item2=itemFactory2.getObject();
         image=imageFactory.getObject();
+        rental=rentalFactory.getObject();
 
         assert user != null;
         assert item1 != null;
         assert item2 != null;
         assert image != null;
+        assert rental != null;
 
         item1.getUser().setUserId(user.getUserId());
+        item2.getUser().setUserId(user.getUserId());
+
+
+        userRepository.save(user);
+        imageRepository.save(image);
+        rentalRepository.save(rental);
+
+        item1.setImage(image);
+        item2.setImage(image);
+
+        itemRepository.save(item1);
+        itemRepository.save(item2);
+
+
+
+
         itemList=new ArrayList();
-
     }
-
 
     @AfterEach
     public void cleanUp() {
         itemRepository.delete(item1);
+        itemRepository.delete(item2);
         userRepository.delete(user);
         imageRepository.delete(image);
     }
     @Test
     public void registerWithoutImage() throws Exception {
 
+        item1.setImage(null);
+        itemRepository.save(item1);
         registerItemRequest1 =new RegisterItemRequest(
                 item1.getStreetAddress(),
                 item1.getPostalCode(),
@@ -106,16 +129,18 @@ public class ItemServiceTest
                 item1.getIsPickupable(),
                 item1.getIsDeliverable(),
                 item1.getUser().getUserId(),
-                null
-        );
+                item1.getImage().getImageId());
+
         assert registerItemRequest1 != null;
-        item1.setImage(null);
-        itemRepository.save(item1);
 
-        itemResponse1 =itemService.registerItem(registerItemRequest1);
-        System.out.println(itemResponse1);
-        assertThat(itemResponse1.getImageId()).isEqualTo(item1.getImage().getImageId()).isEqualTo(registerItemRequest1.getImageId()).isEqualTo(null);
+        ItemResponse actual =itemService.registerItem(registerItemRequest1);
+        Item expected = itemRepository.findById(item1.getItemId()).get();
+        assertThat(actual)
+                .usingRecursiveComparison()
+                .ignoringFields("itemId")
+                .isEqualTo(expected);
 
+        assertThat(actual.getImageId()).isNull();
     }
 
     @Test
@@ -134,9 +159,14 @@ public class ItemServiceTest
                     user.getUserId(),
                     image.getImageId()
             );
-            item1.setImage(image);
-            itemRepository.save(item1);
-            assertThat(itemRepository.getById(item1.getUser().getUserId()).getImage()).isEqualTo(registerItemRequest1.getImageId());
+        ItemResponse actual =itemService.registerItem(registerItemRequest1);
+        Item expected = itemRepository.findById(item1.getItemId()).get();
+
+        assertThat(actual)
+                .usingRecursiveComparison()
+                .ignoringFields("itemId","imageId","publicityDate","user")
+                .isEqualTo(expected);
+        assertThat(actual.getImageId()).isNotNull();
 
     }
 
@@ -156,7 +186,8 @@ public class ItemServiceTest
                     1l,
                     null
             );
-            assertThat(itemRepository.getById(item1.getUser().getUserId())).isNotEqualTo(registerItemRequest1);
+            assertThat(itemRepository.getById(item1.getUser().getUserId()))
+                    .isNotEqualTo(registerItemRequest1);
     }
 
     @Test
@@ -178,15 +209,15 @@ public class ItemServiceTest
                 image.getImageId()
         );
         registerItemRequest1 = new RegisterItemRequest(
-                item1.getStreetAddress(),
-                item1.getPostalCode(),
-                item1.getPostOffice(),
-                item1.getPrice(),
-                item1.getDescription(),
-                item1.getCategory(),
-                item1.getTitle(),
-                item1.getIsPickupable(),
-                item1.getIsDeliverable(),
+                item2.getStreetAddress(),
+                item2.getPostalCode(),
+                item2.getPostOffice(),
+                item2.getPrice(),
+                item2.getDescription(),
+                item2.getCategory(),
+                item2.getTitle(),
+                item2.getIsPickupable(),
+                item2.getIsDeliverable(),
                 user.getUserId(),
                 image.getImageId()
         );
@@ -198,123 +229,143 @@ public class ItemServiceTest
         itemList.add(itemResponse2);
 
         List<ItemResponse>sortedItem =itemService.getAllItems(1,2);
-        assertThat(sortedItem.stream().sorted()).isEqualTo(true);
+        assertThat(sortedItem.stream().sorted().collect(Collectors.toList()).equals(sortedItem));
     }
 
-    @Test
-    public void getAllPage()
-    {
-
-    }
-
-    @Test
-    public void getAllEmpty()
-    {
-
-    }
 
     @Test
     public void getMyWithItems()
     {
-        registerItemRequest1 = new RegisterItemRequest(
-                item1.getStreetAddress(),
-                item1.getPostalCode(),
-                item1.getPostOffice(),
-                item1.getPrice(),
-                item1.getDescription(),
-                item1.getCategory(),
-                item1.getTitle(),
-                item1.getIsPickupable(),
-                item1.getIsDeliverable(),
-                user.getUserId(),
-                image.getImageId()
-        );
-        registerItemRequest1 = new RegisterItemRequest(
-                item1.getStreetAddress(),
-                item1.getPostalCode(),
-                item1.getPostOffice(),
-                item1.getPrice(),
-                item1.getDescription(),
-                item1.getCategory(),
-                item1.getTitle(),
-                item1.getIsPickupable(),
-                item1.getIsDeliverable(),
-                user.getUserId(),
-                image.getImageId()
-        );
-        item1.getUser().setUserId(user.getUserId());
-        item2.getUser().setUserId(user.getUserId());
 
-        itemResponse1=itemService.registerItem(registerItemRequest1);
-        itemResponse2=itemService.registerItem(registerItemRequest2);
-        itemList.add(itemResponse1);
-        itemList.add(itemResponse2);
+        item1.setUser(user);
+        item2.setUser(user);
 
+        itemRepository.save(item1);
+        itemRepository.save(item2);
+
+      List<Item> items =new ArrayList();
+      items.add(item1);
+      items.add(item2);
       List<ItemResponse> myItems= itemService.getMyItems(item1.getUser().getUserId());
-      assertThat(myItems.size()).isEqualTo(itemList.size());
+      assertThat(myItems.size()).isEqualTo(items.size());
 
     }
 
     @Test
     public void getMyEmpty() throws Exception {
+       User newUser=userFactory.getObject();
+       userRepository.save(newUser);
+        assertThat(itemService.getMyItems(newUser.getUserId()).isEmpty());
+    }
+
+    @Test
+    public void getMyWrongUserId() throws Exception {
         User user1=new UserFactory().getObject();
-        List<ItemResponse> myItems= itemService.getMyItems(user1.getUserId());
-        assertThat(myItems.size()).isZero();
+        user1.setUserId(4L);
+        assertThat(itemService.getMyItems(user1.getUserId())).isNull();
     }
 
     @Test
-    public void getMyWrongUserId()
-    {
+    public void updateAll() throws Exception {
+        UpdateItemRequest updateItemRequest=new UpdateItemRequestFactory().getObject();
+        item1.setUser(user);
+        item1.setImage(image);
+        itemRepository.save(item1);
 
-    }
+        Item actual=itemRepository.findById(item1.getItemId()).get();
 
-    @Test
-    public void updateAll()
-    {
+        ItemResponse updated=itemService.updateItem(item1.getItemId(),updateItemRequest);
+        assertThat(updated)
+                .usingRecursiveComparison()
+                .ignoringFields("itemId")
+                .isNotEqualTo(actual);
 
     }
 
     @Test
     public void updateNothing()
     {
+        UpdateItemRequest updateItemRequest=new UpdateItemRequest(
+              item1.getStreetAddress(),
+              item1.getPostalCode(),
+              item1.getPostOffice(),
+              item1.getPrice(),
+              item1.getDescription(),
+              item1.getCategory(),
+              item1.getTitle(),
+              item1.getIsPickupable(),
+              item1.getIsDeliverable(),
+              item1.getUser().getUserId(),
+              item1.getImage().getImageId());
+
+        Item actual=itemRepository.findById(item1.getItemId()).get();
+        ItemResponse updated=itemService.updateItem(item1.getItemId(),updateItemRequest);
+
+
+        assertThat(actual.getStreetAddress()).isEqualTo(updated.getStreetAddress()).isEqualTo(updateItemRequest.getStreetAddress());
+        assertThat(actual.getPostalCode()).isEqualTo(updated.getPostalCode()).isEqualTo(updateItemRequest.getPostalCode());
+        assertThat(actual.getPostOffice()).isEqualTo(updated.getPostOffice()).isEqualTo(updateItemRequest.getPostOffice());
+        assertThat(actual.getPrice()).isEqualTo(updated.getPrice()).isEqualTo(updateItemRequest.getPrice());
+        assertThat(actual.getDescription()).isEqualTo(updated.getDescription()).isEqualTo(updateItemRequest.getDescription());
+        assertThat(actual.getCategory()).isEqualTo(updated.getCategory()).isEqualTo(updateItemRequest.getCategory());
+        assertThat(actual.getIsPickupable()).isEqualTo(updated.getIsPickupable()).isEqualTo(updateItemRequest.getIsPickupable());
+        assertThat(actual.getIsDeliverable()).isEqualTo(updated.getIsDeliverable()).isEqualTo(updateItemRequest.getIsDeliverable());
 
     }
-
     @Test
-    public void updateWrongItemId()
-    {
+    public void updateWrongItemId() throws Exception {
+        UpdateItemRequest updateItemRequest =new UpdateItemRequestFactory().getObject();
 
+        Item expected=itemRepository.findById(item1.getItemId()).get();
+        ItemResponse actual=itemService.updateItem(item2.getItemId(),updateItemRequest);
+
+        assertThat(item2).isNotEqualTo(item1);
+        assertThat(actual.getItemId()).isNotEqualTo(expected.getItemId());
     }
 
     @Test
     public void deleteWithoutAnything()
     {
-
+        item1.setUser(null);
+        rental.setItem(null);
+        rentalRepository.save(rental);
+        itemRepository.save(item1);
+        assertThat(itemService.deleteItem(item1.getItemId())).isTrue();
     }
 
     @Test
     public void deleteWithImage()
     {
+        item1.setImage(image);
+        itemRepository.save(item1);
+        assertThat(itemService.deleteItem(item1.getItemId())).isTrue();
 
     }
 
     @Test
-    public void deleteWithRental()
-    {
+    public void deleteWithRental() throws Exception {
 
+        rental.setItem(item1);
+        rental.setUser(user);
+        assert rental != null;
+        rentalRepository.save(rental);
+        assertThat( itemService.deleteItem(item1.getItemId())).isEqualTo(true);
     }
 
     @Test
     public void deleteWrongItemId()
     {
-
+        Item newItem=new Item();
+        newItem.setItemId(3L);
+        boolean wrongItemId= itemService.deleteItem(newItem.getItemId());
+        assertThat(wrongItemId).isEqualTo(false);
     }
 
     @Test
     public void getCorrect()
     {
         itemRepository.save(item1);
-        Item item=itemRepository.getById(item1.getItemId());
+        Item item=itemRepository.findById(item1.getItemId()).get();
         itemResponse1=itemService.getItem(item.getItemId());
         assertThat(itemResponse1.getItemId()).isEqualTo(item.getItemId());
 
@@ -324,11 +375,9 @@ public class ItemServiceTest
     public void getWrongItemId()
     {
         itemRepository.save(item1);
-        Item item=itemRepository.getById(item1.getItemId());
-        Item actualItem=new Item();
-        actualItem.setItemId(2L);
-        itemResponse1=itemService.getItem(item.getItemId());
-
-        assertThat(itemRepository.findById(actualItem.getItemId())).isEqualTo(false);
+        itemRepository.save(item2);
+        Item expectedItem=itemRepository.findById(item1.getItemId()).get();
+        Item actualItem=itemRepository.findById(item2.getItemId()).get();
+        assertThat(expectedItem.getItemId()).isNotEqualTo(actualItem.getItemId());
     }
 }

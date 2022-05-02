@@ -12,7 +12,6 @@ public class ImageFactory implements FactoryBean<Image> {
     public Image getObject() throws Exception {
 
         return Image.builder()
-                .imageId(UUID.randomUUID().getLeastSignificantBits())
                 .name(getStringRandomly(6))
                 .content(null)
                 .build();

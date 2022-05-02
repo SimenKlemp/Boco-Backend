@@ -22,7 +22,6 @@ public class UserFactory implements FactoryBean<User> {
 
         ImageFactory imageFactory = new ImageFactory();
         return  User.builder()
-                .userId(UUID.randomUUID().getLeastSignificantBits())
                 .name(getStringRandomly(6))
                 .isPerson(true)
                 .streetAddress(getStringRandomly(6))

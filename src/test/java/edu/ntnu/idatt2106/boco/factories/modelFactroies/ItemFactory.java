@@ -21,7 +21,6 @@ public class ItemFactory implements FactoryBean<Item> {
 
 
         return Item.builder()
-                .itemId(UUID.randomUUID().getLeastSignificantBits())
                 .streetAddress(getStringRandomly(10))
                 .postalCode(getStringRandomly(10))
                 .postOffice(getStringRandomly(10))

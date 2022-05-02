@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public class RentalFactory implements FactoryBean<Rental> {
     int pick = new Random().nextInt(Rental.Status.values().length);
-    int pick1 = new Random().nextInt(Rental.Status.values().length);
+    int pick1 = new Random().nextInt(Rental.DeliverInfo.values().length);
     UserFactory userFactory=new UserFactory();
     ItemFactory itemFactory=new ItemFactory();
     Random random =new Random();
@@ -17,8 +17,6 @@ public class RentalFactory implements FactoryBean<Rental> {
     public Rental getObject() throws Exception {
 
         return Rental.builder()
-                .rentalId(UUID.randomUUID().getLeastSignificantBits())
-                .rentalId(UUID.randomUUID().getLeastSignificantBits())
                 .startDate(new Date())
                 .endDate(new Date())
                 .status(Rental.Status.values()[pick])
