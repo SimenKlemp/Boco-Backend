@@ -13,7 +13,8 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,13 +29,16 @@ public class ChatController
     @Autowired
     private TokenComponent tokenComponent;
 
+    @Autowired
+    private SimpMessagingTemplate simpMessagingTemplate;
+
     Logger logger = LoggerFactory.getLogger(ChatController.class);
 
     @MessageMapping("/chat-incoming")
-    @SendTo("/chat-outgoing")
-    public MessageResponse send(MessageRequest request) throws Exception
+    public void handleMessage(@Payload MessageRequest request)
     {
-        return new MessageResponse(request.getText(), true, request.getUserId());
+        MessageResponse out = new MessageResponse(request.getText(), true, request.getUserId());
+        simpMessagingTemplate.convertAndSend( "/chat-outgoing/" + request.getRentalId(), out);
     }
 
     @GetMapping("/get/{rentalId}")

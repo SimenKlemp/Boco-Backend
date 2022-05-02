@@ -13,4 +13,5 @@ public class MessageRequest
 {
     private String text;
     private Long userId;
+    private Long rentalId;
 }
