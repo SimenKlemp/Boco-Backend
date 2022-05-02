@@ -60,7 +60,7 @@ public class RatingController {
     @GetMapping("/get-my-owner/{userId}")
     public ResponseEntity<List<RatingResponse>> getRatingOwner(@PathVariable("userId") long userId)
     {
-        logger.info("Fetching all items for a user...");
+        logger.info("Fetching all ratings for a user...");
 
         try
         {
