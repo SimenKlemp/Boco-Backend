@@ -74,11 +74,11 @@ public abstract class Mapper
             }
         }
 
-        String lastMessage = null;
+        Message lastMessage = null;
         List<Message> messages = rental.getMessages();
         if (!messages.isEmpty())
         {
-            lastMessage = messages.get(messages.size()-1).getText();
+            lastMessage = messages.get(messages.size()-1);
         }
 
         return new RentalResponse(
@@ -89,7 +89,7 @@ public abstract class Mapper
                 ToUserResponse(rental.getUser()),
                 ToItemResponse(rental.getItem()),
                 rental.getDeliveryInfo(),
-                lastMessage
+                lastMessage != null ? ToMessageResponse(lastMessage) : null
         );
     }
 
