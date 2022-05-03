@@ -1,5 +1,6 @@
 package edu.ntnu.idatt2106.boco.util;
 
+import ch.qos.logback.core.status.Status;
 import edu.ntnu.idatt2106.boco.models.*;
 import edu.ntnu.idatt2106.boco.repository.*;
 import org.mockito.Mockito;
