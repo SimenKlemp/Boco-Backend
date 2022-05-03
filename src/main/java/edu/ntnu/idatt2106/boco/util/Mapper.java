@@ -39,6 +39,8 @@ public abstract class Mapper
                 item.getStreetAddress(),
                 item.getPostalCode(),
                 item.getPostOffice(),
+                item.getLat(),
+                item.getLng(),
                 item.getPrice(),
                 item.getDescription(),
                 item.getCategory(),
