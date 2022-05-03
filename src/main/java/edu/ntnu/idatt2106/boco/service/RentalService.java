@@ -149,11 +149,12 @@ public class RentalService
         return Mapper.ToRentalResponse(optionalRental.get());
     }
 
-    public List<RentalResponse> getAllRentalsUser(long userId)
+
+    public List<RentalResponse> getAllRentalsUser(long userId, Rental.Status status)
     {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) return null;
-        List<Rental> rentals = rentalRepository.findAllByUser(optionalUser.get());
+        List<Rental> rentals = rentalRepository.findAllByUserAndStatus(optionalUser.get(), status);
         return Mapper.ToRentalResponses(rentals);
     }
 

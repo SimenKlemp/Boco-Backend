@@ -1,5 +1,6 @@
 package edu.ntnu.idatt2106.boco.controllers;
 
+import edu.ntnu.idatt2106.boco.models.Rental;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterRentalRequest;
 import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
 import edu.ntnu.idatt2106.boco.payload.response.NotificationResponse;
@@ -210,10 +211,10 @@ public class RentalController
         }
     }
 
-    @GetMapping("/get-my/{userId}")
-    public ResponseEntity<List<RentalResponse>> getAllRentalsUser(@PathVariable("userId") long userId)
+    @GetMapping("/get-my/{userId}/{status}")
+    public ResponseEntity<List<RentalResponse>> getAllRentalsUser(@PathVariable("userId") long userId, @PathVariable("status") Rental.Status status)
     {
-        logger.info("Fetching all rentals for user " + userId);
+        logger.info("Fetching all rentals for user " + userId + " and status " + status);
 
         try
         {
@@ -222,7 +223,7 @@ public class RentalController
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            List<RentalResponse> rentals = rentalService.getAllRentalsUser(userId);
+            List<RentalResponse> rentals = rentalService.getAllRentalsUser(userId, status);
             if (rentals == null || rentals.isEmpty())
             {
                 return new ResponseEntity(HttpStatus.NO_CONTENT);
