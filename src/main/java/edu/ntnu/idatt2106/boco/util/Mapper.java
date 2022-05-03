@@ -76,7 +76,7 @@ public abstract class Mapper
 
         String lastMessage = null;
         List<Message> messages = rental.getMessages();
-        if (!messages.isEmpty())
+        if (messages != null && !messages.isEmpty())
         {
             lastMessage = messages.get(messages.size()-1).getText();
         }

@@ -1,5 +1,6 @@
 package edu.ntnu.idatt2106.boco.factories.requestFactroies;
 
+import edu.ntnu.idatt2106.boco.factories.modelFactroies.MessageFactory;
 import edu.ntnu.idatt2106.boco.factories.modelFactroies.UserFactory;
 import edu.ntnu.idatt2106.boco.factories.modelFactroies.ImageFactory;
 import edu.ntnu.idatt2106.boco.models.Rental;
@@ -16,6 +17,7 @@ public class RegisterRentalRequestFactory implements FactoryBean<RegisterRentalR
     public RegisterRentalRequest getObject() throws Exception {
         UserFactory userFactory=new UserFactory();
         ImageFactory imageFactory = new ImageFactory();
+        MessageFactory messageFactory=new MessageFactory();
         int pick = new Random().nextInt(Rental.DeliverInfo.values().length);
 
         return RegisterRentalRequest.builder()

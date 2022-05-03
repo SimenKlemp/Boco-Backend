@@ -11,7 +11,6 @@ public class FeedBackWebPageFactory implements FactoryBean<FeedbackWebPage> {
     public FeedbackWebPage getObject() throws Exception {
 
         return FeedbackWebPage.builder()
-                .feedbackId(java.util.UUID.randomUUID().getLeastSignificantBits())
                 .message(getStringRandomly(10))
                 .user(userFactory.getObject())
                 .build();

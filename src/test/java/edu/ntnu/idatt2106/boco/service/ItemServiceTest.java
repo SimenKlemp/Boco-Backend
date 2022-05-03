@@ -14,8 +14,6 @@ import edu.ntnu.idatt2106.boco.payload.request.UpdateItemRequest;
 import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
 import edu.ntnu.idatt2106.boco.repository.*;
 import edu.ntnu.idatt2106.boco.util.RepositoryMock;
-import org.hamcrest.MatcherAssert;
-import org.junit.Assert;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -108,10 +106,9 @@ public class ItemServiceTest
 
     @AfterEach
     public void cleanUp() {
-        itemRepository.delete(item1);
-        itemRepository.delete(item2);
+        itemRepository.deleteAll();
         userRepository.delete(user);
-        imageRepository.delete(image);
+        imageRepository.deleteAll();
     }
     @Test
     public void registerWithoutImage() throws Exception {
@@ -227,6 +224,7 @@ public class ItemServiceTest
 
         itemList.add(itemResponse1);
         itemList.add(itemResponse2);
+
 
         List<ItemResponse>sortedItem =itemService.getAllItems(1,2);
         assertThat(sortedItem.stream().sorted().collect(Collectors.toList()).equals(sortedItem));

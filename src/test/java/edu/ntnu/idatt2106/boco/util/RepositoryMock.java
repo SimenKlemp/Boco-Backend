@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.mockito.ArgumentMatchers.any;
+
 public abstract class RepositoryMock
 {
     public static void mockUserRepository(UserRepository repository)
@@ -33,14 +35,14 @@ public abstract class RepositoryMock
                     return user;
                 })
                 .when(repository)
-                .save(Mockito.any(User.class));
+                .save(any(User.class));
 
         Mockito.lenient()
                 .doAnswer(i ->
                         list.remove(i.getArguments()[0])
                 )
                 .when(repository)
-                .delete(Mockito.any(User.class));
+                .delete(any(User.class));
 
         Mockito.lenient().when(repository.existsByEmail(Mockito.anyString()))
                 .then(i -> list.stream().anyMatch(
@@ -76,14 +78,14 @@ public abstract class RepositoryMock
                     return image;
                 })
                 .when(repository)
-                .save(Mockito.any(Image.class));
+                .save(any(Image.class));
 
         Mockito.lenient()
                 .doAnswer(i ->
                         list.remove(i.getArguments()[0])
                 )
                 .when(repository)
-                .delete(Mockito.any(Image.class));
+                .delete(any(Image.class));
     }
 
     public static void mockItemRepository(ItemRepository repository)
@@ -109,16 +111,16 @@ public abstract class RepositoryMock
                     return item;
                 })
                 .when(repository)
-                .save(Mockito.any(Item.class));
+                .save(any(Item.class));
 
         Mockito.lenient()
                 .doAnswer(i ->
                         list.remove(i.getArguments()[0])
                 )
                 .when(repository)
-                .delete(Mockito.any(Item.class));
+                .delete(any(Item.class));
 
-        Mockito.lenient().when(repository.findAllByUser(Mockito.any(User.class)))
+        Mockito.lenient().when(repository.findAllByUser(any(User.class)))
                 .then(i -> list.stream().filter(
                         u -> u.getUser().equals(i.getArguments()[0])
                 ).collect(Collectors.toList()));
@@ -133,8 +135,20 @@ public abstract class RepositoryMock
                         u -> u.getRentalId().equals(i.getArguments()[0])
                 ).findFirst());
 
+
         Mockito.lenient().when(repository.findAll())
                 .then(i -> list);
+
+        Mockito.lenient().when(repository.findAllByItem(any(Item.class)))
+                        .then(i->list.stream().filter(
+                                u -> u.getItem().equals(i.getArguments()[0])
+                        ).collect(Collectors.toList()));
+
+        Mockito.lenient().when(repository.findAllByUser(any(User.class)))
+                .then(i->list.stream().filter(
+                        u -> u.getUser().equals(i.getArguments()[0])
+                ).collect(Collectors.toList()));
+
 
         Mockito.lenient()
                 .doAnswer(i -> {
@@ -147,14 +161,14 @@ public abstract class RepositoryMock
                     return rental;
                 })
                 .when(repository)
-                .save(Mockito.any(Rental.class));
+                .save(any(Rental.class));
 
         Mockito.lenient()
                 .doAnswer(i ->
                         list.remove(i.getArguments()[0])
                 )
                 .when(repository)
-                .delete(Mockito.any(Rental.class));
+                .delete(any(Rental.class));
     }
 
     public static void mockFeedbackWebPageRepository(FeedbackWebPageRepository repository)
@@ -180,14 +194,14 @@ public abstract class RepositoryMock
                     return feedback;
                 })
                 .when(repository)
-                .save(Mockito.any(FeedbackWebPage.class));
+                .save(any(FeedbackWebPage.class));
 
         Mockito.lenient()
                 .doAnswer(i ->
                         list.remove(i.getArguments()[0])
                 )
                 .when(repository)
-                .delete(Mockito.any(FeedbackWebPage.class));
+                .delete(any(FeedbackWebPage.class));
     }
     public static void mockRatingRepository(RatingRepository repository)
     {
@@ -212,14 +226,14 @@ public abstract class RepositoryMock
                     return rating;
                 })
                 .when(repository)
-                .save(Mockito.any(Rating.class));
+                .save(any(Rating.class));
 
         Mockito.lenient()
                 .doAnswer(i ->
                         list.remove(i.getArguments()[0])
                 )
                 .when(repository)
-                .delete(Mockito.any(Rating.class));
+                .delete(any(Rating.class));
     }
 
     public static void mockNotificationRepository(NotificationRepository repository)
@@ -245,16 +259,48 @@ public abstract class RepositoryMock
                     return notification;
                 })
                 .when(repository)
-                .save(Mockito.any(Notification.class));
+                .save(any(Notification.class));
 
         Mockito.lenient()
                 .doAnswer(i ->
                         list.remove(i.getArguments()[0])
                 )
                 .when(repository)
-                .delete(Mockito.any(Notification.class));
+                .delete(any(Notification.class));
 
     }
 
+    public static void mockMessageRepository(MessageRepository repository)
+    {
+        List<Message> list = new ArrayList<>();
 
+        Mockito.lenient().when(repository.findById(Mockito.anyLong()))
+                .then(i -> list.stream().filter(
+                        u -> u.getMessageId().equals(i.getArguments()[0])
+                ).findFirst());
+
+        Mockito.lenient().when(repository.findAll())
+                .then(i -> list);
+
+        Mockito.lenient()
+                .doAnswer(i -> {
+                    Message message = (Message) i.getArguments()[0];
+                    if (message.getMessageId() == null)
+                    {
+                        message.setMessageId((long) (list.size() + 1));
+                        list.add(message);
+                    }
+                    return message;
+                })
+                .when(repository)
+                .save(any(Message.class));
+
+        Mockito.lenient()
+                .doAnswer(i ->
+                        list.remove(i.getArguments()[0])
+                )
+                .when(repository)
+                .delete(any(Message.class));
+
+    }
 }

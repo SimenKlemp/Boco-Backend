@@ -1,4 +1,3 @@
-/*
 package edu.ntnu.idatt2106.boco.service;
 
 import edu.ntnu.idatt2106.boco.models.*;
@@ -438,19 +437,17 @@ public class UserServiceTest
     @Test()
     public void when_user_register_without_email_it_should_throw_exception(){
         RegisterUserRequest registerUserRequest = new RegisterUserRequest();
-        registerUserRequest.setName("test user");
         registerUserRequest.setEmail("testemail");
     }
     @Test
     public void when_save_user_it_should_return_user() {
         RegisterUserRequest registerUserRequest = new RegisterUserRequest();
-        registerUserRequest.setEmail("testmail");
-        registerUserRequest.setPassword("password");
-
+        registerUserRequest.setName("test user");
 
         UserResponse register = userService.register(registerUserRequest);
 
-        assertThat(register.getEmail()).isSameAs(registerUserRequest.getEmail());
+        assertThat(register.getName()).isSameAs(registerUserRequest.getName());
+
+
     }
 }
-*/
