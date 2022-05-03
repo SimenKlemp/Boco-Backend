@@ -77,9 +77,9 @@ public class RatingService {
         if (allRatings.isEmpty()) return null;
 
         ArrayList<Rating> ratings = new ArrayList<>();
-        for(int i=0; i < allRatings.size(); i++){
-            if(allRatings.get(i).getRental().getItem().getUser().getUserId() == userId){
-                ratings.add(allRatings.get(i));
+        for (Rating allRating : allRatings) {
+            if (allRating.getRental().getItem().getUser().getUserId() == userId) {
+                ratings.add(allRating);
             }
         }
         return Mapper.ToRatingResponses(ratings);
@@ -93,9 +93,9 @@ public class RatingService {
 
         ArrayList<Rating> ratings = new ArrayList<>();
 
-        for(int i=0; i < allRatings.size(); i++){
-            if(allRatings.get(i).getRental().getUser().getUserId() == userId){
-                ratings.add(allRatings.get(i));
+        for (Rating allRating : allRatings) {
+            if (allRating.getRental().getUser().getUserId() == userId) {
+                ratings.add(allRating);
             }
         }
         return Mapper.ToRatingResponses(ratings);
@@ -105,7 +105,12 @@ public class RatingService {
     {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) return 0;
-        int rating = (int) ratingRepository.getMeanRating(userId);
+
+        List<Rating> allRatings = ratingRepository.findAllByUser(optionalUser.get());
+        int rating = 5;
+        if (!allRatings.isEmpty()) {
+            rating = (int) ratingRepository.getMeanRating(userId);
+        }
 
         return rating;
     }

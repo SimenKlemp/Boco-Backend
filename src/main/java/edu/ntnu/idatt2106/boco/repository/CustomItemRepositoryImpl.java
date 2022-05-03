@@ -43,10 +43,14 @@ public class CustomItemRepositoryImpl implements CustomItemRepository
 
         BooleanJunction junction = getQueryBuilder().bool();
 
-        junction = mustMatchText(junction, request.getText());
+        if(request.getText() != null && !request.getText().isEmpty()){
+            junction = mustMatchText(junction, request.getText());
+        }
         junction = mustHavePriceInRange(junction, request.getMinPrice(), request.getMaxPrice());
         if (request.isMustBePickupable()) junction = mustBePickupable(junction);
         if (request.isMustBeDeliverable()) junction = mustBeDeliverable(junction);
+        if (request.getCategory() != null && !request.getCategory().isEmpty()) junction = mustBeCategory(junction, request.getCategory());
+        logger.info(request.getCategory());
 
         Query keywordQuery = junction.createQuery();
         logger.debug(keywordQuery.toString());
@@ -77,7 +81,7 @@ public class CustomItemRepositoryImpl implements CustomItemRepository
                 .fuzzy()
                 .withEditDistanceUpTo(2)
                 .withPrefixLength(0)
-                .onFields("title", "description", "category")
+                .onFields("title", "description")
                 .matching(text)
                 .createQuery()
         );
@@ -117,6 +121,16 @@ public class CustomItemRepositoryImpl implements CustomItemRepository
             .onField("isDeliverable")
             .matching(Boolean.TRUE)
             .createQuery()
+        );
+    }
+
+    private BooleanJunction mustBeCategory (BooleanJunction junction, String category)
+    {
+        return junction.must(getQueryBuilder()
+                .keyword()
+                .onField("category")
+                .matching(category)
+                .createQuery()
         );
     }
 

@@ -24,8 +24,7 @@ public abstract class Mapper
                 user.getEmail(),
                 user.getRole(),
                 user.getImage() != null ? user.getImage().getImageId() : null
-
-        );
+                );
     }
 
     public static List<UserResponse> ToUserResponses(List<User> users)
@@ -74,11 +73,11 @@ public abstract class Mapper
             }
         }
 
-        String lastMessage = null;
+        Message lastMessage = null;
         List<Message> messages = rental.getMessages();
         if (messages != null && !messages.isEmpty())
         {
-            lastMessage = messages.get(messages.size()-1).getText();
+            lastMessage = messages.get(messages.size()-1);
         }
 
         return new RentalResponse(
@@ -89,7 +88,7 @@ public abstract class Mapper
                 ToUserResponse(rental.getUser()),
                 ToItemResponse(rental.getItem()),
                 rental.getDeliveryInfo(),
-                lastMessage
+                lastMessage != null ? ToMessageResponse(lastMessage) : null
         );
     }
 
@@ -132,7 +131,8 @@ public abstract class Mapper
         return new MessageResponse(
                 message.getText(),
                 message.getIsByUser(),
-                message.getUser().getUserId()
+                message.getUser().getUserId(),
+                message.getDate()
         );
     }
 
