@@ -1,13 +1,10 @@
 package edu.ntnu.idatt2106.boco.util;
 
-import edu.ntnu.idatt2106.boco.models.FeedbackWebPage;
-import edu.ntnu.idatt2106.boco.models.Item;
-import edu.ntnu.idatt2106.boco.models.Rental;
-import edu.ntnu.idatt2106.boco.models.User;
-import edu.ntnu.idatt2106.boco.payload.response.FeedbackWebPageResponse;
-import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
-import edu.ntnu.idatt2106.boco.payload.response.RentalResponse;
-import edu.ntnu.idatt2106.boco.payload.response.UserResponse;
+import edu.ntnu.idatt2106.boco.models.*;
+import edu.ntnu.idatt2106.boco.payload.response.MessageResponse;
+import edu.ntnu.idatt2106.boco.payload.response.*;
+import edu.ntnu.idatt2106.boco.service.RatingService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 import java.util.List;
@@ -27,6 +24,7 @@ public abstract class Mapper
                 user.getEmail(),
                 user.getRole(),
                 user.getImage() != null ? user.getImage().getImageId() : null
+
         );
     }
 
@@ -76,15 +74,22 @@ public abstract class Mapper
             }
         }
 
+        Message lastMessage = null;
+        List<Message> messages = rental.getMessages();
+        if (!messages.isEmpty())
+        {
+            lastMessage = messages.get(messages.size()-1);
+        }
+
         return new RentalResponse(
                 rental.getRentalId(),
-                rental.getMessage(),
                 rental.getStartDate(),
                 rental.getEndDate(),
                 status,
                 ToUserResponse(rental.getUser()),
                 ToItemResponse(rental.getItem()),
-                rental.getDeliveryInfo()
+                rental.getDeliveryInfo(),
+                lastMessage != null ? ToMessageResponse(lastMessage) : null
         );
     }
 
@@ -106,5 +111,47 @@ public abstract class Mapper
         return feedbacks.stream().map(Mapper::ToFeedbackWebPageResponse).collect(Collectors.toList());
     }
 
+    public static NotificationResponse ToNotificationResponse(Notification notification)
+    {
+        return new NotificationResponse(
+                notification.getNotificationId(),
+                notification.getNotificationStatus(),
+                notification.isPressed(),
+                ToRentalResponse(notification.getRental()),
+                ToUserResponse(notification.getUser())
+        );
+    }
 
+    public static List<NotificationResponse> ToNotificationResponses(List<Notification> notifications)
+    {
+        return notifications.stream().map(Mapper::ToNotificationResponse).collect(Collectors.toList());
+    }
+
+    public static MessageResponse ToMessageResponse(Message message)
+    {
+        return new MessageResponse(
+                message.getText(),
+                message.getIsByUser(),
+                message.getUser().getUserId()
+        );
+    }
+
+    public static List<MessageResponse> ToMessageResponses(List<Message> messages)
+    {
+        return messages.stream().map(Mapper::ToMessageResponse).collect(Collectors.toList());
+    }
+
+    public static RatingResponse ToRatingResponse(Rating rating)
+    {
+        return new RatingResponse(
+                rating.getRatingId(),
+                rating.getRate(),
+                rating.getFeedback(),
+                ToRentalResponse(rating.getRental())
+        );
+    }
+    public static List<RatingResponse> ToRatingResponses(List<Rating> ratings)
+    {
+        return ratings.stream().map(Mapper::ToRatingResponse).collect(Collectors.toList());
+    }
 }

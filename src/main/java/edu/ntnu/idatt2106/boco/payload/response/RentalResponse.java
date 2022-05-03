@@ -14,13 +14,13 @@ import java.util.Date;
 public class RentalResponse
 {
     private Long rentalId;
-    private String message;
     private Date startDate;
     private Date endDate;
     private String status;
     private UserResponse user;
     private ItemResponse item;
     private Rental.DeliverInfo deliveryInfo;
+    private MessageResponse lastMessage;
 
     public String getStartDate() {
         return startDate.toString();

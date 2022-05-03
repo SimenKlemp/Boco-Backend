@@ -4,10 +4,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import javax.persistence.*;;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,10 +19,6 @@ public class Rental
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "rentalId")
     private Long rentalId;
-
-    @NotBlank
-    @Column(name = "message")
-    private String message;
 
     @Column(name = "startDate")
     private Date startDate;
@@ -45,9 +40,12 @@ public class Rental
     @Column(name = "deliveryInfo")
     private DeliverInfo deliveryInfo;
 
-    public Rental(String message, Date startDate, Date endDate, Status status, User user, Item item, DeliverInfo deliveryInfo)
+    @JoinColumn(name = "rentalId")
+    @OneToMany
+    private List<Message> messages;
+
+    public Rental(Date startDate, Date endDate, Status status, User user, Item item, DeliverInfo deliveryInfo)
     {
-        this.message = message;
         this.startDate = startDate;
         this.endDate = endDate;
         this.status = status;

@@ -2,8 +2,10 @@ package edu.ntnu.idatt2106.boco.controllers;
 
 import edu.ntnu.idatt2106.boco.payload.request.RegisterRentalRequest;
 import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
+import edu.ntnu.idatt2106.boco.payload.response.NotificationResponse;
 import edu.ntnu.idatt2106.boco.payload.response.RentalResponse;
 import edu.ntnu.idatt2106.boco.service.ItemService;
+import edu.ntnu.idatt2106.boco.service.NotificationService;
 import edu.ntnu.idatt2106.boco.service.RentalService;
 import edu.ntnu.idatt2106.boco.token.TokenComponent;
 import org.slf4j.Logger;
@@ -33,6 +35,9 @@ public class RentalController
     private ItemService itemService;
 
     @Autowired
+    private NotificationService notificationService;
+
+    @Autowired
     private TokenComponent tokenComponent;
 
     Logger logger = LoggerFactory.getLogger(RentalController.class);
@@ -56,6 +61,9 @@ public class RentalController
             }
 
             RentalResponse rental = rentalService.registerRental(request);
+
+            notificationService.registerNotification("REQUEST", rental.getRentalId());
+
             if (rental == null)
             {
                 return new ResponseEntity("Error: Cannot find User or Item", HttpStatus.NO_CONTENT);
@@ -87,6 +95,7 @@ public class RentalController
             }
 
             rental = rentalService.acceptRental(rentalId);
+            notificationService.registerNotification("ACCEPTED", rentalId);
             if (rental == null)
             {
                 return new ResponseEntity("Error: Cannot find User or Item", HttpStatus.NO_CONTENT);
@@ -118,6 +127,7 @@ public class RentalController
             }
 
             rental = rentalService.rejectRental(rentalId);
+            notificationService.registerNotification("REJECTED", rentalId);
             if (rental == null)
             {
                 return new ResponseEntity("Error: Cannot find User or Item", HttpStatus.NO_CONTENT);
@@ -149,6 +159,7 @@ public class RentalController
             }
 
             rental = rentalService.cancelRental(rentalId);
+            notificationService.registerNotification("CANCELED", rentalId);
             if (rental == null)
             {
                 return new ResponseEntity("Error: Cannot find User or Item", HttpStatus.NO_CONTENT);
@@ -224,4 +235,6 @@ public class RentalController
             return new ResponseEntity("Error",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
 }
