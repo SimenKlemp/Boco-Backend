@@ -131,7 +131,8 @@ public abstract class Mapper
         return new MessageResponse(
                 message.getText(),
                 message.getIsByUser(),
-                message.getUser().getUserId()
+                message.getUser().getUserId(),
+                message.getDate()
         );
     }
 

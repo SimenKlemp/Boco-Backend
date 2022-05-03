@@ -43,11 +43,13 @@ public class CustomItemRepositoryImpl implements CustomItemRepository
 
         BooleanJunction junction = getQueryBuilder().bool();
 
-        junction = mustMatchText(junction, request.getText());
+        if(request.getText() != null && !request.getText().isEmpty()){
+            junction = mustMatchText(junction, request.getText());
+        }
         junction = mustHavePriceInRange(junction, request.getMinPrice(), request.getMaxPrice());
         if (request.isMustBePickupable()) junction = mustBePickupable(junction);
         if (request.isMustBeDeliverable()) junction = mustBeDeliverable(junction);
-        if (request.getCategory() != null) junction = mustBeCategory(junction, request.getCategory());
+        if (request.getCategory() != null && !request.getCategory().isEmpty()) junction = mustBeCategory(junction, request.getCategory());
         logger.info(request.getCategory());
 
         Query keywordQuery = junction.createQuery();
