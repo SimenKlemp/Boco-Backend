@@ -47,6 +47,8 @@ public class CustomItemRepositoryImpl implements CustomItemRepository
         junction = mustHavePriceInRange(junction, request.getMinPrice(), request.getMaxPrice());
         if (request.isMustBePickupable()) junction = mustBePickupable(junction);
         if (request.isMustBeDeliverable()) junction = mustBeDeliverable(junction);
+        if (request.getCategory() != null) junction = mustBeCategory(junction, request.getCategory());
+        logger.info(request.getCategory());
 
         Query keywordQuery = junction.createQuery();
         logger.debug(keywordQuery.toString());
@@ -77,7 +79,7 @@ public class CustomItemRepositoryImpl implements CustomItemRepository
                 .fuzzy()
                 .withEditDistanceUpTo(2)
                 .withPrefixLength(0)
-                .onFields("title", "description", "category")
+                .onFields("title", "description")
                 .matching(text)
                 .createQuery()
         );
@@ -117,6 +119,16 @@ public class CustomItemRepositoryImpl implements CustomItemRepository
             .onField("isDeliverable")
             .matching(Boolean.TRUE)
             .createQuery()
+        );
+    }
+
+    private BooleanJunction mustBeCategory (BooleanJunction junction, String category)
+    {
+        return junction.must(getQueryBuilder()
+                .keyword()
+                .onField("category")
+                .matching(category)
+                .createQuery()
         );
     }
 

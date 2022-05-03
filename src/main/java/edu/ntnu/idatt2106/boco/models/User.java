@@ -58,7 +58,6 @@ public class User
     @OneToOne
     private Image image;
 
-    //private float meanRate;
 
     public User(String name, Boolean isPerson, String streetAddress, String postalCode, String postOffice, String email, String password, String role, Image image)
     {

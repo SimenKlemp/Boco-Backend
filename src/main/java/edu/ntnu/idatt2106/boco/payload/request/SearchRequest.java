@@ -25,6 +25,8 @@ public class SearchRequest
     private boolean mustBePickupable = false;
     private boolean mustBeDeliverable = false;
 
+    private String category;
+
 
     public enum SortField
     {

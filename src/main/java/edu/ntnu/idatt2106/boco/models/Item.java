@@ -46,7 +46,7 @@ public class Item
     private String description;
 
     @NotBlank
-    @Field
+    @Field(analyze = Analyze.NO)
     @Column(name = "category")
     private String category;
 
