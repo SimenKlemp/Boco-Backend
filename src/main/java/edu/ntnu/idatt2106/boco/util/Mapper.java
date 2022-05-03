@@ -1,7 +1,10 @@
 package edu.ntnu.idatt2106.boco.util;
 
 import edu.ntnu.idatt2106.boco.models.*;
+import edu.ntnu.idatt2106.boco.payload.response.MessageResponse;
 import edu.ntnu.idatt2106.boco.payload.response.*;
+import edu.ntnu.idatt2106.boco.service.RatingService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 import java.util.List;
@@ -21,6 +24,7 @@ public abstract class Mapper
                 user.getEmail(),
                 user.getRole(),
                 user.getImage() != null ? user.getImage().getImageId() : null
+
         );
     }
 
@@ -70,6 +74,13 @@ public abstract class Mapper
             }
         }
 
+        Message lastMessage = null;
+        List<Message> messages = rental.getMessages();
+        if (!messages.isEmpty())
+        {
+            lastMessage = messages.get(messages.size()-1);
+        }
+
         return new RentalResponse(
                 rental.getRentalId(),
                 rental.getStartDate(),
@@ -77,7 +88,8 @@ public abstract class Mapper
                 status,
                 ToUserResponse(rental.getUser()),
                 ToItemResponse(rental.getItem()),
-                rental.getDeliveryInfo()
+                rental.getDeliveryInfo(),
+                lastMessage != null ? ToMessageResponse(lastMessage) : null
         );
     }
 

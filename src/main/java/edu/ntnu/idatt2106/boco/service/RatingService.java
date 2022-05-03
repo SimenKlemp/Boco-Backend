@@ -100,5 +100,14 @@ public class RatingService {
         }
         return Mapper.ToRatingResponses(ratings);
     }
+
+    public Integer getMeanRating(long userId)
+    {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) return 0;
+        int rating = (int) ratingRepository.getMeanRating(userId);
+
+        return rating;
+    }
 }
 
