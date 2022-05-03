@@ -77,9 +77,9 @@ public class RatingService {
         if (allRatings.isEmpty()) return null;
 
         ArrayList<Rating> ratings = new ArrayList<>();
-        for(int i=0; i < allRatings.size(); i++){
-            if(allRatings.get(i).getRental().getItem().getUser().getUserId() == userId){
-                ratings.add(allRatings.get(i));
+        for (Rating allRating : allRatings) {
+            if (allRating.getRental().getItem().getUser().getUserId() == userId) {
+                ratings.add(allRating);
             }
         }
         return Mapper.ToRatingResponses(ratings);
@@ -93,9 +93,9 @@ public class RatingService {
 
         ArrayList<Rating> ratings = new ArrayList<>();
 
-        for(int i=0; i < allRatings.size(); i++){
-            if(allRatings.get(i).getRental().getUser().getUserId() == userId){
-                ratings.add(allRatings.get(i));
+        for (Rating allRating : allRatings) {
+            if (allRating.getRental().getUser().getUserId() == userId) {
+                ratings.add(allRating);
             }
         }
         return Mapper.ToRatingResponses(ratings);

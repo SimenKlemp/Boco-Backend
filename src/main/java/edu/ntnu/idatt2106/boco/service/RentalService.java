@@ -1,9 +1,6 @@
 package edu.ntnu.idatt2106.boco.service;
 
-import edu.ntnu.idatt2106.boco.models.Item;
-import edu.ntnu.idatt2106.boco.models.Message;
-import edu.ntnu.idatt2106.boco.models.Rental;
-import edu.ntnu.idatt2106.boco.models.User;
+import edu.ntnu.idatt2106.boco.models.*;
 import edu.ntnu.idatt2106.boco.payload.response.MessageResponse;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterRentalRequest;
 import edu.ntnu.idatt2106.boco.payload.response.ChatResponse;
@@ -16,6 +13,7 @@ import edu.ntnu.idatt2106.boco.util.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -159,6 +157,24 @@ public class RentalService {
         } else {
             rentals = rentalRepository.findAllByUserAndStatus(optionalUser.get(), status);
 
+        }
+        return Mapper.ToRentalResponses(rentals);
+    }
+
+    public List<RentalResponse> getAllRentalsOwner(long userId) {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) return null;
+
+        List<Rental> allRentals = rentalRepository.findAll();
+
+        if (allRentals.isEmpty()) return null;
+
+        ArrayList<Rental> rentals = new ArrayList<>();
+
+        for (Rental allRental : allRentals) {
+            if (userId == allRental.getItem().getUser().getUserId()) {
+                rentals.add(allRental);
+            }
         }
         return Mapper.ToRentalResponses(rentals);
     }

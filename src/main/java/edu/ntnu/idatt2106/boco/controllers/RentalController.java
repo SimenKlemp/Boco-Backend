@@ -238,4 +238,31 @@ public class RentalController
     }
 
 
+    @GetMapping("/get-my-owner/{userId}")
+    public ResponseEntity<List<RentalResponse>> getAllRentalsOwner(@PathVariable("userId") long userId)
+    {
+        logger.info("Fetching all rentals for user " + userId);
+
+        try
+        {
+            if (!tokenComponent.haveAccessTo(userId))
+            {
+                return new ResponseEntity(HttpStatus.FORBIDDEN);
+            }
+
+            List<RentalResponse> rentals = rentalService.getAllRentalsOwner(userId);
+            if (rentals == null || rentals.isEmpty())
+            {
+                return new ResponseEntity(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(rentals, HttpStatus.OK);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            return new ResponseEntity("Error",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 }
