@@ -58,6 +58,7 @@ public class User
     @OneToOne
     private Image image;
 
+
     public User(String name, Boolean isPerson, String streetAddress, String postalCode, String postOffice, String email, String password, String role, Image image)
     {
         this.name = name;

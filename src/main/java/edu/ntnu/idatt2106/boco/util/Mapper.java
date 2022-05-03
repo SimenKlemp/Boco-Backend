@@ -24,8 +24,7 @@ public abstract class Mapper
                 user.getEmail(),
                 user.getRole(),
                 user.getImage() != null ? user.getImage().getImageId() : null
-
-        );
+                );
     }
 
     public static List<UserResponse> ToUserResponses(List<User> users)
