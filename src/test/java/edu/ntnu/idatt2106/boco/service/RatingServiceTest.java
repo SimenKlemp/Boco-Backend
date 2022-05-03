@@ -1,88 +1,50 @@
 package edu.ntnu.idatt2106.boco.service;
 
-import edu.ntnu.idatt2106.boco.models.*;
-import edu.ntnu.idatt2106.boco.payload.request.RatingRequest;
-import edu.ntnu.idatt2106.boco.payload.response.RatingResponse;
-import edu.ntnu.idatt2106.boco.payload.response.UserResponse;
+import edu.ntnu.idatt2106.boco.BocoApplication;
+import edu.ntnu.idatt2106.boco.models.Rating;
+import edu.ntnu.idatt2106.boco.models.Rental;
 import edu.ntnu.idatt2106.boco.repository.*;
-import edu.ntnu.idatt2106.boco.util.ModelFactory;
-import edu.ntnu.idatt2106.boco.util.RepositoryMock;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
-@ExtendWith(MockitoExtension.class)
-public class RatingServiceTest {
-    @InjectMocks
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = BocoApplication.class)
+public class RatingServiceTest
+{
+    @Autowired
     private RatingService ratingService;
 
-
-    @Mock
+    @Autowired
     private UserRepository userRepository;
 
-    @Mock
+    @Autowired
     private ImageRepository imageRepository;
 
-    @Mock
+    @Autowired
     private ItemRepository itemRepository;
 
-    @Mock
+    @Autowired
     private RentalRepository rentalRepository;
 
-    @Mock
+    @Autowired
     private RatingRepository ratingRepository;
 
-    @Mock
+    @Autowired
     private NotificationRepository notificationRepository;
 
-    @Mock
+    @Autowired
     private FeedbackWebPageRepository feedbackWebPageRepository;
 
-    @BeforeEach
-    public void beforeEach()
+    @Before
+    public void before()
     {
-        RepositoryMock.mockUserRepository(userRepository);
-        RepositoryMock.mockImageRepository(imageRepository);
-        RepositoryMock.mockItemRepository(itemRepository);
-        RepositoryMock.mockRentalRepository(rentalRepository);
-        RepositoryMock.mockFeedbackWebPageRepository(feedbackWebPageRepository);
-        RepositoryMock.mockRatingRepository(ratingRepository);
-        RepositoryMock.mockNotificationRepository(notificationRepository);
+        for (Rating rating : ratingRepository.findAll())
+        {
+            ratingService.delete(rating.getRatingId());
+        }
     }
-
-    /*
-    @Test
-    public void registerRatingTest()
-    {
-        User user = ModelFactory.getUser(null);
-        user = userRepository.save(user);
-
-        Item item = ModelFactory.getItem(null, user);
-        item = itemRepository.save(item);
-
-        Rental rental = ModelFactory.getRental(user, item);
-        rental = rentalRepository.save(rental);
-
-        RatingRequest request = new RatingRequest(
-                "feedback",
-                5,
-                rental.getRentalId(),
-                user.getUserId()
-        );
-
-        RatingResponse response = ratingService.registerRating(request);
-
-        Rating rating = ratingRepository.findById(response.getRatingId()).orElseThrow();
-        assertThat(rating.getFeedback()).isEqualTo(response.getFeedback()).isEqualTo(request.getFeedback());
-        assertThat(rating.getRate()).isEqualTo(response.getRate()).isEqualTo(request.getRate());
-        assertThat(rating.getRental()).isEqualTo(response.getRental());
-    }
-
-     */
-
 }

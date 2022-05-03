@@ -144,6 +144,7 @@ public class ItemService
 
             Optional<Image> optionalImage = imageRepository.findById(request.getImageId());
             if (optionalImage.isPresent()) item.setImage(optionalImage.get());
+            item = itemRepository.save(item);
 
             if (prevImage != null && !Objects.equals(request.getImageId(), prevImage.getImageId()))
             {
@@ -184,14 +185,20 @@ public class ItemService
         if(optionalItem.isEmpty()) return false;
         Item item = optionalItem.get();
 
-        if (item.getImage() != null) imageService.delete(item.getImage().getImageId());
-
         for (Rental rental : rentalRepository.findAllByItem(item))
         {
             rentalService.delete(rental.getRentalId());
         }
 
+        Image image = item.getImage();
+
         itemRepository.delete(optionalItem.get());
+
+        if (image != null)
+        {
+            imageService.delete(item.getImage().getImageId());
+        }
+
         return true;
     }
 }

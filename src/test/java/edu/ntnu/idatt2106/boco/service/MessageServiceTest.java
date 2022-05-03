@@ -1,48 +1,51 @@
 package edu.ntnu.idatt2106.boco.service;
 
-import edu.ntnu.idatt2106.boco.models.Item;
-import edu.ntnu.idatt2106.boco.models.Message;
-import edu.ntnu.idatt2106.boco.models.Rental;
-import edu.ntnu.idatt2106.boco.models.User;
+import edu.ntnu.idatt2106.boco.BocoApplication;
+import edu.ntnu.idatt2106.boco.models.*;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterMessageRequest;
 import edu.ntnu.idatt2106.boco.payload.response.ChatResponse;
 import edu.ntnu.idatt2106.boco.payload.response.MessageResponse;
+import edu.ntnu.idatt2106.boco.repository.ItemRepository;
 import edu.ntnu.idatt2106.boco.repository.MessageRepository;
 import edu.ntnu.idatt2106.boco.repository.RentalRepository;
 import edu.ntnu.idatt2106.boco.repository.UserRepository;
 import edu.ntnu.idatt2106.boco.util.ModelFactory;
-import edu.ntnu.idatt2106.boco.util.RepositoryMock;
 import edu.ntnu.idatt2106.boco.util.RequestFactory;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ExtendWith(MockitoExtension.class)
-public class ChatServiceTest
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = BocoApplication.class)
+public class MessageServiceTest
 {
-    @InjectMocks
-    private ChatService chatService;
+    @Autowired
+    private MessageService messageService;
 
-    @Mock
+    @Autowired
     private MessageRepository messageRepository;
 
-    @Mock
+    @Autowired
     private UserRepository userRepository;
 
-    @Mock
+    @Autowired
+    private ItemRepository itemRepository;
+
+    @Autowired
     private RentalRepository rentalRepository;
 
-    @BeforeEach
-    public void beforeEach()
+    @Before
+    public void before()
     {
-        RepositoryMock.mockMessageRepository(messageRepository);
-        RepositoryMock.mockUserRepository(userRepository);
-        RepositoryMock.mockRentalRepository(rentalRepository);
+        for (Message message : messageRepository.findAll())
+        {
+            messageService.delete(message.getMessageId());
+        }
     }
 
     @Test
@@ -55,12 +58,14 @@ public class ChatServiceTest
         user2 = userRepository.save(user2);
 
         Item item = ModelFactory.getItem(null, user1);
+        item = itemRepository.save(item);
+
         Rental rental = ModelFactory.getRental(user2, item);
         rental = rentalRepository.save(rental);
 
         RegisterMessageRequest request = RequestFactory.getRegisterMessageRequest(user2.getUserId(), rental.getRentalId());
 
-        MessageResponse response = chatService.register(request);
+        MessageResponse response = messageService.register(request);
         Message message = messageRepository.findById(response.getMessageId()).orElseThrow();
 
         assertThat(message.getMessageId()).isEqualTo(response.getMessageId());
@@ -85,7 +90,7 @@ public class ChatServiceTest
 
         RegisterMessageRequest request = RequestFactory.getRegisterMessageRequest(3L, rental.getRentalId());
 
-        MessageResponse response = chatService.register(request);
+        MessageResponse response = messageService.register(request);
 
         assertThat(response).isNull();
     }
@@ -98,7 +103,7 @@ public class ChatServiceTest
 
         RegisterMessageRequest request = RequestFactory.getRegisterMessageRequest(user.getUserId(), 1L);
 
-        MessageResponse response = chatService.register(request);
+        MessageResponse response = messageService.register(request);
 
         assertThat(response).isNull();
     }
@@ -121,7 +126,7 @@ public class ChatServiceTest
 
         RegisterMessageRequest request = RequestFactory.getRegisterMessageRequest(user3.getUserId(), rental.getRentalId());
 
-        MessageResponse response = chatService.register(request);
+        MessageResponse response = messageService.register(request);
 
         assertThat(response).isNull();
     }
@@ -147,7 +152,7 @@ public class ChatServiceTest
 
         Message[] messages = {message1, message2};
 
-        ChatResponse chatResponse = chatService.getChat(rental.getRentalId());
+        ChatResponse chatResponse = messageService.getChat(rental.getRentalId());
 
         assertThat(chatResponse.getRental().getRentalId()).isEqualTo(rental.getRentalId());
         for (int i = 0; i < messages.length; i++)
@@ -177,7 +182,7 @@ public class ChatServiceTest
         Rental rental = ModelFactory.getRental(user2, item);
         rental = rentalRepository.save(rental);
 
-        ChatResponse chatResponse = chatService.getChat(rental.getRentalId());
+        ChatResponse chatResponse = messageService.getChat(rental.getRentalId());
 
         assertThat(chatResponse.getRental().getRentalId()).isEqualTo(rental.getRentalId());
         assertThat(chatResponse.getMessages()).isEmpty();
@@ -186,7 +191,7 @@ public class ChatServiceTest
     @Test
     public void getChatWrongRentalId()
     {
-        ChatResponse chatResponse = chatService.getChat(1L);
+        ChatResponse chatResponse = messageService.getChat(1L);
 
         assertThat(chatResponse).isNull();
     }

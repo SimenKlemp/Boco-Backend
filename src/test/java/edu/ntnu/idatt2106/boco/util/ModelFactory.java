@@ -1,9 +1,11 @@
 package edu.ntnu.idatt2106.boco.util;
 
 import edu.ntnu.idatt2106.boco.models.*;
+import org.junit.jupiter.api.MethodOrderer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Date;
+import java.util.Random;
 
 public abstract class ModelFactory
 {
@@ -15,7 +17,7 @@ public abstract class ModelFactory
                 "streetAddress",
                 "postalCode",
                 "postOffice",
-                "email",
+                "email" + new Random().nextInt() + "@email.com",
                 new BCryptPasswordEncoder().encode("password"),
                 "USER",
                 image

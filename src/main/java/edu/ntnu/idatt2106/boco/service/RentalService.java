@@ -29,7 +29,7 @@ public class RentalService
     ItemRepository itemRepository;
 
     @Autowired
-    ChatService chatService;
+    MessageService messageService;
 
     @Autowired
     MessageRepository messageRepository;
@@ -40,6 +40,11 @@ public class RentalService
     @Autowired
     RatingRepository ratingRepository;
 
+    @Autowired
+    NotificationService notificationService;
+
+    @Autowired
+    NotificationRepository notificationRepository;
 
     /**
      * A method for creating a rental request
@@ -173,7 +178,12 @@ public class RentalService
 
         for (Message message : messageRepository.findAllByRental(rental, Sort.unsorted()))
         {
-            chatService.delete(message.getMessageId());
+            messageService.delete(message.getMessageId());
+        }
+
+        for (Notification notification : notificationRepository.findAllByRental(rental))
+        {
+            notificationService.delete(notification.getNotificationId());
         }
 
         rentalRepository.delete(rental);

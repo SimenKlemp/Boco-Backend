@@ -51,6 +51,12 @@ public class UserService
     @Autowired
     FeedbackWebPageRepository feedbackWebPageRepository;
 
+    @Autowired
+    NotificationService notificationService;
+
+    @Autowired
+    NotificationRepository notificationRepository;
+
     private final BCryptPasswordEncoder encoder;
 
     public UserService()
@@ -112,7 +118,7 @@ public class UserService
         return Mapper.ToUserResponse(user);
     }
 
-    public UserResponse update(long userId, UpdateUserRequest request)
+    public UserResponse update(Long userId, UpdateUserRequest request)
     {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) return null;
@@ -138,6 +144,7 @@ public class UserService
 
             Optional<Image> optionalImage = imageRepository.findById(request.getImageId());
             if (optionalImage.isPresent()) user.setImage(optionalImage.get());
+            user = userRepository.save(user);
 
             if (prevImage != null && !Objects.equals(request.getImageId(), prevImage.getImageId()))
             {
@@ -149,7 +156,7 @@ public class UserService
         return Mapper.ToUserResponse(user);
     }
 
-    public UserResponse toggleRole(long userId)
+    public UserResponse toggleRole(Long userId)
     {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) return null;
@@ -178,11 +185,6 @@ public class UserService
         if(optionalUser.isEmpty()) return false;
         User user = optionalUser.get();
 
-        if (user.getImage() != null)
-        {
-            imageService.delete(user.getImage().getImageId());
-        }
-
         for (Rating rating : ratingRepository.findAllByUser(user))
         {
             ratingService.delete(rating.getRatingId());
@@ -203,7 +205,20 @@ public class UserService
             feedbackWebPageService.delete(feedbackWebPage.getFeedbackId());
         }
 
+        for (Notification notification : notificationRepository.findAllByUser(user))
+        {
+            notificationService.delete(notification.getNotificationId());
+        }
+
+        Image image = user.getImage();
+
         userRepository.delete(user);
+
+        if (image != null)
+        {
+            imageService.delete(user.getImage().getImageId());
+        }
+
         return true;
     }
 

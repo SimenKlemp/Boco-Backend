@@ -1,62 +1,55 @@
 package edu.ntnu.idatt2106.boco.service;
 
+import edu.ntnu.idatt2106.boco.BocoApplication;
 import edu.ntnu.idatt2106.boco.models.*;
 import edu.ntnu.idatt2106.boco.payload.request.UpdateUserRequest;
 import edu.ntnu.idatt2106.boco.repository.*;
 import edu.ntnu.idatt2106.boco.util.ModelFactory;
-import edu.ntnu.idatt2106.boco.util.RepositoryMock;
 import edu.ntnu.idatt2106.boco.payload.request.LoginRequest;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterUserRequest;
 import edu.ntnu.idatt2106.boco.payload.response.UserResponse;
 import edu.ntnu.idatt2106.boco.util.RequestFactory;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ExtendWith(MockitoExtension.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = BocoApplication.class)
 public class UserServiceTest
 {
-    @InjectMocks
+    @Autowired
     private UserService userService;
 
-    @Mock
+    @Autowired
     private UserRepository userRepository;
 
-    @Mock
+    @Autowired
     private ImageRepository imageRepository;
 
-    @Mock
+    @Autowired
     private ItemRepository itemRepository;
 
-    @Mock
+    @Autowired
     private RentalRepository rentalRepository;
 
-    @Mock
+    @Autowired
     private FeedbackWebPageRepository feedbackWebPageRepository;
 
-    @Mock
-    private RatingRepository ratingRepository;
-
-    @BeforeEach
-    public void beforeEach()
+    @Before
+    public void before()
     {
-        RepositoryMock.mockUserRepository(userRepository);
-        RepositoryMock.mockImageRepository(imageRepository);
-        RepositoryMock.mockItemRepository(itemRepository);
-        RepositoryMock.mockRentalRepository(rentalRepository);
-        RepositoryMock.mockFeedbackWebPageRepository(feedbackWebPageRepository);
-        RepositoryMock.mockRatingRepository(ratingRepository);
+        for (User user : userRepository.findAll())
+        {
+            userService.delete(user.getUserId());
+        }
     }
-
-
 
     @Test
     public void registerWithoutImage()
@@ -79,7 +72,7 @@ public class UserServiceTest
     @Test
     public void registerWithImage()
     {
-        Image image = new Image("name", null);
+        Image image = ModelFactory.getImage();
         image = imageRepository.save(image);
 
         RegisterUserRequest request = RequestFactory.getRegisterUserRequest(image.getImageId());
@@ -99,7 +92,7 @@ public class UserServiceTest
     @Test
     public void registerWrongImage()
     {
-        RegisterUserRequest request = RequestFactory.getRegisterUserRequest(1L);
+        RegisterUserRequest request = RequestFactory.getRegisterUserRequest(0L);
 
         UserResponse response = userService.register(request);
 
@@ -158,7 +151,7 @@ public class UserServiceTest
         user = userRepository.save(user);
 
         LoginRequest request = new LoginRequest(
-                "wrong email",
+                "wrong@email.com",
                 "password"
         );
 
@@ -198,7 +191,7 @@ public class UserServiceTest
     @Test
     public void deleteWithImage()
     {
-        Image image = new Image("name", null);
+        Image image = ModelFactory.getImage();
         image = imageRepository.save(image);
 
         User user = ModelFactory.getUser(image);
@@ -268,14 +261,14 @@ public class UserServiceTest
     @Test
     public void deleteWrongUserId()
     {
-        boolean success = userService.delete(1L);
+        boolean success = userService.delete(0L);
         assertThat(success).isFalse();
     }
 
     @Test
     public void updateAll()
     {
-        Image oldImage = new Image("name", null);
+        Image oldImage = ModelFactory.getImage();
         oldImage = imageRepository.save(oldImage);
 
         User user = ModelFactory.getUser(oldImage);
@@ -287,6 +280,7 @@ public class UserServiceTest
         UpdateUserRequest request = RequestFactory.getUpdateUserRequest(image.getImageId());
 
         UserResponse response = userService.update(user.getUserId(), request);
+        user = userRepository.findById(user.getUserId()).orElseThrow();
 
         assertThat(user.getName()).isEqualTo(response.getName()).isEqualTo(request.getName());
         assertThat(user.getIsPerson()).isEqualTo(response.getIsPerson()).isEqualTo(request.getIsPerson());
@@ -301,7 +295,7 @@ public class UserServiceTest
     @Test
     public void updateNothing()
     {
-        Image image = new Image("name", null);
+        Image image = ModelFactory.getImage();
         image = imageRepository.save(image);
 
         User user = ModelFactory.getUser(image);
@@ -309,6 +303,7 @@ public class UserServiceTest
 
         User oldUser = ModelFactory.getUser(null);
         oldUser.setUserId(user.getUserId());
+        oldUser.setEmail(user.getEmail());
 
         UpdateUserRequest request = new UpdateUserRequest();
 
@@ -329,7 +324,7 @@ public class UserServiceTest
     {
         UpdateUserRequest request = new UpdateUserRequest();
 
-        UserResponse response = userService.update(1, request);
+        UserResponse response = userService.update(0L, request);
 
         assertThat(response).isNull();
     }
@@ -341,6 +336,7 @@ public class UserServiceTest
         user = userRepository.save(user);
 
         UserResponse response = userService.toggleRole(user.getUserId());
+        user = userRepository.findById(user.getUserId()).orElseThrow();
 
         assertThat(user.getRole()).isEqualTo(response.getRole()).isEqualTo("ADMIN");
     }
@@ -353,6 +349,7 @@ public class UserServiceTest
         user = userRepository.save(user);
 
         UserResponse response = userService.toggleRole(user.getUserId());
+        user = userRepository.findById(user.getUserId()).orElseThrow();
 
         assertThat(user.getRole()).isEqualTo(response.getRole()).isEqualTo("USER");
     }
@@ -360,7 +357,7 @@ public class UserServiceTest
     @Test
     public void toggleRoleWrongUserId()
     {
-        UserResponse response = userService.toggleRole(1);
+        UserResponse response = userService.toggleRole(0L);
 
         assertThat(response).isNull();
     }

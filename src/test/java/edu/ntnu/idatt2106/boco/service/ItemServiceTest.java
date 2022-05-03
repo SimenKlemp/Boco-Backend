@@ -1,5 +1,6 @@
 package edu.ntnu.idatt2106.boco.service;
 
+import edu.ntnu.idatt2106.boco.BocoApplication;
 import edu.ntnu.idatt2106.boco.models.Image;
 import edu.ntnu.idatt2106.boco.models.Item;
 import edu.ntnu.idatt2106.boco.models.User;
@@ -7,44 +8,44 @@ import edu.ntnu.idatt2106.boco.payload.request.RegisterItemRequest;
 import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
 import edu.ntnu.idatt2106.boco.repository.*;
 import edu.ntnu.idatt2106.boco.util.ModelFactory;
-import edu.ntnu.idatt2106.boco.util.RepositoryMock;
 import edu.ntnu.idatt2106.boco.util.RequestFactory;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ExtendWith(MockitoExtension.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = BocoApplication.class)
 public class ItemServiceTest
 {
-    @InjectMocks
+    @Autowired
     private ItemService itemService;
 
-    @Mock
+    @Autowired
     private UserRepository userRepository;
 
-    @Mock
+    @Autowired
     private ImageRepository imageRepository;
 
-    @Mock
+    @Autowired
     private ItemRepository itemRepository;
 
-    @Mock
+    @Autowired
     private RentalRepository rentalRepository;
 
-    @BeforeEach
-    public void beforeEach()
+    @Before
+    public void before()
     {
-        RepositoryMock.mockUserRepository(userRepository);
-        RepositoryMock.mockImageRepository(imageRepository);
-        RepositoryMock.mockItemRepository(itemRepository);
-        RepositoryMock.mockRentalRepository(rentalRepository);
+        for (Item item : itemRepository.findAll())
+        {
+            itemService.delete(item.getItemId());
+        }
     }
 
     @Test
@@ -100,7 +101,7 @@ public class ItemServiceTest
     @Test
     public void registerWrongUserId()
     {
-        RegisterItemRequest request = new RegisterItemRequest();
+        RegisterItemRequest request = RequestFactory.getRegisterItemRequest(0L, null);
 
         ItemResponse response = itemService.register(request);
 
@@ -111,11 +112,12 @@ public class ItemServiceTest
     public void getAllWithItems()
     {
         User user = ModelFactory.getUser(null);
+        user = userRepository.save(user);
         Item item1 = ModelFactory.getItem(null, user);
         item1 = itemRepository.save(item1);
         Item item2 = ModelFactory.getItem(null, user);
         item2 = itemRepository.save(item2);
-        Item[] items = {item1, item2};
+        Item[] items = {item2, item1};
 
         List<ItemResponse> responses = itemService.getAll(0, Integer.MAX_VALUE);
 

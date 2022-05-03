@@ -4,6 +4,8 @@ import edu.ntnu.idatt2106.boco.payload.request.*;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Random;
+
 public abstract class RequestFactory
 {
     public static RegisterUserRequest getRegisterUserRequest(Long imageId)
@@ -14,7 +16,7 @@ public abstract class RequestFactory
                 "streetAddress",
                 "postalCode",
                 "postOffice",
-                "email",
+                "email" + new Random().nextInt() + "@email.com",
                 "password",
                 imageId
         );
@@ -28,7 +30,7 @@ public abstract class RequestFactory
                 "new streetAddress",
                 "new postalCode",
                 "new postOffice",
-                "new email",
+                "new" + new Random().nextInt() + "@email.com",
                 "new password",
                 imageId
         );

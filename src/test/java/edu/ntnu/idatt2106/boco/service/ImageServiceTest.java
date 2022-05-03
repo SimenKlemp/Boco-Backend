@@ -1,35 +1,39 @@
 package edu.ntnu.idatt2106.boco.service;
 
+import edu.ntnu.idatt2106.boco.BocoApplication;
 import edu.ntnu.idatt2106.boco.models.Image;
+import edu.ntnu.idatt2106.boco.models.Item;
 import edu.ntnu.idatt2106.boco.repository.ImageRepository;
 import edu.ntnu.idatt2106.boco.util.ModelFactory;
-import edu.ntnu.idatt2106.boco.util.RepositoryMock;
 import edu.ntnu.idatt2106.boco.util.RequestFactory;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ExtendWith(MockitoExtension.class)
-
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = BocoApplication.class)
 public class ImageServiceTest
 {
-    @InjectMocks
+    @Autowired
     private ImageService imageService;
 
-    @Mock
+    @Autowired
     private ImageRepository imageRepository;
 
-    @BeforeEach
-    public void beforeEach()
+    @Before
+    public void before()
     {
-        RepositoryMock.mockImageRepository(imageRepository);
+        for (Image image : imageRepository.findAll())
+        {
+            imageService.delete(image.getImageId());
+        }
     }
 
     @Test

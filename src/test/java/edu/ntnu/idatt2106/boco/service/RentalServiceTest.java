@@ -1,45 +1,45 @@
 package edu.ntnu.idatt2106.boco.service;
 
+import edu.ntnu.idatt2106.boco.BocoApplication;
+import edu.ntnu.idatt2106.boco.models.Rental;
+import edu.ntnu.idatt2106.boco.models.User;
 import edu.ntnu.idatt2106.boco.repository.ImageRepository;
 import edu.ntnu.idatt2106.boco.repository.ItemRepository;
 import edu.ntnu.idatt2106.boco.repository.RentalRepository;
 import edu.ntnu.idatt2106.boco.repository.UserRepository;
-import edu.ntnu.idatt2106.boco.util.RepositoryMock;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
-@ExtendWith(MockitoExtension.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = BocoApplication.class)
 public class RentalServiceTest
 {
-    @InjectMocks
+    @Autowired
     private RentalService rentalService;
 
-    @Mock
+    @Autowired
     private UserRepository userRepository;
 
-    @Mock
+    @Autowired
     private ImageRepository imageRepository;
 
-    @Mock
+    @Autowired
     private ItemRepository itemRepository;
 
-    @Mock
+    @Autowired
     private RentalRepository rentalRepository;
 
-    @BeforeEach
-    public void beforeEach()
+    @Before
+    public void before()
     {
-        RepositoryMock.mockUserRepository(userRepository);
-        RepositoryMock.mockImageRepository(imageRepository);
-        RepositoryMock.mockItemRepository(itemRepository);
-        RepositoryMock.mockRentalRepository(rentalRepository);
+        for (Rental rental : rentalRepository.findAll())
+        {
+            rentalService.delete(rental.getRentalId());
+        }
     }
 
     @Test

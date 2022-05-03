@@ -1,41 +1,45 @@
 package edu.ntnu.idatt2106.boco.service;
 
+import edu.ntnu.idatt2106.boco.BocoApplication;
 import edu.ntnu.idatt2106.boco.models.FeedbackWebPage;
+import edu.ntnu.idatt2106.boco.models.Image;
 import edu.ntnu.idatt2106.boco.models.User;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterFeedbackWebPageRequest;
 import edu.ntnu.idatt2106.boco.payload.response.FeedbackWebPageResponse;
 import edu.ntnu.idatt2106.boco.repository.*;
 import edu.ntnu.idatt2106.boco.util.ModelFactory;
-import edu.ntnu.idatt2106.boco.util.RepositoryMock;
 import edu.ntnu.idatt2106.boco.util.RequestFactory;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ExtendWith(MockitoExtension.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = BocoApplication.class)
 public class FeedbackWebPageServiceTest
 {
-    @InjectMocks
+    @Autowired
     private FeedbackWebPageService feedbackWebPageService;
 
-    @Mock
+    @Autowired
     private FeedbackWebPageRepository feedbackWebPageRepository;
 
-    @Mock
+    @Autowired
     private UserRepository userRepository;
 
-    @BeforeEach
-    public void beforeEach()
+    @Before
+    public void before()
     {
-        RepositoryMock.mockUserRepository(userRepository);
-        RepositoryMock.mockFeedbackWebPageRepository(feedbackWebPageRepository);
+        for (FeedbackWebPage feedbackWebPage : feedbackWebPageRepository.findAll())
+        {
+            feedbackWebPageService.delete(feedbackWebPage.getFeedbackId());
+        }
     }
 
     @Test

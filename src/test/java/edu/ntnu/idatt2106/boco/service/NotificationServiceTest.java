@@ -1,56 +1,51 @@
 package edu.ntnu.idatt2106.boco.service;
 
-import edu.ntnu.idatt2106.boco.models.Item;
-import edu.ntnu.idatt2106.boco.models.Notification;
-import edu.ntnu.idatt2106.boco.models.Rental;
-import edu.ntnu.idatt2106.boco.models.User;
+import edu.ntnu.idatt2106.boco.BocoApplication;
+import edu.ntnu.idatt2106.boco.models.*;
 import edu.ntnu.idatt2106.boco.payload.response.NotificationResponse;
 import edu.ntnu.idatt2106.boco.repository.*;
 import edu.ntnu.idatt2106.boco.util.ModelFactory;
-import edu.ntnu.idatt2106.boco.util.RepositoryMock;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ExtendWith(MockitoExtension.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = BocoApplication.class)
 public class NotificationServiceTest {
 
-    @InjectMocks
+    @Autowired
     private NotificationService notificationService;
 
-    @Mock
+    @Autowired
     private NotificationRepository notificationRepository;
 
-    @Mock
+    @Autowired
     private UserRepository userRepository;
 
-    @Mock
+    @Autowired
     private ImageRepository imageRepository;
 
-    @Mock
+    @Autowired
     private ItemRepository itemRepository;
 
-    @Mock
+    @Autowired
     private RentalRepository rentalRepository;
 
-    @Mock
+    @Autowired
     private FeedbackWebPageRepository feedbackWebPageRepository;
 
-    @BeforeEach
-    public void beforeEach()
+    @Before
+    public void before()
     {
-
-        RepositoryMock.mockUserRepository(userRepository);
-        RepositoryMock.mockImageRepository(imageRepository);
-        RepositoryMock.mockItemRepository(itemRepository);
-        RepositoryMock.mockRentalRepository(rentalRepository);
-        RepositoryMock.mockFeedbackWebPageRepository(feedbackWebPageRepository);
-        RepositoryMock.mockNotificationRepository(notificationRepository);
+        for (Notification notification : notificationRepository.findAll())
+        {
+            notificationService.delete(notification.getNotificationId());
+        }
     }
 
     @Test

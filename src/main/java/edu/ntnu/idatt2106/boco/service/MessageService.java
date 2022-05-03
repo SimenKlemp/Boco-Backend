@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ChatService
+public class MessageService
 {
     @Autowired
     MessageRepository messageRepository;

@@ -4,7 +4,7 @@ import edu.ntnu.idatt2106.boco.payload.request.RegisterMessageRequest;
 import edu.ntnu.idatt2106.boco.payload.response.MessageResponse;
 import edu.ntnu.idatt2106.boco.payload.response.ChatResponse;
 import edu.ntnu.idatt2106.boco.payload.response.RentalResponse;
-import edu.ntnu.idatt2106.boco.service.ChatService;
+import edu.ntnu.idatt2106.boco.service.MessageService;
 import edu.ntnu.idatt2106.boco.service.RentalService;
 import edu.ntnu.idatt2106.boco.token.TokenComponent;
 import org.slf4j.Logger;
@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 public class ChatController
 {
     @Autowired
-    private ChatService chatService;
+    private MessageService messageService;
 
     @Autowired
     private RentalService rentalService;
@@ -43,7 +43,7 @@ public class ChatController
     {
         try
         {
-            MessageResponse response = chatService.register(request);
+            MessageResponse response = messageService.register(request);
 
             if (response == null)
             {
@@ -72,7 +72,7 @@ public class ChatController
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            ChatResponse response = chatService.getChat(rentalId);
+            ChatResponse response = messageService.getChat(rentalId);
             if (response == null)
             {
                 return new ResponseEntity(HttpStatus.NO_CONTENT);

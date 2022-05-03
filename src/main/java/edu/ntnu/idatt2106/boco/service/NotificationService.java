@@ -81,5 +81,13 @@ public class NotificationService {
         return Mapper.ToNotificationResponse(notification);
     }
 
+    public boolean delete(Long notificationId)
+    {
+        Optional<Notification> optionalNotification = notificationRepository.findById(notificationId);
+        if(optionalNotification.isEmpty()) return false;
+        Notification notification = optionalNotification.get();
 
+        notificationRepository.delete(notification);
+        return true;
+    }
 }
