@@ -24,7 +24,6 @@ public abstract class Mapper
                 user.getEmail(),
                 user.getRole(),
                 user.getImage() != null ? user.getImage().getImageId() : null
-
         );
     }
 
@@ -76,7 +75,7 @@ public abstract class Mapper
 
         Message lastMessage = null;
         List<Message> messages = rental.getMessages();
-        if (!messages.isEmpty())
+        if (messages != null && !messages.isEmpty())
         {
             lastMessage = messages.get(messages.size()-1);
         }
@@ -130,6 +129,7 @@ public abstract class Mapper
     public static MessageResponse ToMessageResponse(Message message)
     {
         return new MessageResponse(
+                message.getMessageId(),
                 message.getText(),
                 message.getIsByUser(),
                 message.getUser().getUserId()

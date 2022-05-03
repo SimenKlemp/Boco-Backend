@@ -1,12 +1,10 @@
 package edu.ntnu.idatt2106.boco.util;
 
-import edu.ntnu.idatt2106.boco.payload.request.RegisterItemRequest;
-import edu.ntnu.idatt2106.boco.payload.request.RegisterUserRequest;
-import edu.ntnu.idatt2106.boco.payload.request.UpdateUserRequest;
+import edu.ntnu.idatt2106.boco.payload.request.*;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Date;
-
-public class RequestFactory
+public abstract class RequestFactory
 {
     public static RegisterUserRequest getRegisterUserRequest(Long imageId)
     {
@@ -51,5 +49,27 @@ public class RequestFactory
                 userId,
                 imageId
         );
+    }
+
+    public static RegisterFeedbackWebPageRequest getRegisterFeedbackWebPageRequest(Long userId)
+    {
+        return new RegisterFeedbackWebPageRequest(
+                "message",
+                userId
+        );
+    }
+
+    public static RegisterMessageRequest getRegisterMessageRequest(Long userId, Long rentalId)
+    {
+        return new RegisterMessageRequest(
+                "text",
+                userId,
+                rentalId
+        );
+    }
+
+    public static MultipartFile getMultipartFile()
+    {
+        return new MockMultipartFile("name", new byte[5]);
     }
 }

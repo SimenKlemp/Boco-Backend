@@ -1,15 +1,9 @@
 package edu.ntnu.idatt2106.boco.controllers;
 
-import edu.ntnu.idatt2106.boco.payload.request.NotificationRequest;
 import edu.ntnu.idatt2106.boco.payload.request.RatingRequest;
-import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
-import edu.ntnu.idatt2106.boco.payload.response.NotificationResponse;
 
 import edu.ntnu.idatt2106.boco.payload.response.RatingResponse;
-import edu.ntnu.idatt2106.boco.payload.response.UserResponse;
-import edu.ntnu.idatt2106.boco.service.NotificationService;
 import edu.ntnu.idatt2106.boco.service.RatingService;
-import edu.ntnu.idatt2106.boco.service.RentalService;
 import edu.ntnu.idatt2106.boco.service.UserService;
 import edu.ntnu.idatt2106.boco.token.TokenComponent;
 import org.slf4j.Logger;
@@ -49,7 +43,7 @@ public class RatingController {
     {
         try
         {
-            RatingResponse rating = ratingService.registerRating(request);
+            RatingResponse rating = ratingService.register(request);
             if (rating == null)
             {
                 return new ResponseEntity("Error: Rating can not be found ", HttpStatus.NO_CONTENT);

@@ -22,7 +22,7 @@ public class ImageService
 
     Logger logger = LoggerFactory.getLogger(ImageService.class);
 
-    public long upload(MultipartFile file)
+    public Long upload(MultipartFile file)
     {
         try
         {
@@ -32,19 +32,29 @@ public class ImageService
             image = imageRepository.save(image);
             return image.getImageId();
         }
-        catch (IOException e)
+        catch (Exception e)
         {
             e.printStackTrace();
-            return -1;
+            return null;
         }
     }
 
-    public Resource getImage(long imageId)
+    public Resource getImage(Long imageId)
     {
         Optional<Image> optionalImage = imageRepository.findById(imageId);
         if (optionalImage.isEmpty()) return null;
         Image image = optionalImage.get();
 
         return new ByteArrayResource(image.getContent());
+    }
+
+    public boolean delete(Long imageId)
+    {
+        Optional<Image> optionalImage = imageRepository.findById(imageId);
+        if (optionalImage.isEmpty()) return false;
+        Image image = optionalImage.get();
+
+        imageRepository.delete(image);
+        return true;
     }
 }

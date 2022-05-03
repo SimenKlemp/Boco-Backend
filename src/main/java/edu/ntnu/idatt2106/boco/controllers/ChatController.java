@@ -1,6 +1,6 @@
 package edu.ntnu.idatt2106.boco.controllers;
 
-import edu.ntnu.idatt2106.boco.payload.request.MessageRequest;
+import edu.ntnu.idatt2106.boco.payload.request.RegisterMessageRequest;
 import edu.ntnu.idatt2106.boco.payload.response.MessageResponse;
 import edu.ntnu.idatt2106.boco.payload.response.ChatResponse;
 import edu.ntnu.idatt2106.boco.payload.response.RentalResponse;
@@ -39,11 +39,11 @@ public class ChatController
     Logger logger = LoggerFactory.getLogger(ChatController.class);
 
     @MessageMapping("/chat-incoming")
-    public void handleMessage(@Payload MessageRequest request)
+    public void handleMessage(@Payload RegisterMessageRequest request)
     {
         try
         {
-            MessageResponse response = chatService.handleMessage(request);
+            MessageResponse response = chatService.register(request);
 
             if (response == null)
             {

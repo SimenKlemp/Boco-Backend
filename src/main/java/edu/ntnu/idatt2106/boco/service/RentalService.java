@@ -1,19 +1,12 @@
 package edu.ntnu.idatt2106.boco.service;
 
-import edu.ntnu.idatt2106.boco.models.Item;
-import edu.ntnu.idatt2106.boco.models.Message;
-import edu.ntnu.idatt2106.boco.models.Rental;
-import edu.ntnu.idatt2106.boco.models.User;
-import edu.ntnu.idatt2106.boco.payload.response.MessageResponse;
+import edu.ntnu.idatt2106.boco.models.*;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterRentalRequest;
-import edu.ntnu.idatt2106.boco.payload.response.ChatResponse;
 import edu.ntnu.idatt2106.boco.payload.response.RentalResponse;
-import edu.ntnu.idatt2106.boco.repository.ItemRepository;
-import edu.ntnu.idatt2106.boco.repository.MessageRepository;
-import edu.ntnu.idatt2106.boco.repository.RentalRepository;
-import edu.ntnu.idatt2106.boco.repository.UserRepository;
+import edu.ntnu.idatt2106.boco.repository.*;
 import edu.ntnu.idatt2106.boco.util.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -23,7 +16,6 @@ import java.util.Optional;
 /**
  * A class that represents a RentalService
  */
-
 @Service
 public class RentalService
 {
@@ -37,7 +29,17 @@ public class RentalService
     ItemRepository itemRepository;
 
     @Autowired
+    ChatService chatService;
+
+    @Autowired
     MessageRepository messageRepository;
+
+    @Autowired
+    RatingService ratingService;
+
+    @Autowired
+    RatingRepository ratingRepository;
+
 
     /**
      * A method for creating a rental request
@@ -45,7 +47,7 @@ public class RentalService
      * @param request the rental request that is being stored to database
      * @return returns a status int
      * */
-    public RentalResponse registerRental(RegisterRentalRequest request)
+    public RentalResponse register(RegisterRentalRequest request)
     {
         Optional<User> optionalUser = userRepository.findById(request.getUserId());
         if (optionalUser.isEmpty()) return null;
@@ -85,7 +87,7 @@ public class RentalService
      * @param itemId the itemId the rentalRequests belongs to
      * @return returns a list of rentalRequests of an item
      */
-    public List<RentalResponse> getAllRentalsForItem(long itemId)
+    public List<RentalResponse> getAllForItem(long itemId)
     {
         Optional<Item> optionalItem = itemRepository.findById(itemId);
         if (optionalItem.isEmpty()) return null;
@@ -95,14 +97,23 @@ public class RentalService
         return Mapper.ToRentalResponses(rentals);
     }
 
+    public List<RentalResponse> getAllForUser(long userId)
+    {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()) return null;
+        List<Rental> rentals = rentalRepository.findAllByUser(optionalUser.get());
+        return Mapper.ToRentalResponses(rentals);
+    }
+
+
     /**
      * A method for accepting a rental request based on rentalId
      * @param rentalId the rentalId that is being updated
      * @return returns the renewed Rental object
      */
-    public RentalResponse acceptRental(long rentalId)
+    public RentalResponse accept(long rentalId)
     {
-        return updateRentalStatus(rentalId, Rental.Status.ACCEPTED);
+        return updateStatus(rentalId, Rental.Status.ACCEPTED);
     }
 
     /**
@@ -110,9 +121,9 @@ public class RentalService
      * @param rentalId the rentalId that is being updated
      * @return returns the renewed Rental object
      */
-    public RentalResponse rejectRental(long rentalId)
+    public RentalResponse reject(long rentalId)
     {
-        return updateRentalStatus(rentalId, Rental.Status.REJECTED);
+        return updateStatus(rentalId, Rental.Status.REJECTED);
     }
 
     /**
@@ -120,9 +131,9 @@ public class RentalService
      * @param rentalId the rentalId that is being updated
      * @return returns the renewed Rental object
      */
-    public RentalResponse cancelRental(long rentalId)
+    public RentalResponse cancel(long rentalId)
     {
-        return updateRentalStatus(rentalId, Rental.Status.CANCELED);
+        return updateStatus(rentalId, Rental.Status.CANCELED);
     }
 
     /**
@@ -131,7 +142,7 @@ public class RentalService
      * @param status the new status
      * @return returns the renewed Rental object 
      */
-    private RentalResponse updateRentalStatus(long rentalId, Rental.Status status)
+    private RentalResponse updateStatus(long rentalId, Rental.Status status)
     {
         Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
         if (optionalRental.isEmpty()) return null;
@@ -149,11 +160,23 @@ public class RentalService
         return Mapper.ToRentalResponse(optionalRental.get());
     }
 
-    public List<RentalResponse> getAllRentalsUser(long userId)
+    public boolean delete(Long rentalId)
     {
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) return null;
-        List<Rental> rentals = rentalRepository.findAllByUser(optionalUser.get());
-        return Mapper.ToRentalResponses(rentals);
+        Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
+        if (optionalRental.isEmpty()) return false;
+        Rental rental = optionalRental.get();
+
+        for (Rating rating : ratingRepository.findAllByRental(rental))
+        {
+            ratingService.delete(rating.getRatingId());
+        }
+
+        for (Message message : messageRepository.findAllByRental(rental, Sort.unsorted()))
+        {
+            chatService.delete(message.getMessageId());
+        }
+
+        rentalRepository.delete(rental);
+        return true;
     }
 }

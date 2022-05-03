@@ -14,9 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import java.util.ArrayList;
+
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -56,7 +55,7 @@ public class ItemServiceTest
 
         RegisterItemRequest request = RequestFactory.getRegisterItemRequest(user.getUserId(), null);
 
-        ItemResponse response = itemService.registerItem(request);
+        ItemResponse response = itemService.register(request);
 
         Item item = itemRepository.findById(response.getItemId()).orElseThrow();
         assertThat(item.getItemId()).isEqualTo(response.getItemId());
@@ -82,7 +81,7 @@ public class ItemServiceTest
 
         RegisterItemRequest request = RequestFactory.getRegisterItemRequest(user.getUserId(), image.getImageId());
 
-        ItemResponse response = itemService.registerItem(request);
+        ItemResponse response = itemService.register(request);
 
         Item item = itemRepository.findById(response.getItemId()).orElseThrow();
         assertThat(item.getItemId()).isEqualTo(response.getItemId());
@@ -103,7 +102,7 @@ public class ItemServiceTest
     {
         RegisterItemRequest request = new RegisterItemRequest();
 
-        ItemResponse response = itemService.registerItem(request);
+        ItemResponse response = itemService.register(request);
 
         assertThat(response).isNull();
     }
@@ -118,7 +117,7 @@ public class ItemServiceTest
         item2 = itemRepository.save(item2);
         Item[] items = {item1, item2};
 
-        List<ItemResponse> responses = itemService.getAllItems(0, Integer.MAX_VALUE);
+        List<ItemResponse> responses = itemService.getAll(0, Integer.MAX_VALUE);
 
         assertThat(items.length).isEqualTo(responses.size());
         for (int i = 0; i < items.length; i++)

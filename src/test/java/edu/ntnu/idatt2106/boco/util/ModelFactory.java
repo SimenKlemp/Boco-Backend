@@ -26,7 +26,7 @@ public abstract class ModelFactory
     {
         return new Image(
                 "name",
-                null
+                new byte[5]
         );
     }
 
@@ -65,6 +65,17 @@ public abstract class ModelFactory
         return new FeedbackWebPage(
                 "message",
                 user
+        );
+    }
+
+    public static Message getMessage(User user, Rental rental)
+    {
+        return new Message(
+                "text",
+                true,
+                new Date(),
+                user,
+                rental
         );
     }
 }

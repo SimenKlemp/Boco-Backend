@@ -3,6 +3,10 @@ package edu.ntnu.idatt2106.boco.util;
 import edu.ntnu.idatt2106.boco.models.*;
 import edu.ntnu.idatt2106.boco.repository.*;
 import org.mockito.Mockito;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -122,6 +126,9 @@ public abstract class RepositoryMock
                 .then(i -> list.stream().filter(
                         u -> u.getUser().equals(i.getArguments()[0])
                 ).collect(Collectors.toList()));
+
+        Mockito.lenient().when(repository.findAll(Mockito.any(Pageable.class)))
+                .then(i -> new PageImpl<>(list));
     }
 
     public static void mockRentalRepository(RentalRepository repository)
@@ -155,6 +162,12 @@ public abstract class RepositoryMock
                 )
                 .when(repository)
                 .delete(Mockito.any(Rental.class));
+
+        Mockito.lenient().when(repository.findAllByUser(Mockito.any(User.class)))
+                .then(i -> list.stream().filter(
+                        r -> r.getUser().equals(i.getArguments()[0])
+                ).collect(Collectors.toList()));
+
     }
 
     public static void mockFeedbackWebPageRepository(FeedbackWebPageRepository repository)
@@ -188,7 +201,13 @@ public abstract class RepositoryMock
                 )
                 .when(repository)
                 .delete(Mockito.any(FeedbackWebPage.class));
+
+        Mockito.lenient().when(repository.findAllByUser(Mockito.any(User.class)))
+                .then(i -> list.stream().filter(
+                        f -> f.getUser().equals(i.getArguments()[0])
+                ).collect(Collectors.toList()));
     }
+
     public static void mockRatingRepository(RatingRepository repository)
     {
         List<Rating> list = new ArrayList<>();
@@ -256,5 +275,41 @@ public abstract class RepositoryMock
 
     }
 
+    public static void mockMessageRepository(MessageRepository repository)
+    {
+        List<Message> list = new ArrayList<>();
 
+        Mockito.lenient().when(repository.findById(Mockito.anyLong()))
+                .then(i -> list.stream().filter(
+                        u -> u.getMessageId().equals(i.getArguments()[0])
+                ).findFirst());
+
+        Mockito.lenient().when(repository.findAll())
+                .then(i -> list);
+
+        Mockito.lenient()
+                .doAnswer(i -> {
+                    Message message = (Message) i.getArguments()[0];
+                    if (message.getMessageId() == null)
+                    {
+                        message.setMessageId((long) (list.size() + 1));
+                        list.add(message);
+                    }
+                    return message;
+                })
+                .when(repository)
+                .save(Mockito.any(Message.class));
+
+        Mockito.lenient()
+                .doAnswer(i ->
+                        list.remove(i.getArguments()[0])
+                )
+                .when(repository)
+                .delete(Mockito.any(Message.class));
+
+        Mockito.lenient().when(repository.findAllByRental(Mockito.any(Rental.class), Mockito.any(Sort.class)))
+                .then(i -> list.stream().filter(
+                        m -> m.getRental().equals(i.getArguments()[0])
+                ).collect(Collectors.toList()));
+    }
 }

@@ -3,7 +3,7 @@ package edu.ntnu.idatt2106.boco.service;
 import edu.ntnu.idatt2106.boco.models.Message;
 import edu.ntnu.idatt2106.boco.models.Rental;
 import edu.ntnu.idatt2106.boco.models.User;
-import edu.ntnu.idatt2106.boco.payload.request.MessageRequest;
+import edu.ntnu.idatt2106.boco.payload.request.RegisterMessageRequest;
 import edu.ntnu.idatt2106.boco.payload.response.ChatResponse;
 import edu.ntnu.idatt2106.boco.payload.response.MessageResponse;
 import edu.ntnu.idatt2106.boco.payload.response.RentalResponse;
@@ -31,6 +31,27 @@ public class ChatService
     @Autowired
     UserRepository userRepository;
 
+    public MessageResponse register(RegisterMessageRequest request)
+    {
+        Optional<User> optionalUser = userRepository.findById(request.getUserId());
+        if (optionalUser.isEmpty()) return null;
+        User user = optionalUser.get();
+
+        Optional<Rental> optionalRental = rentalRepository.findById(request.getRentalId());
+        if (optionalRental.isEmpty()) return null;
+        Rental rental = optionalRental.get();
+
+        if (rental.getUser() != user && rental.getItem().getUser() != user)
+        {
+            return null;
+        }
+
+        Message message = new Message(request.getText(), true, new Date(), user, rental);
+        message = messageRepository.save(message);
+
+        return Mapper.ToMessageResponse(message);
+    }
+
     public ChatResponse getChat(long rentalId)
     {
         Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
@@ -45,19 +66,13 @@ public class ChatService
         return new ChatResponse(rentalResponse, messageResponses);
     }
 
-    public MessageResponse handleMessage(MessageRequest request)
+    public boolean delete(Long messageId)
     {
-        Optional<User> optionalUser = userRepository.findById(request.getUserId());
-        if (optionalUser.isEmpty()) return null;
-        User user = optionalUser.get();
+        Optional<Message> optionalMessage = messageRepository.findById(messageId);
+        if (optionalMessage.isEmpty()) return false;
+        Message message = optionalMessage.get();
 
-        Optional<Rental> optionalRental = rentalRepository.findById(request.getRentalId());
-        if (optionalRental.isEmpty()) return null;
-        Rental rental = optionalRental.get();
-
-        Message message = new Message(request.getText(), true, new Date(), user, rental);
-        message = messageRepository.save(message);
-
-        return Mapper.ToMessageResponse(message);
+        messageRepository.delete(message);
+        return true;
     }
 }

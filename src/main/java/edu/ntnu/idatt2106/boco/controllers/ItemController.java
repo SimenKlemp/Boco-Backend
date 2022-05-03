@@ -52,7 +52,7 @@ public class ItemController
                return new ResponseEntity(HttpStatus.FORBIDDEN);
            }
 
-           ItemResponse item = itemService.registerItem(request);
+           ItemResponse item = itemService.register(request);
            if (item == null)
            {
                return new ResponseEntity("Error: User can not be found ", HttpStatus.NO_CONTENT);
@@ -76,7 +76,7 @@ public class ItemController
         logger.info("Fetching all items...");
         try
         {
-            List<ItemResponse> items = itemService.getAllItems(page, pageSize);
+            List<ItemResponse> items = itemService.getAll(page, pageSize);
             if (items == null || items.isEmpty())
             {
                 return new ResponseEntity(HttpStatus.NO_CONTENT);
@@ -107,7 +107,7 @@ public class ItemController
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            List<ItemResponse> items = itemService.getMyItems(userId);
+            List<ItemResponse> items = itemService.getAllMy(userId);
             if (items == null || items.isEmpty())
             {
                 return new ResponseEntity(HttpStatus.NO_CONTENT);
@@ -140,7 +140,7 @@ public class ItemController
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            ItemResponse item = itemService.updateItem(itemId, request);
+            ItemResponse item = itemService.update(itemId, request);
             if(item == null)
             {
                 return new ResponseEntity("Can not find item ", HttpStatus.NOT_FOUND);
@@ -176,7 +176,7 @@ public class ItemController
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            boolean success = itemService.deleteItem(itemId);
+            boolean success = itemService.delete(itemId);
             if (!success)
             {
                 return new ResponseEntity<>("Item can not be found ", HttpStatus.NOT_FOUND);

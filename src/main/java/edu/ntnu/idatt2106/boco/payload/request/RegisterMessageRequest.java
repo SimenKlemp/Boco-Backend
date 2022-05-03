@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MessageRequest
+public class RegisterMessageRequest
 {
     private String text;
     private Long userId;

@@ -1,6 +1,6 @@
 package edu.ntnu.idatt2106.boco.controllers;
 
-import edu.ntnu.idatt2106.boco.payload.request.FeedbackWebPageRequest;
+import edu.ntnu.idatt2106.boco.payload.request.RegisterFeedbackWebPageRequest;
 import edu.ntnu.idatt2106.boco.payload.response.FeedbackWebPageResponse;
 import edu.ntnu.idatt2106.boco.service.FeedbackWebPageService;
 import org.slf4j.Logger;
@@ -37,16 +37,16 @@ public class FeedbackWebPageController {
 
     /**
      * A method for registration of a feedback for the web page
-     * @param feedbackWebPageRequest the feedback that is posted
+     * @param registerFeedbackWebPageRequest the feedback that is posted
      * @return returns a ResponseEntity with a http content status
      */
     @PostMapping(value = "registerFeedback", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     // @ResponseStatus(value = HttpStatus.CREATED)
-    public ResponseEntity<FeedbackWebPageResponse> registerFeedbackWebPage(@RequestBody FeedbackWebPageRequest feedbackWebPageRequest) {
+    public ResponseEntity<FeedbackWebPageResponse> registerFeedbackWebPage(@RequestBody RegisterFeedbackWebPageRequest registerFeedbackWebPageRequest) {
         logger.info("registration of a feedback");
-        logger.info(feedbackWebPageRequest.getMessage());
+        logger.info(registerFeedbackWebPageRequest.getMessage());
         try {
-            FeedbackWebPageResponse feedback = feedbackWebPageService.registerFeedbackWebPage(feedbackWebPageRequest);
+            FeedbackWebPageResponse feedback = feedbackWebPageService.register(registerFeedbackWebPageRequest);
             if (feedback == null) {
                 return new ResponseEntity("Error: No feedbacks can be found ", HttpStatus.NO_CONTENT);
             }
@@ -70,7 +70,7 @@ public class FeedbackWebPageController {
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            List<FeedbackWebPageResponse> feedbacks = feedbackWebPageService.getAllFeedbacksWebPage();
+            List<FeedbackWebPageResponse> feedbacks = feedbackWebPageService.getAll();
             if (feedbacks.isEmpty()) {
                 return new ResponseEntity(0, HttpStatus.NO_CONTENT);
             }

@@ -2,7 +2,6 @@ package edu.ntnu.idatt2106.boco.controllers;
 
 import edu.ntnu.idatt2106.boco.payload.request.RegisterRentalRequest;
 import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
-import edu.ntnu.idatt2106.boco.payload.response.NotificationResponse;
 import edu.ntnu.idatt2106.boco.payload.response.RentalResponse;
 import edu.ntnu.idatt2106.boco.service.ItemService;
 import edu.ntnu.idatt2106.boco.service.NotificationService;
@@ -60,9 +59,9 @@ public class RentalController
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            RentalResponse rental = rentalService.registerRental(request);
+            RentalResponse rental = rentalService.register(request);
 
-            notificationService.registerNotification("REQUEST", rental.getRentalId());
+            notificationService.register("REQUEST", rental.getRentalId());
 
             if (rental == null)
             {
@@ -94,8 +93,8 @@ public class RentalController
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            rental = rentalService.acceptRental(rentalId);
-            notificationService.registerNotification("ACCEPTED", rentalId);
+            rental = rentalService.accept(rentalId);
+            notificationService.register("ACCEPTED", rentalId);
             if (rental == null)
             {
                 return new ResponseEntity("Error: Cannot find User or Item", HttpStatus.NO_CONTENT);
@@ -126,8 +125,8 @@ public class RentalController
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            rental = rentalService.rejectRental(rentalId);
-            notificationService.registerNotification("REJECTED", rentalId);
+            rental = rentalService.reject(rentalId);
+            notificationService.register("REJECTED", rentalId);
             if (rental == null)
             {
                 return new ResponseEntity("Error: Cannot find User or Item", HttpStatus.NO_CONTENT);
@@ -158,8 +157,8 @@ public class RentalController
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            rental = rentalService.cancelRental(rentalId);
-            notificationService.registerNotification("CANCELED", rentalId);
+            rental = rentalService.cancel(rentalId);
+            notificationService.register("CANCELED", rentalId);
             if (rental == null)
             {
                 return new ResponseEntity("Error: Cannot find User or Item", HttpStatus.NO_CONTENT);
@@ -195,7 +194,7 @@ public class RentalController
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            List<RentalResponse> rentals = rentalService.getAllRentalsForItem(itemId);
+            List<RentalResponse> rentals = rentalService.getAllForItem(itemId);
             //logger.info(rentals.get(0).getStartDate() + " " + rentals.get(0).getEndDate());
             if (rentals == null || rentals.isEmpty())
             {
@@ -222,7 +221,7 @@ public class RentalController
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            List<RentalResponse> rentals = rentalService.getAllRentalsUser(userId);
+            List<RentalResponse> rentals = rentalService.getAllForUser(userId);
             if (rentals == null || rentals.isEmpty())
             {
                 return new ResponseEntity(HttpStatus.NO_CONTENT);

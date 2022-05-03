@@ -1,4 +1,3 @@
-/*
 package edu.ntnu.idatt2106.boco.service;
 
 import edu.ntnu.idatt2106.boco.models.*;
@@ -13,19 +12,16 @@ import edu.ntnu.idatt2106.boco.util.RequestFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-@RunWith(MockitoJUnitRunner.class)
 public class UserServiceTest
 {
     @InjectMocks
@@ -46,6 +42,9 @@ public class UserServiceTest
     @Mock
     private FeedbackWebPageRepository feedbackWebPageRepository;
 
+    @Mock
+    private RatingRepository ratingRepository;
+
     @BeforeEach
     public void beforeEach()
     {
@@ -54,7 +53,10 @@ public class UserServiceTest
         RepositoryMock.mockItemRepository(itemRepository);
         RepositoryMock.mockRentalRepository(rentalRepository);
         RepositoryMock.mockFeedbackWebPageRepository(feedbackWebPageRepository);
+        RepositoryMock.mockRatingRepository(ratingRepository);
     }
+
+
 
     @Test
     public void registerWithoutImage()
@@ -187,7 +189,7 @@ public class UserServiceTest
         User user = ModelFactory.getUser(null);
         user = userRepository.save(user);
 
-        boolean success = userService.deleteUser(user.getUserId());
+        boolean success = userService.delete(user.getUserId());
 
         assertThat(success).isTrue();
         assertThat(userRepository.findById(user.getUserId()).isEmpty()).isTrue();
@@ -202,7 +204,7 @@ public class UserServiceTest
         User user = ModelFactory.getUser(image);
         user = userRepository.save(user);
 
-        boolean success = userService.deleteUser(user.getUserId());
+        boolean success = userService.delete(user.getUserId());
 
         assertThat(success).isTrue();
         assertThat(userRepository.findById(user.getUserId()).isEmpty()).isTrue();
@@ -218,7 +220,7 @@ public class UserServiceTest
         Item item = ModelFactory.getItem(null, user);
         item = itemRepository.save(item);
 
-        boolean success = userService.deleteUser(user.getUserId());
+        boolean success = userService.delete(user.getUserId());
 
         assertThat(success).isTrue();
         assertThat(userRepository.findById(user.getUserId()).isEmpty()).isTrue();
@@ -240,7 +242,7 @@ public class UserServiceTest
         Rental rental = ModelFactory.getRental(user, item);
         rental = rentalRepository.save(rental);
 
-        boolean success = userService.deleteUser(user.getUserId());
+        boolean success = userService.delete(user.getUserId());
 
         assertThat(success).isTrue();
         assertThat(userRepository.findById(user.getUserId()).isEmpty()).isTrue();
@@ -256,7 +258,7 @@ public class UserServiceTest
         FeedbackWebPage feedback = ModelFactory.getFeedbackWebPage(user);
         feedback = feedbackWebPageRepository.save(feedback);
 
-        boolean success = userService.deleteUser(user.getUserId());
+        boolean success = userService.delete(user.getUserId());
 
         assertThat(success).isTrue();
         assertThat(userRepository.findById(user.getUserId()).isEmpty()).isTrue();
@@ -266,7 +268,7 @@ public class UserServiceTest
     @Test
     public void deleteWrongUserId()
     {
-        boolean success = userService.deleteUser(1);
+        boolean success = userService.delete(1L);
         assertThat(success).isFalse();
     }
 
@@ -284,7 +286,7 @@ public class UserServiceTest
 
         UpdateUserRequest request = RequestFactory.getUpdateUserRequest(image.getImageId());
 
-        UserResponse response = userService.updateUser(user.getUserId(), request);
+        UserResponse response = userService.update(user.getUserId(), request);
 
         assertThat(user.getName()).isEqualTo(response.getName()).isEqualTo(request.getName());
         assertThat(user.getIsPerson()).isEqualTo(response.getIsPerson()).isEqualTo(request.getIsPerson());
@@ -310,7 +312,7 @@ public class UserServiceTest
 
         UpdateUserRequest request = new UpdateUserRequest();
 
-        UserResponse response = userService.updateUser(user.getUserId(), request);
+        UserResponse response = userService.update(user.getUserId(), request);
 
         assertThat(user.getUserId()).isEqualTo(response.getUserId()).isEqualTo(oldUser.getUserId());
         assertThat(user.getName()).isEqualTo(response.getName()).isEqualTo(oldUser.getName());
@@ -327,7 +329,7 @@ public class UserServiceTest
     {
         UpdateUserRequest request = new UpdateUserRequest();
 
-        UserResponse response = userService.updateUser(1, request);
+        UserResponse response = userService.update(1, request);
 
         assertThat(response).isNull();
     }
@@ -372,7 +374,7 @@ public class UserServiceTest
         user2 = userRepository.save(user2);
         User[] users = {user1, user2};
 
-        List<UserResponse> responses = userService.getAllUsers();
+        List<UserResponse> responses = userService.getAll();
 
         assertThat(users.length).isEqualTo(2);
         for (int i = 0; i < 2; i++)
@@ -393,28 +395,8 @@ public class UserServiceTest
     @Test
     public void getAllEmpty()
     {
-        List<UserResponse> responses = userService.getAllUsers();
+        List<UserResponse> responses = userService.getAll();
 
         assertThat(responses.size()).isZero();
     }
-
-
-    @Test()
-    public void when_user_register_without_email_it_should_throw_exception(){
-        RegisterUserRequest registerUserRequest = new RegisterUserRequest();
-        registerUserRequest.setName("test user");
-        registerUserRequest.setEmail("testemail");
-    }
-    @Test
-    public void when_save_user_it_should_return_user() {
-        RegisterUserRequest registerUserRequest = new RegisterUserRequest();
-        registerUserRequest.setEmail("testmail");
-        registerUserRequest.setPassword("password");
-
-
-        UserResponse register = userService.register(registerUserRequest);
-
-        assertThat(register.getEmail()).isSameAs(registerUserRequest.getEmail());
-    }
 }
-*/
