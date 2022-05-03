@@ -105,7 +105,12 @@ public class RatingService {
     {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) return 0;
-        int rating = (int) ratingRepository.getMeanRating(userId);
+
+        List<Rating> allRatings = ratingRepository.findAllByUser(optionalUser.get());
+        int rating = 5;
+        if (!allRatings.isEmpty()) {
+            rating = (int) ratingRepository.getMeanRating(userId);
+        }
 
         return rating;
     }
