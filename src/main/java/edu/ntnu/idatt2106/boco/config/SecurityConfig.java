@@ -23,6 +23,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
             "/chat-connect",
             "/chat-connect/**",
             "/item/geocodeGoogle/**",
+            "/rating/getMeanRating/**",
 
             "/v2/api-docs",
             "/v2/api-docs/**",
