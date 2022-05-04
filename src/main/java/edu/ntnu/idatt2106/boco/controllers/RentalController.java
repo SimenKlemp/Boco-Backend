@@ -264,8 +264,8 @@ public class RentalController
     }
 
 
-    @GetMapping("/get-my-owner/{userId}")
-    public ResponseEntity<List<RentalResponse>> getAllRentalsOwner(@PathVariable("userId") long userId)
+    @GetMapping("/get-my-owner/{userId}/{status}")
+    public ResponseEntity<List<RentalResponse>> getAllRentalsOwner(@PathVariable("userId") long userId,@PathVariable("status") Rental.Status status)
     {
         logger.info("Fetching all rentals for user " + userId);
 
@@ -276,7 +276,7 @@ public class RentalController
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            List<RentalResponse> rentals = rentalService.getAllRentalsOwner(userId);
+            List<RentalResponse> rentals = rentalService.getAllRentalsOwner(userId,status);
             if (rentals == null || rentals.isEmpty())
             {
                 return new ResponseEntity(HttpStatus.NO_CONTENT);
