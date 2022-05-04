@@ -159,23 +159,35 @@ public class RentalService {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) return null;
 
-        List<Rental> rentals;
-
+        List<Rental> allRentals;
         if (status == Rental.Status.CANCELED || status == Rental.Status.REJECTED) {
-            rentals = rentalRepository.findAllByUserAndStatusOrStatus(optionalUser.get(), Rental.Status.REJECTED, Rental.Status.CANCELED);
+            allRentals = rentalRepository.findAllByStatusOrStatus(Rental.Status.REJECTED, Rental.Status.CANCELED);
         } else {
-            rentals = rentalRepository.findAllByUserAndStatus(optionalUser.get(), status);
-
+            allRentals = rentalRepository.findAllByStatusOrStatus(Rental.Status.PENDING, Rental.Status.ACCEPTED);
         }
+        if (allRentals.isEmpty()) return null;
+
+        ArrayList<Rental> rentals = new ArrayList<>();
+
+        for (Rental allRental : allRentals) {
+            if (userId == allRental.getUser().getUserId()) {
+                rentals.add(allRental);
+            }
+        }
+
         return Mapper.ToRentalResponses(rentals);
     }
 
-    public List<RentalResponse> getAllRentalsOwner(long userId) {
+    public List<RentalResponse> getAllRentalsOwner(long userId, Rental.Status status) {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) return null;
 
-        List<Rental> allRentals = rentalRepository.findAll();
-
+        List<Rental> allRentals;
+        if(status == Rental.Status.CANCELED || status == Rental.Status.REJECTED){
+            allRentals = rentalRepository.findAllByStatusOrStatus(Rental.Status.REJECTED, Rental.Status.CANCELED);
+        }else{
+            allRentals = rentalRepository.findAllByStatusOrStatus(Rental.Status.ACCEPTED, Rental.Status.PENDING);
+        }
         if (allRentals.isEmpty()) return null;
 
         ArrayList<Rental> rentals = new ArrayList<>();
