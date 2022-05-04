@@ -61,7 +61,7 @@ public class ItemService
 
         System.out.println(latLng);
 
-       String lat = latLng[0].replace("\"", "");
+        String lat = latLng[0].replace("\"", "");
         String lng = latLng[1].replace("\"", "");
 
         System.out.println(lat);

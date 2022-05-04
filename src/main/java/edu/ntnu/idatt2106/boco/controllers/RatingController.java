@@ -2,11 +2,8 @@ package edu.ntnu.idatt2106.boco.controllers;
 
 import edu.ntnu.idatt2106.boco.payload.request.NotificationRequest;
 import edu.ntnu.idatt2106.boco.payload.request.RatingRequest;
-import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
-import edu.ntnu.idatt2106.boco.payload.response.NotificationResponse;
+import edu.ntnu.idatt2106.boco.payload.response.*;
 
-import edu.ntnu.idatt2106.boco.payload.response.RatingResponse;
-import edu.ntnu.idatt2106.boco.payload.response.UserResponse;
 import edu.ntnu.idatt2106.boco.service.NotificationService;
 import edu.ntnu.idatt2106.boco.service.RatingService;
 import edu.ntnu.idatt2106.boco.service.RentalService;
@@ -36,8 +33,11 @@ public class RatingController {
     @Autowired
     private RatingService ratingService;
 
-   @Autowired
-   private UserService userService;
+    @Autowired
+    private RentalService rentalService;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private TokenComponent tokenComponent;
@@ -102,6 +102,35 @@ public class RatingController {
             }
 
             List<RatingResponse> ratings = ratingService.getRatingsUser(userId);
+            if (ratings == null || ratings.isEmpty())
+            {
+                return new ResponseEntity(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(ratings, HttpStatus.OK);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            return new ResponseEntity("Error",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/get-sent/{userId}/{rentalId}")
+    public ResponseEntity<List<RatingResponse>> getRatingSent(@PathVariable("userId") long userId, @PathVariable("rentalId") long rentalId)
+    {
+        logger.info("Fetching all ratings sent...");
+
+        try
+        {
+            RentalResponse response = rentalService.getRental(rentalId);
+            boolean userBelongsToRental = (response.getUser().getUserId() == userId) || (response.getItem().getUser().getUserId() == userId);
+
+            if (!tokenComponent.haveAccessTo(userId) || !userBelongsToRental)
+            {
+                return new ResponseEntity(HttpStatus.FORBIDDEN);
+            }
+
+            List<RatingResponse> ratings = ratingService.getRatingsSent(userId, rentalId);
             if (ratings == null || ratings.isEmpty())
             {
                 return new ResponseEntity(HttpStatus.NO_CONTENT);
