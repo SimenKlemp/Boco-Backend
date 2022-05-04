@@ -60,12 +60,12 @@ public class User
     @OneToOne
     private Image image;
 
+
     @Column(name = "reset_password_token")
     private String resetPasswordToken;
 
 
-    public User(String name, Boolean isPerson, String streetAddress, String postalCode, String postOffice, String email, String password, String role, Image image)
-    {
+    public User(String name, Boolean isPerson, String streetAddress, String postalCode, String postOffice, String email, String password, String role, Image image) {
         this.name = name;
         this.isPerson = isPerson;
         this.streetAddress = streetAddress;
@@ -74,6 +74,6 @@ public class User
         this.email = email;
         this.password = password;
         this.role = role;
-        this.image = image;
     }
+
 }

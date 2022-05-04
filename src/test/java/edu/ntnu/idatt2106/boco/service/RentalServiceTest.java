@@ -87,8 +87,11 @@ public class RentalServiceTest {
         rental1.setUser(user);
         rental2.setUser(user);
 
+        item1.setUser(user);
+        item2.setUser(user);
+
         rental1.setItem(item1);
-        rental2.setItem(item1);
+        rental2.setItem(item2);
 
         userRepository.save(user);
         itemRepository.save(item1);
@@ -106,7 +109,7 @@ public class RentalServiceTest {
     }
 
         @Test
-        public void registerRentalWithCorrectUserIdTest () throws Exception {
+        public void should_register_rental_with_correct_userId () throws Exception {
             registerRentalRequest1 = new RegisterRentalRequest(
                     "message",
                     new Date(),
@@ -122,7 +125,7 @@ public class RentalServiceTest {
             assertThat(rentalResponse.getItem().getItemId()).isEqualTo(registerRentalRequest1.getItemId());
     }
     @Test
-    public void registerRentalWithWrongUserIdTest ()
+    public void should_register_rental_with_wrong_userId ()
     {
         registerRentalRequest1 = new RegisterRentalRequest(
                 "message",
@@ -141,7 +144,7 @@ public class RentalServiceTest {
     }
 
     @Test
-    public void registerRentalWithWrongItemIdTest ()
+    public void should_register_rental_with_wrong_itemId ()
     {
         registerRentalRequest1 = new RegisterRentalRequest(
                 "message",
@@ -157,7 +160,7 @@ public class RentalServiceTest {
     }
 
     @Test
-    public void registerRentalWithWrongDeliveryInfoTest () {
+    public void should_register_rental_with_wrong_delivery_info() {
 
         item1.setIsDeliverable(false);
         itemRepository.save(item1);
@@ -175,15 +178,15 @@ public class RentalServiceTest {
     }
 
     @Test
-    public void getAllForAllRentalsForSpecificItemTest () {
+    public void should_get_all_for_all_rentals_for_specific_item() {
 
             Item item = itemRepository.findById(item1.getItemId()).get();
             rentalResponse = rentalService.getAllRentalsForItem(item.getItemId());
-            assertThat(rentalResponse.size()).isEqualTo(2);
+            assertThat(rentalResponse.size()).isEqualTo(1);
     }
 
     @Test
-    public void retunEmptyRentalListForSpecifcItem () throws Exception{
+    public void should_return_empty_rental_list_for_specificItem () throws Exception{
 
         Item item3=new ItemFactory().getObject();
         itemRepository.save(item3);
@@ -194,98 +197,116 @@ public class RentalServiceTest {
     }
 
     @Test
-    public void retunNullForRentalListWithWrongItemId () {
+    public void should_retun_null_for_rental_list_with_wrong_itemId () {
         rentalResponse = rentalService.getAllRentalsForItem(5L);
         assertThat(rentalResponse).isNull();
     }
 
     @Test
-    public void returnFINISHEDStatusForAcceptedRentalsTest () {
+    public void should_return_FINISHED_status_for_accepted_rentals () {
         Rental rental =rentalRepository.findById(rental1.getRentalId()).get();
         response= rentalService.acceptRental(rental1.getRentalId());
         assertThat(response.getStatus()).isEqualTo("FINISHED");
     }
 
-        @Test
-        public void returnNullForAcceptRentalForWrongItemId ()
-        {
-            RentalResponse response =new RentalResponse();
-            response= rentalService.acceptRental(5L);
+    @Test
+    public void should_return_null_for_accept_rental_for_wrong_itemId () {
+            RentalResponse response = rentalService.acceptRental(5L);
             assertThat(response).isNull();
-        }
+    }
 
-        @Test
-        public void rejectAllRentalsWithStatusREJECTEDTest ()
-        {
-            Rental rental =rentalRepository.findById(rental1.getRentalId()).get();
-            RentalResponse response =new RentalResponse();
-            response= rentalService.rejectRental(rental1.getRentalId());
-            assertThat(response.getStatus()).isEqualTo("REJECTED");
-        }
+    @Test
+    public void should_reject_all_rentals_with_status_REJECTEDTest ()
+    {
+        Rental rental =rentalRepository.findById(rental1.getRentalId()).get();
+        RentalResponse response =rentalService.rejectRental(rental.getRentalId());
+        assertThat(response.getStatus()).isEqualTo("REJECTED");
+    }
 
-        @Test
-        public void returnNullForRentalsWithREJECTStatusWithWrongItemId()
-        {
-            response= rentalService.rejectRental(5L);
-            assertThat(response).isNull();
-        }
+    @Test
+    public void should_return_null_for_rentals_with_REJECT_status_with_wrong_itemId() {
 
-        @Test
-        public void cancelAllRentalsWithCANCELStatusTest ()
-        {
-            Rental rental =rentalRepository.findById(rental1.getRentalId()).get();
-            response= rentalService.cancelRental(rental1.getRentalId());
-            assertThat(response.getStatus()).isEqualTo("CANCELED");
-        }
+        response= rentalService.rejectRental(5L);
+        assertThat(response).isNull();
+    }
 
-        @Test
-        public void cancelAllRentalsWithCANCELStatusAndWithWrongRentalIdTest ()
-        {
-            response= rentalService.cancelRental(5L);
-            assertThat(response).isNull();
-        }
+    @Test
+    public void should_cancel_all_rentals_with_CANCEL_status() {
 
-        @Test
-        public void getSpecificRentalByUsingRentalId ()
-        {
-            Rental rental = rentalRepository.findById(rental1.getRentalId()).get();
-            response=rentalService.getRental(rental.getRentalId());
-            assertThat(response.getRentalId()).isEqualTo(rental.getRentalId());
-        }
+        Rental rental =rentalRepository.findById(rental1.getRentalId()).get();
+        response= rentalService.cancelRental(rental.getRentalId());
+        assertThat(response.getStatus()).isEqualTo("CANCELED");
+    }
 
-        @Test
-        public void getWrongRentalId ()
-        {
-            response=rentalService.getRental(4L);
-            assertThat(response).isNull();
-        }
+    @Test
+    public void should_cancel_all_rentals_with_CANCEL_status_and_with_wrong_rentalId () {
 
-        @Test
-        public void getAllRentalForUserWithIdAndACCEPTEDStatus ()
-        {
-            rental1.setStatus(Rental.Status.ACCEPTED);
-            rental2.setStatus(Rental.Status.ACCEPTED);
-            rentalRepository.save(rental1);
-            rentalRepository.save(rental2);
-            User user1 = userRepository.findById(user.getUserId()).get();
-            rentalResponse = rentalService.getAllRentalsUser(user1.getUserId(), Rental.Status.ACCEPTED);
-            assertThat(rentalResponse.size()).isEqualTo(2);
-        }
+        response= rentalService.cancelRental(5L);
+        assertThat(response).isNull();
+    }
 
-        @Test
-        public void getEmptyListRentalsForSpecificUserTest () throws Exception {
-            User user2=new UserFactory().getObject();
-            userRepository.save(user2);
-            User user3 = userRepository.findById(user2.getUserId()).get();
-            rentalResponse = rentalService.getAllRentalsUser(user3.getUserId(), Rental.Status.PENDING);
-            assertThat(rentalResponse.size()).isZero();
-        }
+    @Test
+    public void should_get_specific_rental_by_using_rentalId () {
+        Rental rental = rentalRepository.findById(rental1.getRentalId()).get();
+        response=rentalService.getRental(rental.getRentalId());
+        assertThat(response.getRentalId()).isEqualTo(rental.getRentalId());
+    }
 
-        @Test
-        public void returnNullRentalListForWrongUserId ()
-        {
-            rentalResponse = rentalService.getAllRentalsUser(5L, Rental.Status.ACCEPTED);
-            assertThat(rentalResponse).isNull();
-        }
+    @Test
+    public void getWrongRentalId () {
+
+        response=rentalService.getRental(4L);
+        assertThat(response).isNull();
+    }
+
+    @Test
+    public void should_get_all_rentals_for_user_with_id_and_ACCEPTED_status ()
+    {
+        rental1.setStatus(Rental.Status.ACCEPTED);
+        rental2.setStatus(Rental.Status.ACCEPTED);
+        rentalRepository.save(rental1);
+        rentalRepository.save(rental2);
+        User user1 = userRepository.findById(user.getUserId()).get();
+        rentalResponse = rentalService.getAllRentalsUser(user1.getUserId(), Rental.Status.ACCEPTED);
+        assertThat(rentalResponse.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void should_get_empty_list_rentals_for_specific_user () throws Exception {
+        User user2=new UserFactory().getObject();
+        userRepository.save(user2);
+        User user3 = userRepository.findById(user2.getUserId()).get();
+        rentalResponse = rentalService.getAllRentalsUser(user3.getUserId(), Rental.Status.PENDING);
+        assertThat(rentalResponse.size()).isZero();
+    }
+
+    @Test
+    public void should_return_null_rental_list_for_wrong_userId ()
+    {
+        rentalResponse = rentalService.getAllRentalsUser(5L, Rental.Status.ACCEPTED);
+        assertThat(rentalResponse).isNull();
+    }
+    @Test
+    public void should_get_all_rentals_for_specific_owner(){
+
+        User user1=userRepository.findById(user.getUserId()).get();
+        rentalResponse=rentalService.getAllRentalsOwner(user1.getUserId());
+        assertThat(rentalResponse.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void should_should_return_empty_rentallist_for_specific_owner() throws Exception {
+        User user1=new UserFactory().getObject();
+        userRepository.save(user1);
+        rentalResponse=rentalService.getAllRentalsOwner(user1.getUserId());
+        assertThat(rentalResponse.size()).isEqualTo(0);
+    }
+    @Test
+    public void should_should_return_null_for_wrong_userId() throws Exception {
+        rentalResponse=rentalService.getAllRentalsOwner(4L);
+        assertThat(rentalResponse).isNull();
+    }
+
+
     }
 

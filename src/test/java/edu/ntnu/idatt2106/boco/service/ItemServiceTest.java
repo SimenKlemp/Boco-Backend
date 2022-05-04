@@ -23,6 +23,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -131,14 +132,14 @@ public class ItemServiceTest
         Item expected = itemRepository.findById(item1.getItemId()).get();
         assertThat(actual)
                 .usingRecursiveComparison()
-                .ignoringFields("itemId")
+                .ignoringFields("imageId")
                 .isEqualTo(expected);
 
         assertThat(actual.getImageId()).isNull();
     }
 
     @Test
-    public void sould_store_item_with_image(){
+    public void should_store_item_with_image(){
 
             registerItemRequest1 = new RegisterItemRequest(
                     item1.getStreetAddress(),
@@ -189,41 +190,11 @@ public class ItemServiceTest
     {
         item1.setImage(image);
         itemRepository.save(item1);
-        registerItemRequest1 = new RegisterItemRequest(
-                item1.getStreetAddress(),
-                item1.getPostalCode(),
-                item1.getPostOffice(),
-                item1.getPrice(),
-                item1.getDescription(),
-                item1.getCategory(),
-                item1.getTitle(),
-                item1.getIsPickupable(),
-                item1.getIsDeliverable(),
-                user.getUserId(),
-                image.getImageId()
-        );
-        registerItemRequest1 = new RegisterItemRequest(
-                item2.getStreetAddress(),
-                item2.getPostalCode(),
-                item2.getPostOffice(),
-                item2.getPrice(),
-                item2.getDescription(),
-                item2.getCategory(),
-                item2.getTitle(),
-                item2.getIsPickupable(),
-                item2.getIsDeliverable(),
-                user.getUserId(),
-                image.getImageId()
-        );
+        item2.setImage(image);
+        itemRepository.save(item2);
 
-        itemResponse1 =itemService.registerItem(registerItemRequest1);
-        itemResponse2 =itemService.registerItem(registerItemRequest2);
-
-        itemList.add(itemResponse1);
-        itemList.add(itemResponse2);
-
-        List<ItemResponse>sortedItem =itemService.getAllItems(1,2);
-        assertThat(sortedItem.stream().sorted().collect(Collectors.toList()).equals(sortedItem));
+        List<ItemResponse>sortedItem =itemService.getAllItems(1,1);
+        assertThat(sortedItem.stream().sorted().collect(Collectors.toList()));
     }
 
 
@@ -258,6 +229,12 @@ public class ItemServiceTest
         assertThat(itemService.getMyItems(user1.getUserId())).isNull();
     }
 
+    @Test
+    public void should_update_item_with_wrong_itemId() throws Exception {
+        UpdateItemRequest updateItemRequest=new UpdateItemRequestFactory().getObject();
+        ItemResponse updated=itemService.updateItem(4L,updateItemRequest);
+        assertThat(updated).isNull();
+    }
     @Test
     public void should_update_all_items() throws Exception {
         UpdateItemRequest updateItemRequest=new UpdateItemRequestFactory().getObject();
@@ -317,14 +294,10 @@ public class ItemServiceTest
     }
 
     @Test
-    public void delete_item_without_Rental_and_user()
+    public void delete_item_without_is_not_found()
     {
-        item1.setUser(null);
-        rental.setItem(null);
-        rentalRepository.save(rental);
-        itemRepository.save(item1);
-        Boolean delete=itemService.deleteItem(item1.getItemId());
-        assertThat(delete).isTrue();
+        Boolean delete=itemService.deleteItem(4L);
+        assertThat(delete).isFalse();
     }
 
     @Test

@@ -5,6 +5,8 @@ import edu.ntnu.idatt2106.boco.models.*;
 import edu.ntnu.idatt2106.boco.repository.*;
 import org.mockito.Mockito;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -126,6 +128,7 @@ public abstract class RepositoryMock
                 .then(i -> list.stream().filter(
                         u -> u.getUser().equals(i.getArguments()[0])
                 ).collect(Collectors.toList()));
+
     }
 
     public static void mockRentalRepository(RentalRepository repository)
@@ -150,7 +153,6 @@ public abstract class RepositoryMock
                 .then(i->list.stream().filter(
                         u -> u.getUser().equals(i.getArguments()[0])
                 ).collect(Collectors.toList()));
-
 
         Mockito.lenient()
                 .doAnswer(i -> {
