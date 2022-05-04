@@ -74,4 +74,14 @@ public abstract class RequestFactory
     {
         return new MockMultipartFile("name", new byte[5]);
     }
+
+    public static RegisterRatingRequest getRegisterRatingRequest(Long rentalId, Long userId)
+    {
+        return new RegisterRatingRequest(
+                "feedback",
+                5,
+                rentalId,
+                userId
+        );
+    }
 }

@@ -1,6 +1,6 @@
 package edu.ntnu.idatt2106.boco.controllers;
 
-import edu.ntnu.idatt2106.boco.payload.request.RatingRequest;
+import edu.ntnu.idatt2106.boco.payload.request.RegisterRatingRequest;
 
 import edu.ntnu.idatt2106.boco.payload.response.RatingResponse;
 import edu.ntnu.idatt2106.boco.service.RatingService;
@@ -39,7 +39,7 @@ public class RatingController {
     Logger logger = LoggerFactory.getLogger(RentalController.class);
 
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RatingResponse> registerRate(@RequestBody RatingRequest request)
+    public ResponseEntity<RatingResponse> registerRate(@RequestBody RegisterRatingRequest request)
     {
         try
         {

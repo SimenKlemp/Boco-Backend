@@ -11,7 +11,8 @@ import javax.validation.constraints.NotBlank;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RatingRequest {
+public class RegisterRatingRequest
+{
     @NotBlank
     private String feedback;
 

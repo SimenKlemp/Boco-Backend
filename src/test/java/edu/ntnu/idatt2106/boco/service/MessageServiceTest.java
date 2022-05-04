@@ -51,7 +51,7 @@ public class MessageServiceTest
     }
 
     @Test
-    public void registerMessageCorrect()
+    public void registerCorrect()
     {
         User user1 = ModelFactory.getUser(null);
         user1 = userRepository.save(user1);
@@ -78,7 +78,7 @@ public class MessageServiceTest
     }
 
     @Test
-    public void registerMessageWrongUserId()
+    public void registerWrongUserId()
     {
         User user1 = ModelFactory.getUser(null);
         user1 = userRepository.save(user1);
@@ -100,7 +100,7 @@ public class MessageServiceTest
     }
 
     @Test
-    public void registerMessageWrongRentalId()
+    public void registerWrongRentalId()
     {
         User user = ModelFactory.getUser(null);
         user = userRepository.save(user);
@@ -113,7 +113,7 @@ public class MessageServiceTest
     }
 
     @Test
-    public void registerMessageWrongUserIdForRentalId()
+    public void registerWrongUserIdForRentalId()
     {
         User user1 = ModelFactory.getUser(null);
         user1 = userRepository.save(user1);
