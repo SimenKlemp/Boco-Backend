@@ -125,7 +125,7 @@ public class RatingController {
         try
         {
             RentalResponse response = rentalService.getRental(rentalId);
-            boolean userBelongsToRental = (response.getUser().getUserId() == userId) || (response.getItem().getUser().getUserId() == userId);
+            boolean userBelongsToRental = ((response.getUser().getUserId() == userId) || (response.getItem().getUser().getUserId() == userId));
 
             if (!tokenComponent.haveAccessTo(userId) || !userBelongsToRental)
             {

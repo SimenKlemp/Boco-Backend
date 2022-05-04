@@ -81,7 +81,9 @@ public class ItemController
 
     /**
      * A method for retrieving all items posts that is stored in database
-     * @return Returns a list of items
+     * @param page the page
+     * @param pageSize how many items that is retrieved
+     * @return Returns a list of items as a ResponseEntity
      */
     @GetMapping("/all/{page}/{pageSize}")
     public ResponseEntity<List<ItemResponse>> getAllItems(@PathVariable("page") int page, @PathVariable("pageSize") int pageSize)
@@ -106,7 +108,8 @@ public class ItemController
     /**
      * A method for retrieving all items that is registered on a user
      * method for MyItems page frontend
-     * @return returns a List of Items
+     * @param userId the userId the items belong to
+     * @return returns a List of Items as a ResponseEntity
      */
     @GetMapping("/get-my/{userId}")
     public ResponseEntity<List<ItemResponse>> getMyItems(@PathVariable("userId") long userId)
@@ -206,14 +209,14 @@ public class ItemController
     }
 
     /**
-     * A method for retrieving all items connected to a search
+     * A method for retrieving all items fulfilling search demands
      * @param request The search request
-     * @return returns a list of items belonging to a search
+     * @return returns a list of items as a ResponseEntity
      */
     @PutMapping("/search")
     public ResponseEntity<List<ItemResponse>> search(@RequestBody SearchRequest request)
     {
-        logger.info("Fetching all items connected to a search ...");
+        logger.info("Fetching all items fulfilling search demand ...");
         try
         {
             List<ItemResponse> items = itemService.search(request);
@@ -232,44 +235,12 @@ public class ItemController
         }
     }
 
-
-    /*
-    @GetMapping("getAllSearchedItemsTest/{searchWord}/{greaterThan}/{lessThan}")
-    public ResponseEntity<List<ItemResponse>> getAllSearchedItemsTest(@PathVariable("searchWord") String searchWord, @PathVariable("greaterThan") float greaterThan, @PathVariable("lessThan") float lessThan )
-    {
-        logger.info("Fetching all items connected to a search ...");
-        try
-        {
-            List<ItemResponse> items = itemService.getAllSearchedItemsTest(searchWord, greaterThan, lessThan);
-
-            if (items.isEmpty())
-            {
-                return new ResponseEntity(0, HttpStatus.NO_CONTENT);
-            }
-            return new ResponseEntity(items, HttpStatus.OK);
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-            return new ResponseEntity("Error", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
+    /**
+     * A method for geocoding an address
+     * @param address The address that is being geocoded
+     * @return Returns a String of geocoded address
+     * @throws Exception The exception that is thrown
      */
-
-    @GetMapping(path = "/geocode/{address}")
-    public String getGeocodeRapid(@PathVariable("address") String address) throws IOException {
-        OkHttpClient client = new OkHttpClient();
-        String encodedAddress = URLEncoder.encode(address, "UTF-8");
-        Request request = new Request.Builder()
-                .url("https://google-maps-geocoding.p.rapidapi.com/geocode/json?language=en&address=" + encodedAddress)
-                .get()
-                .addHeader("x-rapidapi-host", "google-maps-geocoding.p.rapidapi.com")
-                .addHeader("x-rapidapi-key", "f76cf3ca46mshf06ed29fd3472dcp13cfe2jsn42d7b5504ace")
-                .build();
-        ResponseBody responseBody = client.newCall(request).execute().body();
-        return responseBody.string();
-    }
 
     @GetMapping(path = "/geocodeGoogle/{address}")
     public double[] getGeocodeGoogle(@PathVariable("address") String address) throws Exception
@@ -289,9 +260,4 @@ public class ItemController
 
         return new double[]{location.lat, location.lng};
     }
-
-
-
-
-
 }

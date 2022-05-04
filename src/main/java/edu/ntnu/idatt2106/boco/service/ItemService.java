@@ -50,10 +50,9 @@ public class ItemService
     ItemController itemController;
 
     /**
-     * A method for creating an Item
-     * finds the user that is creating an item
-     * @param request
-     * @return returns a status int
+     * A method for posting an item to database
+     * @param request the item that is being stored
+     * @return returns an ItemResponse
      */
     public ItemResponse register(RegisterItemRequest request) throws Exception
     {
@@ -113,7 +112,7 @@ public class ItemService
     /**
      * A method for retrieving all items to a specific user on userId
      * @param userId the userId the items belongs to
-     * @return returns a list of items
+     * @return returns a list of items as a itemResponse
      */
     public List<ItemResponse> getAllMy(long userId)
     {
@@ -126,9 +125,9 @@ public class ItemService
     /**
      * A method for updating a specific Item on itemId
      * Finds the item from database and then assigns new values to the columns
-     * @param itemId
-     * @param request
-     * @return returns the updated Item
+     * @param itemId the itemId that that is being updated
+     * @param request the data that is being renewed
+     * @return returns the updated Item as an ItemResponse
      */
     public ItemResponse update(long itemId, UpdateItemRequest request)
     {
@@ -165,8 +164,8 @@ public class ItemService
     }
 
     /**
-     * A method for retrieving all items connected to a search
-     * @param request what is being searched for
+     * A method for retrieving all items fulfilling search demands
+     * @param request The search data
      * @return returns a list of Items belonging to a search
      */
     public List<ItemResponse> search(SearchRequest request)
@@ -182,10 +181,11 @@ public class ItemService
         return Mapper.ToItemResponse(optionalItem.get());
     }
 
+
     /**
      * A method for deleting a specific item in database
      * @param itemId the item that is being deleted
-     * @return returns a status int
+     * @return returns a status boolean
      */
     public boolean delete(Long itemId)
     {
