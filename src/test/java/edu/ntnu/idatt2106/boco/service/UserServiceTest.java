@@ -436,11 +436,11 @@ public class UserServiceTest
 
         boolean success = userService.delete(user.getUserId());
         Optional<User> optionalUser = userRepository.findById(user.getUserId());
-        Optional<Notification> optionalRental = notificationRepository.findById(notification.getNotificationId());
+        Optional<Notification> optionalNotification = notificationRepository.findById(notification.getNotificationId());
 
         assertThat(success).isTrue();
         assertThat(optionalUser.isEmpty()).isTrue();
-        assertThat(optionalRental.isEmpty()).isTrue();
+        assertThat(optionalNotification.isEmpty()).isTrue();
     }
 
     @Test

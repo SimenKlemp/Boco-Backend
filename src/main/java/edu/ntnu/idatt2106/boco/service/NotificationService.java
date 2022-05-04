@@ -64,7 +64,9 @@ public class NotificationService {
     {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) return null;
-        List<Notification> notifications = notificationRepository.findAllByUser(optionalUser.get());
+        User user = optionalUser.get();
+
+        List<Notification> notifications = notificationRepository.findAllByUser(user);
         return Mapper.ToNotificationResponses(notifications);
     }
 

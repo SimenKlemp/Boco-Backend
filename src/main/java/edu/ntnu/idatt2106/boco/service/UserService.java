@@ -190,6 +190,11 @@ public class UserService
             ratingService.delete(rating.getRatingId());
         }
 
+        for (Notification notification : notificationRepository.findAllByUser(user))
+        {
+            notificationService.delete(notification.getNotificationId());
+        }
+
         for (Item item : itemRepository.findAllByUser(user))
         {
             itemService.delete(item.getItemId());
@@ -203,11 +208,6 @@ public class UserService
         for (FeedbackWebPage feedbackWebPage : feedbackWebPageRepository.findAllByUser(user))
         {
             feedbackWebPageService.delete(feedbackWebPage.getFeedbackId());
-        }
-
-        for (Notification notification : notificationRepository.findAllByUser(user))
-        {
-            notificationService.delete(notification.getNotificationId());
         }
 
         Image image = user.getImage();
