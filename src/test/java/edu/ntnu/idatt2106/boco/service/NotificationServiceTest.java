@@ -31,16 +31,10 @@ public class NotificationServiceTest {
     private UserRepository userRepository;
 
     @Autowired
-    private ImageRepository imageRepository;
-
-    @Autowired
     private ItemRepository itemRepository;
 
     @Autowired
     private RentalRepository rentalRepository;
-
-    @Autowired
-    private FeedbackWebPageRepository feedbackWebPageRepository;
 
     @Before
     public void before()

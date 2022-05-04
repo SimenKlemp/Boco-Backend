@@ -114,14 +114,6 @@ public class RentalService
         return Mapper.ToRentalResponses(rentals);
     }
 
-    public List<RentalResponse> getAllForUser(long userId)
-    {
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) return null;
-        List<Rental> rentals = rentalRepository.findAllByUser(optionalUser.get());
-        return Mapper.ToRentalResponses(rentals);
-    }
-
     public List<RentalResponse> getAllWhereUser(long userId, Rental.Status status)
     {
         Optional<User> optionalUser = userRepository.findById(userId);
@@ -144,8 +136,6 @@ public class RentalService
         if (optionalUser.isEmpty()) return null;
 
         List<Rental> allRentals = rentalRepository.findAll();
-
-        if (allRentals.isEmpty()) return null;
 
         ArrayList<Rental> rentals = new ArrayList<>();
 

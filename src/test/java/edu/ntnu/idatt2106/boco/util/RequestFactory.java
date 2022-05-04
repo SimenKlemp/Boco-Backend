@@ -1,9 +1,11 @@
 package edu.ntnu.idatt2106.boco.util;
 
+import edu.ntnu.idatt2106.boco.models.Rental;
 import edu.ntnu.idatt2106.boco.payload.request.*;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Date;
 import java.util.Random;
 
 public abstract class RequestFactory
@@ -98,6 +100,18 @@ public abstract class RequestFactory
                 false,
                 false,
                 imageId
+        );
+    }
+
+    public static RegisterRentalRequest getRegisterRentalRequest(Long userId, Long itemId)
+    {
+        return new RegisterRentalRequest(
+                "message",
+                new Date(),
+                new Date(),
+                userId,
+                itemId,
+                Rental.DeliverInfo.PICKUP
         );
     }
 }

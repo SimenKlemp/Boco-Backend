@@ -33,9 +33,6 @@ public class RatingServiceTest
     private UserRepository userRepository;
 
     @Autowired
-    private ImageRepository imageRepository;
-
-    @Autowired
     private ItemRepository itemRepository;
 
     @Autowired
@@ -43,12 +40,6 @@ public class RatingServiceTest
 
     @Autowired
     private RatingRepository ratingRepository;
-
-    @Autowired
-    private NotificationRepository notificationRepository;
-
-    @Autowired
-    private FeedbackWebPageRepository feedbackWebPageRepository;
 
     @Before
     public void before()

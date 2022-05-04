@@ -21,12 +21,4 @@ public class RentalResponse
     private ItemResponse item;
     private Rental.DeliverInfo deliveryInfo;
     private MessageResponse lastMessage;
-
-    public String getStartDate() {
-        return startDate.toString();
-    }
-
-    public String getEndDate() {
-        return endDate.toString();
-    }
 }
