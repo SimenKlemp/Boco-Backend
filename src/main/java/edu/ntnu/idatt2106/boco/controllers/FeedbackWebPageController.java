@@ -20,6 +20,7 @@ import java.util.List;
  *
  */
 
+
 @RestController
 @RequestMapping(value = "/feedbackWebPage")
 @EnableAutoConfiguration
@@ -61,9 +62,14 @@ public class FeedbackWebPageController {
     }
 
 
+    /**
+     * A method for retrieving all feedbacks
+     * Is only possible if user is admin
+     * @return returns FeedbackWebPageResponse as ResponseEntity
+     */
     @GetMapping("/getFeedbacks")
     public ResponseEntity<List<FeedbackWebPageResponse>> getAllFeedbacksWebPage() {
-        logger.info("Fetching all all feedbacks for the web page...");
+        logger.info("Fetching all feedbacks for the web page...");
         try {
             if (!tokenComponent.isAdmin())
             {
@@ -72,7 +78,7 @@ public class FeedbackWebPageController {
 
             List<FeedbackWebPageResponse> feedbacks = feedbackWebPageService.getAllFeedbacksWebPage();
             if (feedbacks.isEmpty()) {
-                return new ResponseEntity(0, HttpStatus.NO_CONTENT);
+                return new ResponseEntity(HttpStatus.NO_CONTENT);
             }
             return new ResponseEntity(feedbacks, HttpStatus.OK);
         }catch(Exception e){

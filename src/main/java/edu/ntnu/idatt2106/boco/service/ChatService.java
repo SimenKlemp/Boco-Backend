@@ -31,20 +31,11 @@ public class ChatService
     @Autowired
     UserRepository userRepository;
 
-    public ChatResponse getChat(long rentalId)
-    {
-        Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
-        if (optionalRental.isEmpty()) return null;
-        Rental rental = optionalRental.get();
-
-        List<Message> messages = messageRepository.findAllByRental(rental, Sort.by("date"));
-
-        RentalResponse rentalResponse = Mapper.ToRentalResponse(rental);
-        List<MessageResponse> messageResponses = Mapper.ToMessageResponses(messages);
-
-        return new ChatResponse(rentalResponse, messageResponses);
-    }
-
+    /**
+     * A method for storing messages in database
+     * @param request the message that is being sent
+     * @return returns a MessageResponse
+     */
     public MessageResponse handleMessage(MessageRequest request)
     {
         Optional<User> optionalUser = userRepository.findById(request.getUserId());
@@ -60,4 +51,26 @@ public class ChatService
 
         return Mapper.ToMessageResponse(message);
     }
+
+
+    /**
+     * A method for retrieving all messages belonging a rentalId
+     * @param rentalId the rentalId that the messages belong to
+     * @return returns a ChatResponse which contains information about both rental and message object.
+     */
+    public ChatResponse getChat(long rentalId)
+    {
+        Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
+        if (optionalRental.isEmpty()) return null;
+        Rental rental = optionalRental.get();
+
+        List<Message> messages = messageRepository.findAllByRental(rental, Sort.by("date"));
+
+        RentalResponse rentalResponse = Mapper.ToRentalResponse(rental);
+        List<MessageResponse> messageResponses = Mapper.ToMessageResponses(messages);
+
+        return new ChatResponse(rentalResponse, messageResponses);
+    }
+
+
 }

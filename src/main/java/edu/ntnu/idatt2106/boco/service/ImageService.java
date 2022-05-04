@@ -12,12 +12,20 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Optional;
 
+/**
+ * A class that represents a ImageService
+ */
 @Service
 public class ImageService
 {
     @Autowired
     ImageRepository imageRepository;
 
+    /**
+     * A method for storing an image to database
+     * @param file the MultipartFile that is being stored
+     * @return returns a long status
+     */
     public long upload(MultipartFile file)
     {
         try
@@ -32,6 +40,12 @@ public class ImageService
             return -1;
         }
     }
+
+    /**
+     * A method for retrieving an image based on the id
+     * @param imageId the imageId thar is being fetched
+     * @return returns a Resource with the image info
+     */
 
     public Resource getImage(long imageId)
     {

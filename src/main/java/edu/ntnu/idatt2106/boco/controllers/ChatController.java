@@ -18,6 +18,10 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * A class that represents a ChatController endpoint
+ */
+
 @RestController
 @RequestMapping(value = "/chat")
 @EnableAutoConfiguration
@@ -38,6 +42,12 @@ public class ChatController
 
     Logger logger = LoggerFactory.getLogger(ChatController.class);
 
+
+    /**
+     * A method that handles incoming chat-messages
+     * converts the message and sends it back as response
+     * @param request the message that is being sent
+     */
     @MessageMapping("/chat-incoming")
     public void handleMessage(@Payload MessageRequest request)
     {
@@ -57,6 +67,12 @@ public class ChatController
             e.printStackTrace();
         }
     }
+
+    /**
+     * A method for retrieving all messages belonging to a specific rentalId
+     * @param rentalId the rentalId the chat is being retrieved from
+     * @return returns ResponseEntity status
+     */
 
     @GetMapping("/get/{rentalId}")
     public ResponseEntity<ChatResponse> getChat(@PathVariable("rentalId") long rentalId)
