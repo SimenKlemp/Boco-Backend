@@ -61,7 +61,7 @@ public class ItemServiceTest
     private ItemResponse itemResponse1 =new ItemResponse();
     private ItemResponse itemResponse2 =new ItemResponse();
     private List<ItemResponse> itemList;
-    private List<Item> items;
+
     Rental rental=new Rental();
     RentalFactory rentalFactory =new RentalFactory();
 
@@ -98,9 +98,6 @@ public class ItemServiceTest
         itemRepository.save(item1);
         itemRepository.save(item2);
 
-
-
-
         itemList=new ArrayList();
     }
 
@@ -111,7 +108,7 @@ public class ItemServiceTest
         imageRepository.deleteAll();
     }
     @Test
-    public void registerWithoutImage() throws Exception {
+    public void should_store_item_without_image() throws Exception {
 
         item1.setImage(null);
         itemRepository.save(item1);
@@ -141,7 +138,7 @@ public class ItemServiceTest
     }
 
     @Test
-    public void registerWithImage(){
+    public void sould_store_item_with_image(){
 
             registerItemRequest1 = new RegisterItemRequest(
                     item1.getStreetAddress(),
@@ -168,7 +165,7 @@ public class ItemServiceTest
     }
 
     @Test
-    public void registerWrongUserId()
+    public void should_not_store_item_with_wrong_user_id()
     {
             registerItemRequest1 =new RegisterItemRequest(
                     item1.getStreetAddress(),
@@ -188,7 +185,7 @@ public class ItemServiceTest
     }
 
     @Test
-    public void getAllSorted()
+    public void should_return_all_sorted_items()
     {
         item1.setImage(image);
         itemRepository.save(item1);
@@ -225,16 +222,14 @@ public class ItemServiceTest
         itemList.add(itemResponse1);
         itemList.add(itemResponse2);
 
-
         List<ItemResponse>sortedItem =itemService.getAllItems(1,2);
         assertThat(sortedItem.stream().sorted().collect(Collectors.toList()).equals(sortedItem));
     }
 
 
     @Test
-    public void getMyWithItems()
+    public void should_return_all_my_items()
     {
-
         item1.setUser(user);
         item2.setUser(user);
 
@@ -250,7 +245,7 @@ public class ItemServiceTest
     }
 
     @Test
-    public void getMyEmpty() throws Exception {
+    public void should_return_null_with_wrong_userid() throws Exception {
        User newUser=userFactory.getObject();
        userRepository.save(newUser);
         assertThat(itemService.getMyItems(newUser.getUserId()).isEmpty());
@@ -264,7 +259,7 @@ public class ItemServiceTest
     }
 
     @Test
-    public void updateAll() throws Exception {
+    public void should_update_all_items() throws Exception {
         UpdateItemRequest updateItemRequest=new UpdateItemRequestFactory().getObject();
         item1.setUser(user);
         item1.setImage(image);
@@ -281,7 +276,7 @@ public class ItemServiceTest
     }
 
     @Test
-    public void updateNothing()
+    public void should_not_update_items()
     {
         UpdateItemRequest updateItemRequest=new UpdateItemRequest(
               item1.getStreetAddress(),
@@ -311,7 +306,7 @@ public class ItemServiceTest
 
     }
     @Test
-    public void updateWrongItemId() throws Exception {
+    public void should_not_update_item_with_wrong_itemId() throws Exception {
         UpdateItemRequest updateItemRequest =new UpdateItemRequestFactory().getObject();
 
         Item expected=itemRepository.findById(item1.getItemId()).get();
@@ -322,17 +317,18 @@ public class ItemServiceTest
     }
 
     @Test
-    public void deleteWithoutAnything()
+    public void delete_item_without_Rental_and_user()
     {
         item1.setUser(null);
         rental.setItem(null);
         rentalRepository.save(rental);
         itemRepository.save(item1);
-        assertThat(itemService.deleteItem(item1.getItemId())).isTrue();
+        Boolean delete=itemService.deleteItem(item1.getItemId());
+        assertThat(delete).isTrue();
     }
 
     @Test
-    public void deleteWithImage()
+    public void delete_item_with_image()
     {
         item1.setImage(image);
         itemRepository.save(item1);
@@ -341,7 +337,7 @@ public class ItemServiceTest
     }
 
     @Test
-    public void deleteWithRental() throws Exception {
+    public void delete_item_with_rental() throws Exception {
 
         rental.setItem(item1);
         rental.setUser(user);
@@ -351,7 +347,7 @@ public class ItemServiceTest
     }
 
     @Test
-    public void deleteWrongItemId()
+    public void should_return_false_with_wrong_itemId()
     {
         Item newItem=new Item();
         newItem.setItemId(3L);
@@ -360,7 +356,7 @@ public class ItemServiceTest
     }
 
     @Test
-    public void getCorrect()
+    public void should_return_item_with_correct_itemId()
     {
         itemRepository.save(item1);
         Item item=itemRepository.findById(item1.getItemId()).get();
@@ -370,12 +366,10 @@ public class ItemServiceTest
     }
 
     @Test
-    public void getWrongItemId()
+    public void should_not_return_item_with_wrong_itemid()
     {
-        itemRepository.save(item1);
-        itemRepository.save(item2);
-        Item expectedItem=itemRepository.findById(item1.getItemId()).get();
-        Item actualItem=itemRepository.findById(item2.getItemId()).get();
-        assertThat(expectedItem.getItemId()).isNotEqualTo(actualItem.getItemId());
+
+        ItemResponse item=itemService.getItem(3L);
+        assertThat(item).isNull();
     }
 }
