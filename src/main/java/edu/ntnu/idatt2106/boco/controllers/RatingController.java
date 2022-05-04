@@ -149,10 +149,13 @@ public class RatingController {
     {
         try
         {
+            /*
             if (!tokenComponent.haveAccessTo(userId))
             {
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
+
+             */
             return new ResponseEntity<>(ratingService.getMeanRating(userId), HttpStatus.OK);
         }
         catch (Exception e){
