@@ -272,6 +272,18 @@ public class RentalServiceTest {
     }
 
     @Test
+    public void should_get_all_rentals_for_user_with_id_and_rejected_or_canceled_status ()
+    {
+        rental1.setStatus(Rental.Status.CANCELED);
+        rental2.setStatus(Rental.Status.CANCELED);
+        rentalRepository.save(rental1);
+        rentalRepository.save(rental2);
+        User user1 = userRepository.findById(user.getUserId()).get();
+        rentalResponse = rentalService.getAllRentalsUser(user1.getUserId(), rental1.getStatus());
+        assertThat(rentalResponse.size()).isEqualTo(2);
+    }
+
+    @Test
     public void should_get_empty_list_rentals_for_specific_user () throws Exception {
         User user2=new UserFactory().getObject();
         userRepository.save(user2);
@@ -287,23 +299,31 @@ public class RentalServiceTest {
         assertThat(rentalResponse).isNull();
     }
     @Test
-    public void should_get_all_rentals_for_specific_owner(){
+    public void should_get_all_rentals_for_specific_owner_with_reject_or_canceled_status(){
 
+        rental1.setStatus(Rental.Status.REJECTED);
+        rentalRepository.save(rental1);
+        rental2.setStatus(Rental.Status.REJECTED);
+        rentalRepository.save(rental2);
         User user1=userRepository.findById(user.getUserId()).get();
-        rentalResponse=rentalService.getAllRentalsOwner(user1.getUserId());
+        rentalResponse=rentalService.getAllRentalsOwner(user1.getUserId(),rental1.getStatus());
         assertThat(rentalResponse.size()).isEqualTo(2);
     }
 
     @Test
-    public void should_should_return_empty_rentallist_for_specific_owner() throws Exception {
-        User user1=new UserFactory().getObject();
-        userRepository.save(user1);
-        rentalResponse=rentalService.getAllRentalsOwner(user1.getUserId());
-        assertThat(rentalResponse.size()).isEqualTo(0);
+    public void should_get_all_rentals_for_specific_owner_with_accept_or_pending_status() throws Exception {
+        rental1.setStatus(Rental.Status.ACCEPTED);
+        rentalRepository.save(rental1);
+        rental2.setStatus(Rental.Status.ACCEPTED);
+        rentalRepository.save(rental2);
+
+        User user1=userRepository.findById(user.getUserId()).get();
+        rentalResponse=rentalService.getAllRentalsOwner(user1.getUserId(),rental1.getStatus());
+        assertThat(rentalResponse.size()).isEqualTo(2);
     }
     @Test
     public void should_should_return_null_for_wrong_userId() throws Exception {
-        rentalResponse=rentalService.getAllRentalsOwner(4L);
+        rentalResponse=rentalService.getAllRentalsOwner(4L,rental1.getStatus());
         assertThat(rentalResponse).isNull();
     }
 

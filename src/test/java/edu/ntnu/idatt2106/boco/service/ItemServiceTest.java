@@ -1,5 +1,6 @@
 package edu.ntnu.idatt2106.boco.service;
 
+import edu.ntnu.idatt2106.boco.controllers.ItemController;
 import edu.ntnu.idatt2106.boco.factories.modelFactroies.ImageFactory;
 import edu.ntnu.idatt2106.boco.factories.modelFactroies.ItemFactory;
 import edu.ntnu.idatt2106.boco.factories.modelFactroies.RentalFactory;
@@ -46,6 +47,9 @@ public class ItemServiceTest
 
     @Mock
     private RentalRepository rentalRepository;
+
+    @Mock
+    private ItemController itemController;
 
     private UserFactory userFactory=new UserFactory();
     private ImageFactory imageFactory=new ImageFactory();
@@ -124,7 +128,7 @@ public class ItemServiceTest
                 item1.getIsPickupable(),
                 item1.getIsDeliverable(),
                 item1.getUser().getUserId(),
-                item1.getImage().getImageId());
+                null);
 
         assert registerItemRequest1 != null;
 
@@ -139,7 +143,7 @@ public class ItemServiceTest
     }
 
     @Test
-    public void should_store_item_with_image(){
+    public void should_store_item_with_image() throws Exception {
 
             registerItemRequest1 = new RegisterItemRequest(
                     item1.getStreetAddress(),
