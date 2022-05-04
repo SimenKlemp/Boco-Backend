@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "rental", uniqueConstraints = { @UniqueConstraint(columnNames = "itemId") })
+@Table(name = "rental")
 public class Rental
 {
     @Id

@@ -3,7 +3,7 @@ package edu.ntnu.idatt2106.boco.service;
 import edu.ntnu.idatt2106.boco.models.Message;
 import edu.ntnu.idatt2106.boco.models.Rental;
 import edu.ntnu.idatt2106.boco.models.User;
-import edu.ntnu.idatt2106.boco.payload.request.MessageRequest;
+import edu.ntnu.idatt2106.boco.payload.request.RegisterMessageRequest;
 import edu.ntnu.idatt2106.boco.payload.response.ChatResponse;
 import edu.ntnu.idatt2106.boco.payload.response.MessageResponse;
 import edu.ntnu.idatt2106.boco.payload.response.RentalResponse;
@@ -17,10 +17,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
-public class ChatService
+public class MessageService
 {
     @Autowired
     MessageRepository messageRepository;
@@ -30,6 +31,27 @@ public class ChatService
 
     @Autowired
     UserRepository userRepository;
+
+    public MessageResponse register(RegisterMessageRequest request)
+    {
+        Optional<User> optionalUser = userRepository.findById(request.getUserId());
+        if (optionalUser.isEmpty()) return null;
+        User user = optionalUser.get();
+
+        Optional<Rental> optionalRental = rentalRepository.findById(request.getRentalId());
+        if (optionalRental.isEmpty()) return null;
+        Rental rental = optionalRental.get();
+
+        if (!Objects.equals(rental.getUser().getUserId(), user.getUserId()) && !Objects.equals(rental.getItem().getUser().getUserId(), user.getUserId()))
+        {
+            return null;
+        }
+
+        Message message = new Message(request.getText(), true, new Date(), user, rental);
+        message = messageRepository.save(message);
+
+        return Mapper.ToMessageResponse(message);
+    }
 
     public ChatResponse getChat(long rentalId)
     {
@@ -45,19 +67,13 @@ public class ChatService
         return new ChatResponse(rentalResponse, messageResponses);
     }
 
-    public MessageResponse handleMessage(MessageRequest request)
+    public boolean delete(Long messageId)
     {
-        Optional<User> optionalUser = userRepository.findById(request.getUserId());
-        if (optionalUser.isEmpty()) return null;
-        User user = optionalUser.get();
+        Optional<Message> optionalMessage = messageRepository.findById(messageId);
+        if (optionalMessage.isEmpty()) return false;
+        Message message = optionalMessage.get();
 
-        Optional<Rental> optionalRental = rentalRepository.findById(request.getRentalId());
-        if (optionalRental.isEmpty()) return null;
-        Rental rental = optionalRental.get();
-
-        Message message = new Message(request.getText(), true, new Date(), user, rental);
-        message = messageRepository.save(message);
-
-        return Mapper.ToMessageResponse(message);
+        messageRepository.delete(message);
+        return true;
     }
 }

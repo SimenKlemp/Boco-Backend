@@ -1,19 +1,13 @@
 package edu.ntnu.idatt2106.boco.service;
 
-import edu.ntnu.idatt2106.boco.models.Image;
-import edu.ntnu.idatt2106.boco.models.Item;
-import edu.ntnu.idatt2106.boco.models.User;
+import edu.ntnu.idatt2106.boco.models.*;
 import edu.ntnu.idatt2106.boco.payload.request.LoginRequest;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterUserRequest;
 import edu.ntnu.idatt2106.boco.payload.request.UpdateUserRequest;
-import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
 import edu.ntnu.idatt2106.boco.payload.response.UserResponse;
-import edu.ntnu.idatt2106.boco.repository.ImageRepository;
-import edu.ntnu.idatt2106.boco.repository.RatingRepository;
-import edu.ntnu.idatt2106.boco.repository.UserRepository;
+import edu.ntnu.idatt2106.boco.repository.*;
 import edu.ntnu.idatt2106.boco.util.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,11 +28,34 @@ public class UserService
     ImageRepository imageRepository;
 
     @Autowired
-    RatingRepository ratingRepository;
+    ItemService itemService;
+
+    @Autowired
+    ItemRepository itemRepository;
+
+    @Autowired
+    RentalService rentalService;
+
+    @Autowired
+    RentalRepository rentalRepository;
 
     @Autowired
     RatingService ratingService;
 
+    @Autowired
+    RatingRepository ratingRepository;
+
+    @Autowired
+    FeedbackWebPageService feedbackWebPageService;
+
+    @Autowired
+    FeedbackWebPageRepository feedbackWebPageRepository;
+
+    @Autowired
+    NotificationService notificationService;
+
+    @Autowired
+    NotificationRepository notificationRepository;
 
     private final BCryptPasswordEncoder encoder;
 
@@ -85,7 +102,6 @@ public class UserService
             }
         }
 
-
         User user = new User(
                 request.getName(),
                 request.getIsPerson(),
@@ -102,16 +118,7 @@ public class UserService
         return Mapper.ToUserResponse(user);
     }
 
-    public boolean deleteUser(long userId)
-    {
-        Optional<User> user = userRepository.findById(userId);
-        if(user.isEmpty()) return false;
-
-        userRepository.delete(user.get());
-        return true;
-    }
-
-    public UserResponse updateUser(long userId, UpdateUserRequest request)
+    public UserResponse update(Long userId, UpdateUserRequest request)
     {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) return null;
@@ -137,6 +144,7 @@ public class UserService
 
             Optional<Image> optionalImage = imageRepository.findById(request.getImageId());
             if (optionalImage.isPresent()) user.setImage(optionalImage.get());
+            user = userRepository.save(user);
 
             if (prevImage != null && !Objects.equals(request.getImageId(), prevImage.getImageId()))
             {
@@ -148,7 +156,7 @@ public class UserService
         return Mapper.ToUserResponse(user);
     }
 
-    public UserResponse toggleRole(long userId)
+    public UserResponse toggleRole(Long userId)
     {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) return null;
@@ -165,17 +173,54 @@ public class UserService
         return Mapper.ToUserResponse(user);
     }
 
-    public List<UserResponse> getAllUsers()
+    public List<UserResponse> getAll()
     {
         List<User> users = userRepository.findAll();
         return Mapper.ToUserResponses(users);
     }
 
+    public boolean delete(Long userId)
+    {
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if(optionalUser.isEmpty()) return false;
+        User user = optionalUser.get();
 
+        for (Rating rating : ratingRepository.findAllByUser(user))
+        {
+            ratingService.delete(rating.getRatingId());
+        }
 
+        for (Notification notification : notificationRepository.findAllByUser(user))
+        {
+            notificationService.delete(notification.getNotificationId());
+        }
 
+        for (Item item : itemRepository.findAllByUser(user))
+        {
+            itemService.delete(item.getItemId());
+        }
 
+        for (Rental rental : rentalRepository.findAllByUser(user))
+        {
+            rentalService.delete(rental.getRentalId());
+        }
 
+        for (FeedbackWebPage feedbackWebPage : feedbackWebPageRepository.findAllByUser(user))
+        {
+            feedbackWebPageService.delete(feedbackWebPage.getFeedbackId());
+        }
+
+        Image image = user.getImage();
+
+        userRepository.delete(user);
+
+        if (image != null)
+        {
+            imageService.delete(user.getImage().getImageId());
+        }
+
+        return true;
+    }
 
 }
 

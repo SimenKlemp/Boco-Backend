@@ -15,9 +15,7 @@ import edu.ntnu.idatt2106.boco.repository.RentalRepository;
 import edu.ntnu.idatt2106.boco.repository.UserRepository;
 import edu.ntnu.idatt2106.boco.util.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +35,9 @@ public class ItemService
     UserRepository userRepository;
 
     @Autowired
+    RentalService rentalService;
+
+    @Autowired
     RentalRepository rentalRepository;
 
     @Autowired
@@ -54,18 +55,9 @@ public class ItemService
      * @param request
      * @return returns a status int
      */
-    public ItemResponse registerItem(RegisterItemRequest request) throws Exception {
-
-
-        String[] latLng = itemController.getGeocodeGoogle(request.getStreetAddress()).split(",");
-
-        System.out.println(latLng);
-
-        String lat = latLng[0].replace("\"", "");
-        String lng = latLng[1].replace("\"", "");
-
-        System.out.println(lat);
-        System.out.println(lng);
+    public ItemResponse register(RegisterItemRequest request) throws Exception
+    {
+        double[] latLng = itemController.getGeocodeGoogle(request.getStreetAddress());
 
         Optional<User> optionalUser = userRepository.findById(request.getUserId());
         if (optionalUser.isEmpty()) return null;
@@ -87,8 +79,8 @@ public class ItemService
                 request.getStreetAddress(),
                 request.getPostalCode(),
                 request.getPostOffice(),
-                Float.parseFloat(lat),
-                Float.parseFloat(lng),
+                (float) latLng[0],
+                (float) latLng[1],
                 request.getPrice(),
                 request.getDescription(),
                 request.getCategory(),
@@ -109,7 +101,7 @@ public class ItemService
      * @param pageSize number of items per page
      * @return returns an item List
      */
-    public List<ItemResponse> getAllItems(int page, int pageSize)
+    public List<ItemResponse> getAll(int page, int pageSize)
     {
         Sort sort = Sort.by("publicityDate").descending();
         PageRequest pageRequest = PageRequest.of(page, pageSize).withSort(sort);
@@ -123,7 +115,7 @@ public class ItemService
      * @param userId the userId the items belongs to
      * @return returns a list of items
      */
-    public List<ItemResponse> getMyItems(long userId)
+    public List<ItemResponse> getAllMy(long userId)
     {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) return null;
@@ -138,7 +130,7 @@ public class ItemService
      * @param request
      * @return returns the updated Item
      */
-    public ItemResponse updateItem(long itemId, UpdateItemRequest request)
+    public ItemResponse update(long itemId, UpdateItemRequest request)
     {
         Optional<Item> optionalItem = itemRepository.findById(itemId);
         if(optionalItem.isEmpty()) return null;
@@ -160,6 +152,7 @@ public class ItemService
 
             Optional<Image> optionalImage = imageRepository.findById(request.getImageId());
             if (optionalImage.isPresent()) item.setImage(optionalImage.get());
+            item = itemRepository.save(item);
 
             if (prevImage != null && !Objects.equals(request.getImageId(), prevImage.getImageId()))
             {
@@ -169,24 +162,6 @@ public class ItemService
 
         item = itemRepository.save(item);
         return Mapper.ToItemResponse(item);
-    }
-
-    /**
-     * A method for deleting a specific item in database
-     * @param itemId the item that is being deleted
-     * @return returns a status int
-     */
-    public boolean deleteItem(long itemId)
-    {
-        Optional<Item> optionalItem = itemRepository.findById(itemId);
-        if(optionalItem.isEmpty()) return false;
-        Item item = optionalItem.get();
-
-        List<Rental> rentals = rentalRepository.findAllByItem(item);
-        rentalRepository.deleteAll(rentals);
-
-        itemRepository.delete(optionalItem.get());
-        return true;
     }
 
     /**
@@ -205,5 +180,33 @@ public class ItemService
         Optional<Item> optionalItem = itemRepository.findById(itemId);
         if(optionalItem.isEmpty()) return null;
         return Mapper.ToItemResponse(optionalItem.get());
+    }
+
+    /**
+     * A method for deleting a specific item in database
+     * @param itemId the item that is being deleted
+     * @return returns a status int
+     */
+    public boolean delete(Long itemId)
+    {
+        Optional<Item> optionalItem = itemRepository.findById(itemId);
+        if(optionalItem.isEmpty()) return false;
+        Item item = optionalItem.get();
+
+        for (Rental rental : rentalRepository.findAllByItem(item))
+        {
+            rentalService.delete(rental.getRentalId());
+        }
+
+        Image image = item.getImage();
+
+        itemRepository.delete(optionalItem.get());
+
+        if (image != null)
+        {
+            imageService.delete(item.getImage().getImageId());
+        }
+
+        return true;
     }
 }

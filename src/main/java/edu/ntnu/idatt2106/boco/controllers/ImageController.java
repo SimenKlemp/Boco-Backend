@@ -23,13 +23,13 @@ class ImageController
 
 
     @GetMapping(value = "/{imageId}", produces = MediaType.IMAGE_JPEG_VALUE)
-    Resource getImage(@PathVariable long imageId)
+    Resource getImage(@PathVariable Long imageId)
     {
         return imageService.getImage(imageId);
     }
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    long uploadImage(@RequestParam("image") MultipartFile image)
+    Long uploadImage(@RequestParam("image") MultipartFile image)
     {
         logger.info("Uploading image");
         return imageService.upload(image);

@@ -24,7 +24,7 @@ public abstract class Mapper
                 user.getEmail(),
                 user.getRole(),
                 user.getImage() != null ? user.getImage().getImageId() : null
-                );
+        );
     }
 
     public static List<UserResponse> ToUserResponses(List<User> users)
@@ -131,6 +131,7 @@ public abstract class Mapper
     public static MessageResponse ToMessageResponse(Message message)
     {
         return new MessageResponse(
+                message.getMessageId(),
                 message.getText(),
                 message.getIsByUser(),
                 message.getUser().getUserId(),

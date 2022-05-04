@@ -1,10 +1,12 @@
 package edu.ntnu.idatt2106.boco.controllers;
 
 import edu.ntnu.idatt2106.boco.payload.request.NotificationRequest;
-import edu.ntnu.idatt2106.boco.payload.request.RatingRequest;
 import edu.ntnu.idatt2106.boco.payload.response.*;
 
 import edu.ntnu.idatt2106.boco.service.NotificationService;
+import edu.ntnu.idatt2106.boco.payload.request.RegisterRatingRequest;
+
+import edu.ntnu.idatt2106.boco.payload.response.RatingResponse;
 import edu.ntnu.idatt2106.boco.service.RatingService;
 import edu.ntnu.idatt2106.boco.service.RentalService;
 import edu.ntnu.idatt2106.boco.service.UserService;
@@ -45,11 +47,11 @@ public class RatingController {
     Logger logger = LoggerFactory.getLogger(RentalController.class);
 
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<RatingResponse> registerRate(@RequestBody RatingRequest request)
+    public ResponseEntity<RatingResponse> registerRate(@RequestBody RegisterRatingRequest request)
     {
         try
         {
-            RatingResponse rating = ratingService.registerRating(request);
+            RatingResponse rating = ratingService.register(request);
             if (rating == null)
             {
                 return new ResponseEntity("Error: Rating can not be found ", HttpStatus.NO_CONTENT);

@@ -5,13 +5,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotBlank;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MessageRequest
+public class RegisterFeedbackWebPageRequest
 {
-    private String text;
+
+    private String message;
+
+    @NotBlank
     private Long userId;
-    private Long rentalId;
+
 }

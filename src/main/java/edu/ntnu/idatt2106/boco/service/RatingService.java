@@ -1,24 +1,18 @@
 package edu.ntnu.idatt2106.boco.service;
 
 import edu.ntnu.idatt2106.boco.models.*;
-import edu.ntnu.idatt2106.boco.payload.request.NotificationRequest;
-import edu.ntnu.idatt2106.boco.payload.request.RatingRequest;
-import edu.ntnu.idatt2106.boco.payload.request.RegisterItemRequest;
-import edu.ntnu.idatt2106.boco.payload.request.UpdateItemRequest;
-import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
-import edu.ntnu.idatt2106.boco.payload.response.NotificationResponse;
+import edu.ntnu.idatt2106.boco.payload.request.RegisterRatingRequest;
 import edu.ntnu.idatt2106.boco.payload.response.RatingResponse;
 import edu.ntnu.idatt2106.boco.repository.*;
 import edu.ntnu.idatt2106.boco.util.Mapper;
-import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
-public class RatingService {
-
+public class RatingService
+{
     @Autowired
     RatingRepository ratingRepository;
 
@@ -31,17 +25,17 @@ public class RatingService {
     @Autowired
     NotificationService notificationService;
 
-    public RatingResponse registerRating(RatingRequest request)
+    public RatingResponse register(RegisterRatingRequest request)
     {
         Optional<Rental> optionalRental = rentalRepository.findById(request.getRentalId());
         if (optionalRental.isEmpty()) return null;
         Rental rental = optionalRental.get();
 
-        Rating rating = null;
-        if(Objects.equals(request.getUserId(), rental.getItem().getUser().getUserId())){
-
+        Rating rating;
+        if(Objects.equals(request.getUserId(), rental.getItem().getUser().getUserId()))
+        {
             Optional<User> optionalUser = userRepository.findById(rental.getUser().getUserId());
-            if (optionalRental.isEmpty()) return null;
+            if (optionalUser.isEmpty()) return null;
             User user = optionalUser.get();
 
             rating = new Rating(
@@ -50,10 +44,12 @@ public class RatingService {
                     rental,
                     user
             );
-            notificationService.registerNotification("RECEIVED_RATING_OWNER", request.getRentalId());
-        }else{
+            notificationService.register("RECEIVED_RATING_OWNER", request.getRentalId());
+        }
+        else if (Objects.equals(request.getUserId(), rental.getUser().getUserId()))
+        {
             Optional<User> optionalUser = userRepository.findById(rental.getItem().getUser().getUserId());
-            if (optionalRental.isEmpty()) return null;
+            if (optionalUser.isEmpty()) return null;
             User user = optionalUser.get();
 
             rating = new Rating(
@@ -62,23 +58,28 @@ public class RatingService {
                     rental,
                     user
             );
-            notificationService.registerNotification("RECEIVED_RATING_USER", request.getRentalId());
+            notificationService.register("RECEIVED_RATING_USER", request.getRentalId());
+        }
+        else
+        {
+            return null;
         }
 
         rating = ratingRepository.save(rating);
         return Mapper.ToRatingResponse(rating);
     }
+
     public List<RatingResponse> getRatingsOwner(long userId)
     {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) return null;
         List<Rating> allRatings = ratingRepository.findAllByUser(optionalUser.get());
 
-        if (allRatings.isEmpty()) return null;
-
         ArrayList<Rating> ratings = new ArrayList<>();
-        for (Rating allRating : allRatings) {
-            if (allRating.getRental().getItem().getUser().getUserId() == userId) {
+        for (Rating allRating : allRatings)
+        {
+            if (allRating.getRental().getItem().getUser().getUserId() == userId)
+            {
                 ratings.add(allRating);
             }
 
@@ -94,8 +95,10 @@ public class RatingService {
 
         ArrayList<Rating> ratings = new ArrayList<>();
 
-        for (Rating allRating : allRatings) {
-            if (allRating.getRental().getUser().getUserId() == userId) {
+        for (Rating allRating : allRatings)
+        {
+            if (allRating.getRental().getUser().getUserId() == userId)
+            {
                 ratings.add(allRating);
             }
         }
@@ -123,15 +126,27 @@ public class RatingService {
     public Integer getMeanRating(long userId)
     {
         Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isEmpty()) return 0;
+        if (optionalUser.isEmpty()) return null;
+        User user = optionalUser.get();
 
-        List<Rating> allRatings = ratingRepository.findAllByUser(optionalUser.get());
+        List<Rating> allRatings = ratingRepository.findAllByUser(user);
         int rating = 5;
-        if (!allRatings.isEmpty()) {
+        if (!allRatings.isEmpty())
+        {
             rating = (int) ratingRepository.getMeanRating(userId);
         }
 
         return rating;
+    }
+
+    public boolean delete(Long ratingId)
+    {
+        Optional<Rating> optionalRating = ratingRepository.findById(ratingId);
+        if (optionalRating.isEmpty()) return false;
+        Rating rating = optionalRating.get();
+
+        ratingRepository.delete(rating);
+        return true;
     }
 }
 

@@ -2,6 +2,8 @@ package edu.ntnu.idatt2106.boco.service;
 
 import edu.ntnu.idatt2106.boco.models.Image;
 import edu.ntnu.idatt2106.boco.repository.ImageRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -18,27 +20,41 @@ public class ImageService
     @Autowired
     ImageRepository imageRepository;
 
-    public long upload(MultipartFile file)
+    Logger logger = LoggerFactory.getLogger(ImageService.class);
+
+    public Long upload(MultipartFile file)
     {
         try
         {
+            logger.info("Image file size: " + file.getBytes().length);
+
             Image image = new Image(file.getName(), file.getBytes());
             image = imageRepository.save(image);
             return image.getImageId();
         }
-        catch (IOException e)
+        catch (Exception e)
         {
             e.printStackTrace();
-            return -1;
+            return null;
         }
     }
 
-    public Resource getImage(long imageId)
+    public Resource getImage(Long imageId)
     {
         Optional<Image> optionalImage = imageRepository.findById(imageId);
         if (optionalImage.isEmpty()) return null;
         Image image = optionalImage.get();
 
         return new ByteArrayResource(image.getContent());
+    }
+
+    public boolean delete(Long imageId)
+    {
+        Optional<Image> optionalImage = imageRepository.findById(imageId);
+        if (optionalImage.isEmpty()) return false;
+        Image image = optionalImage.get();
+
+        imageRepository.delete(image);
+        return true;
     }
 }
