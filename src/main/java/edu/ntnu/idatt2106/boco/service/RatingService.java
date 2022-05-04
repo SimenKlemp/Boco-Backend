@@ -81,6 +81,7 @@ public class RatingService {
             if (allRating.getRental().getItem().getUser().getUserId() == userId) {
                 ratings.add(allRating);
             }
+
         }
         return Mapper.ToRatingResponses(ratings);
     }
@@ -95,6 +96,24 @@ public class RatingService {
 
         for (Rating allRating : allRatings) {
             if (allRating.getRental().getUser().getUserId() == userId) {
+                ratings.add(allRating);
+            }
+        }
+        return Mapper.ToRatingResponses(ratings);
+    }
+
+    public List<RatingResponse> getRatingsSent(long userId, long rentalId)
+    {
+        Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
+        if(optionalRental.isEmpty()) return null;
+
+        List<Rating> allRatings = ratingRepository.findAllByRental(optionalRental.get());
+        if(allRatings.isEmpty()) return  null;
+
+        ArrayList<Rating> ratings = new ArrayList<>();
+
+        for (Rating allRating : allRatings) {
+            if (allRating.getUser().getUserId() != userId ) {
                 ratings.add(allRating);
             }
         }
