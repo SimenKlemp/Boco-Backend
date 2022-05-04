@@ -1,5 +1,6 @@
 package edu.ntnu.idatt2106.boco.service;
 
+import edu.ntnu.idatt2106.boco.controllers.ItemController;
 import edu.ntnu.idatt2106.boco.models.Image;
 import edu.ntnu.idatt2106.boco.models.Item;
 import edu.ntnu.idatt2106.boco.models.Rental;
@@ -44,14 +45,28 @@ public class ItemService
     @Autowired
     ImageService imageService;
 
+    @Autowired
+    ItemController itemController;
+
     /**
      * A method for creating an Item
      * finds the user that is creating an item
      * @param request
      * @return returns a status int
      */
-    public ItemResponse registerItem(RegisterItemRequest request)
-    {
+    public ItemResponse registerItem(RegisterItemRequest request) throws Exception {
+
+
+        String[] latLng = itemController.getGeocodeGoogle(request.getStreetAddress()).split(",");
+
+        System.out.println(latLng);
+
+        String lat = latLng[0].replace("\"", "");
+        String lng = latLng[1].replace("\"", "");
+
+        System.out.println(lat);
+        System.out.println(lng);
+
         Optional<User> optionalUser = userRepository.findById(request.getUserId());
         if (optionalUser.isEmpty()) return null;
         User user = optionalUser.get();
@@ -72,6 +87,8 @@ public class ItemService
                 request.getStreetAddress(),
                 request.getPostalCode(),
                 request.getPostOffice(),
+                Float.parseFloat(lat),
+                Float.parseFloat(lng),
                 request.getPrice(),
                 request.getDescription(),
                 request.getCategory(),

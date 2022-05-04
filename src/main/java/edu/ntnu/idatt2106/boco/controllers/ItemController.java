@@ -277,7 +277,8 @@ public class ItemController
                 address).await();
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         context.shutdown();
-        return gson.toJson(results[0].geometry.location);
+        System.out.println(results[0].geometry.location);
+        return gson.toJson(results[0].geometry.location.lat + "," + results[0].geometry.location.lng);
 
 
 

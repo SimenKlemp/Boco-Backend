@@ -37,6 +37,15 @@ public class Item
     @Column(name = "postOffice")
     private String postOffice;
 
+    @Column(name = "lat")
+    @Latitude
+    private float lat;
+
+    @Column(name = "lng")
+    @Longitude
+    private float lng ;
+
+
     @Field
     @SortableField
     @Column(name = "price")
@@ -78,7 +87,7 @@ public class Item
     @JoinColumn(name="userId")
     private User user;
 
-    public Item(String streetAddress, String postalCode, String postOffice, float price, String description, String category, String title, Date publicityDate, Boolean isPickupable, Boolean isDeliverable, Image image, User user){
+    public Item(String streetAddress, String postalCode, String postOffice, float lat, float lng, float price, String description, String category, String title, Date publicityDate, Boolean isPickupable, Boolean isDeliverable, Image image, User user){
         this.streetAddress = streetAddress;
         this.postalCode = postalCode;
         this.postOffice = postOffice;
@@ -91,5 +100,7 @@ public class Item
         this.isDeliverable = isDeliverable;
         this.image = image;
         this.user = user;
+        this.lat = lat;
+        this.lng = lng;
     }
 }
