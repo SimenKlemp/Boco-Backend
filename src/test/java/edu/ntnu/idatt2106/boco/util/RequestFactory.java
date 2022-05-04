@@ -84,4 +84,20 @@ public abstract class RequestFactory
                 userId
         );
     }
+
+    public static UpdateItemRequest getUpdateItemRequest(Long imageId)
+    {
+        return new UpdateItemRequest(
+                "new streetAddress",
+                "new postalCode",
+                "new postOffice",
+                200f,
+                "new description",
+                "new category",
+                "new title",
+                false,
+                false,
+                imageId
+        );
+    }
 }

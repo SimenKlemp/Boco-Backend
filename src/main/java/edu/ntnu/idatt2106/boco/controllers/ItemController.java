@@ -148,12 +148,14 @@ public class ItemController
     {
         try
         {
-            if (!tokenComponent.haveAccessTo(request.getUserId()))
+            ItemResponse item = itemService.getItem(itemId);
+
+            if (!tokenComponent.haveAccessTo(item.getUser().getUserId()))
             {
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            ItemResponse item = itemService.update(itemId, request);
+            item = itemService.update(itemId, request);
             if(item == null)
             {
                 return new ResponseEntity("Can not find item ", HttpStatus.NOT_FOUND);

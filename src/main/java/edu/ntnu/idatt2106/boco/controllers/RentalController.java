@@ -221,7 +221,7 @@ public class RentalController
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            List<RentalResponse> rentals = rentalService.getAllRentals(userId);
+            List<RentalResponse> rentals = rentalService.getAllForUser(userId);
             if (rentals == null || rentals.isEmpty())
             {
                 return new ResponseEntity(HttpStatus.NO_CONTENT);
@@ -248,7 +248,7 @@ public class RentalController
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            List<RentalResponse> rentals = rentalService.getAllRentalsUser(userId, status);
+            List<RentalResponse> rentals = rentalService.getAllWhereUser(userId, status);
             if (rentals == null || rentals.isEmpty())
             {
                 return new ResponseEntity(HttpStatus.NO_CONTENT);
@@ -275,7 +275,7 @@ public class RentalController
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            List<RentalResponse> rentals = rentalService.getAllRentalsOwner(userId);
+            List<RentalResponse> rentals = rentalService.getAllWhereOwner(userId);
             if (rentals == null || rentals.isEmpty())
             {
                 return new ResponseEntity(HttpStatus.NO_CONTENT);

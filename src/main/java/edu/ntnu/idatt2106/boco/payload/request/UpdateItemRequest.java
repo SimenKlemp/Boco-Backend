@@ -20,6 +20,5 @@ public class UpdateItemRequest
     private String title;
     private Boolean isPickupable;
     private Boolean isDeliverable;
-    private Long userId;
     private Long imageId;
 }

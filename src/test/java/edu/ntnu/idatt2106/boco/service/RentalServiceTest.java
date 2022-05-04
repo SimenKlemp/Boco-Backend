@@ -67,6 +67,18 @@ public class RentalServiceTest
     }
 
     @Test
+    public void getCorrect()
+    {
+
+    }
+
+    @Test
+    public void getWrongRentalId()
+    {
+
+    }
+
+    @Test
     public void getAllForItemWithRentals()
     {
 
@@ -80,6 +92,60 @@ public class RentalServiceTest
 
     @Test
     public void getAllForItemWrongItemId()
+    {
+
+    }
+
+    @Test
+    public void getAllForUserWithRentals()
+    {
+
+    }
+
+    @Test
+    public void getAllForUserEmpty()
+    {
+
+    }
+
+    @Test
+    public void getAllForUserWrongUserId()
+    {
+
+    }
+
+    @Test
+    public void getAllWhereUserWithRentals()
+    {
+
+    }
+
+    @Test
+    public void getAllWhereUserEmpty()
+    {
+
+    }
+
+    @Test
+    public void getAllWhereUserWrongUserId()
+    {
+
+    }
+
+    @Test
+    public void getAllWhereOwnerWithRentals()
+    {
+
+    }
+
+    @Test
+    public void getAllWhereOwnerEmpty()
+    {
+
+    }
+
+    @Test
+    public void getAllWhereOwnerWrongUserId()
     {
 
     }
@@ -121,31 +187,25 @@ public class RentalServiceTest
     }
 
     @Test
-    public void getCorrect()
+    public void deleteWithoutAnything()
     {
 
     }
 
     @Test
-    public void getWrongRentalId()
+    public void deleteWithRating()
     {
 
     }
 
     @Test
-    public void getAllForUserWithRentals()
+    public void deleteWithMessage()
     {
 
     }
 
     @Test
-    public void getAllForUserEmpty()
-    {
-
-    }
-
-    @Test
-    public void getAllForUserWrongUserId()
+    public void deleteWithNotification()
     {
 
     }
