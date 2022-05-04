@@ -19,6 +19,8 @@ public class ItemResponse
     private String streetAddress;
     private String postalCode;
     private String postOffice;
+    private float lat;
+    private float lng;
     private float price;
     private String description;
     private String category;

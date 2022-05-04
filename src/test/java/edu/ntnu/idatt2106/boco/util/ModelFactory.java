@@ -38,6 +38,8 @@ public abstract class ModelFactory
                 "streetAddress",
                 "postalCode",
                 "postOffice",
+                1.0000f,
+                2.0000f,
                 100f,
                 "description",
                 "category",

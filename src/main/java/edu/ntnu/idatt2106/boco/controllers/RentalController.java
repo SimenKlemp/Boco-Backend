@@ -1,5 +1,6 @@
 package edu.ntnu.idatt2106.boco.controllers;
 
+import edu.ntnu.idatt2106.boco.models.Rental;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterRentalRequest;
 import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
 import edu.ntnu.idatt2106.boco.payload.response.RentalResponse;
@@ -208,9 +209,8 @@ public class RentalController
             return new ResponseEntity("Could not fetch all rentals", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-    @GetMapping("/get-my/{userId}")
-    public ResponseEntity<List<RentalResponse>> getAllRentalsUser(@PathVariable("userId") long userId)
+    @GetMapping("/get-my-all/{userId}")
+    public ResponseEntity<List<RentalResponse>> getAllRentals(@PathVariable("userId") long userId)
     {
         logger.info("Fetching all rentals for user " + userId);
 
@@ -221,7 +221,61 @@ public class RentalController
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            List<RentalResponse> rentals = rentalService.getAllForUser(userId);
+            List<RentalResponse> rentals = rentalService.getAllRentals(userId);
+            if (rentals == null || rentals.isEmpty())
+            {
+                return new ResponseEntity(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(rentals, HttpStatus.OK);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            return new ResponseEntity("Error",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    @GetMapping("/get-my/{userId}/{status}")
+    public ResponseEntity<List<RentalResponse>> getAllRentalsUser(@PathVariable("userId") long userId, @PathVariable("status") Rental.Status status)
+    {
+        logger.info("Fetching all rentals for user " + userId + " and status " + status);
+
+        try
+        {
+            if (!tokenComponent.haveAccessTo(userId))
+            {
+                return new ResponseEntity(HttpStatus.FORBIDDEN);
+            }
+
+            List<RentalResponse> rentals = rentalService.getAllRentalsUser(userId, status);
+            if (rentals == null || rentals.isEmpty())
+            {
+                return new ResponseEntity(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(rentals, HttpStatus.OK);
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            return new ResponseEntity("Error",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    @GetMapping("/get-my-owner/{userId}")
+    public ResponseEntity<List<RentalResponse>> getAllRentalsOwner(@PathVariable("userId") long userId)
+    {
+        logger.info("Fetching all rentals for user " + userId);
+
+        try
+        {
+            if (!tokenComponent.haveAccessTo(userId))
+            {
+                return new ResponseEntity(HttpStatus.FORBIDDEN);
+            }
+
+            List<RentalResponse> rentals = rentalService.getAllRentalsOwner(userId);
             if (rentals == null || rentals.isEmpty())
             {
                 return new ResponseEntity(HttpStatus.NO_CONTENT);

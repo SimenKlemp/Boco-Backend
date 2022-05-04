@@ -1,12 +1,19 @@
 package edu.ntnu.idatt2106.boco.controllers;
 
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.maps.GeoApiContext;
+import com.google.maps.GeocodingApi;
+import com.google.maps.model.GeocodingResult;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterItemRequest;
 import edu.ntnu.idatt2106.boco.payload.request.SearchRequest;
 import edu.ntnu.idatt2106.boco.payload.request.UpdateItemRequest;
 import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
 import edu.ntnu.idatt2106.boco.service.ItemService;
 import edu.ntnu.idatt2106.boco.token.TokenComponent;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +23,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
+import okhttp3.ResponseBody;
+import java.io.IOException;
+import java.net.URLEncoder;
 
+import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.List;
 
 /**
@@ -241,5 +253,36 @@ public class ItemController
     }
 
      */
+
+    @GetMapping(path = "/geocode/{address}")
+    public String getGeocodeRapid(@PathVariable("address") String address) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+        String encodedAddress = URLEncoder.encode(address, "UTF-8");
+        Request request = new Request.Builder()
+                .url("https://google-maps-geocoding.p.rapidapi.com/geocode/json?language=en&address=" + encodedAddress)
+                .get()
+                .addHeader("x-rapidapi-host", "google-maps-geocoding.p.rapidapi.com")
+                .addHeader("x-rapidapi-key", "f76cf3ca46mshf06ed29fd3472dcp13cfe2jsn42d7b5504ace")
+                .build();
+        ResponseBody responseBody = client.newCall(request).execute().body();
+        return responseBody.string();
+    }
+
+    @GetMapping(path = "/geocodeGoogle/{address}")
+    public String getGeocodeGoogle(@PathVariable("address") String address) throws Exception {
+        GeoApiContext context = new GeoApiContext.Builder()
+                .apiKey("AIzaSyC3ODA_2JmqfmDOMPBV4nJhBgma3gFRSCc")
+                .build();
+        GeocodingResult[] results =  GeocodingApi.geocode(context,
+                address).await();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        context.shutdown();
+        System.out.println(results[0].geometry.location);
+        return gson.toJson(results[0].geometry.location.lat + "," + results[0].geometry.location.lng);
+    }
+
+
+
+
 
 }

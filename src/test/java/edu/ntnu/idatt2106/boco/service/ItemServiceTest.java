@@ -49,7 +49,7 @@ public class ItemServiceTest
     }
 
     @Test
-    public void registerWithoutImage()
+    public void registerWithoutImage() throws Exception
     {
         User user = ModelFactory.getUser(null);
         user = userRepository.save(user);
@@ -72,7 +72,7 @@ public class ItemServiceTest
     }
 
     @Test
-    public void registerWithImage()
+    public void registerWithImage() throws Exception
     {
         User user = ModelFactory.getUser(null);
         user = userRepository.save(user);
@@ -99,7 +99,7 @@ public class ItemServiceTest
     }
 
     @Test
-    public void registerWrongUserId()
+    public void registerWrongUserId() throws Exception
     {
         RegisterItemRequest request = RequestFactory.getRegisterItemRequest(0L, null);
 

@@ -39,6 +39,8 @@ public abstract class Mapper
                 item.getStreetAddress(),
                 item.getPostalCode(),
                 item.getPostOffice(),
+                item.getLat(),
+                item.getLng(),
                 item.getPrice(),
                 item.getDescription(),
                 item.getCategory(),
@@ -132,7 +134,8 @@ public abstract class Mapper
                 message.getMessageId(),
                 message.getText(),
                 message.getIsByUser(),
-                message.getUser().getUserId()
+                message.getUser().getUserId(),
+                message.getDate()
         );
     }
 
