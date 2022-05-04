@@ -57,15 +57,7 @@ public class ItemService
      */
     public ItemResponse register(RegisterItemRequest request) throws Exception
     {
-        String[] latLng = itemController.getGeocodeGoogle(request.getStreetAddress()).split(",");
-
-        System.out.println(latLng);
-
-       String lat = latLng[0].replace("\"", "");
-        String lng = latLng[1].replace("\"", "");
-
-        System.out.println(lat);
-        System.out.println(lng);
+        double[] latLng = itemController.getGeocodeGoogle(request.getStreetAddress());
 
         Optional<User> optionalUser = userRepository.findById(request.getUserId());
         if (optionalUser.isEmpty()) return null;
@@ -87,8 +79,8 @@ public class ItemService
                 request.getStreetAddress(),
                 request.getPostalCode(),
                 request.getPostOffice(),
-                Float.parseFloat(lat),
-                Float.parseFloat(lng),
+                (float) latLng[0],
+                (float) latLng[1],
                 request.getPrice(),
                 request.getDescription(),
                 request.getCategory(),
