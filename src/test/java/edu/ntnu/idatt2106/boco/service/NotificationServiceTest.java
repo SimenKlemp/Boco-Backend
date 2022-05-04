@@ -55,6 +55,7 @@ public class NotificationServiceTest {
         existingUser = userRepository.save(existingUser);
 
         Item item = ModelFactory.getItem(null, existingUser);
+        item = itemRepository.save(item);
 
         Rental existingRental = ModelFactory.getRental(existingUser, item);
         existingRental = rentalRepository.save(existingRental);
@@ -74,6 +75,7 @@ public class NotificationServiceTest {
         existingUser = userRepository.save(existingUser);
 
         Item item = ModelFactory.getItem(null, existingUser);
+        item = itemRepository.save(item);
 
         Rental existingRental = ModelFactory.getRental(existingUser, item);
         existingRental = rentalRepository.save(existingRental);
@@ -93,6 +95,7 @@ public class NotificationServiceTest {
         existingUser = userRepository.save(existingUser);
 
         Item item = ModelFactory.getItem(null, existingUser);
+        item = itemRepository.save(item);
 
         Rental existingRental = ModelFactory.getRental(existingUser, item);
         existingRental = rentalRepository.save(existingRental);

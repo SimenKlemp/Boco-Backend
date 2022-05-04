@@ -43,7 +43,7 @@ public class ImageServiceTest
 
         Long imageId = imageService.upload(file);
 
-        assertThat(imageId).isEqualTo(1L);
+        assertThat(imageId).isNotNull();
     }
 
     @Test

@@ -113,11 +113,14 @@ public class ItemServiceTest
     {
         User user = ModelFactory.getUser(null);
         user = userRepository.save(user);
+
         Item item1 = ModelFactory.getItem(null, user);
         item1 = itemRepository.save(item1);
+
         Item item2 = ModelFactory.getItem(null, user);
         item2 = itemRepository.save(item2);
-        Item[] items = {item2, item1};
+
+        Item[] items = {item1, item2};
 
         List<ItemResponse> responses = itemService.getAll(0, Integer.MAX_VALUE);
 
@@ -127,7 +130,6 @@ public class ItemServiceTest
             Item item = items[i];
             ItemResponse response = responses.get(i);
 
-            assertThat(item.getItemId()).isEqualTo(response.getItemId());
             assertThat(item.getStreetAddress()).isEqualTo(response.getStreetAddress());
             assertThat(item.getPostalCode()).isEqualTo(response.getPostalCode());
             assertThat(item.getPostOffice()).isEqualTo(response.getPostOffice());

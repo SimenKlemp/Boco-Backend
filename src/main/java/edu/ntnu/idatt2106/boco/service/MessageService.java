@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -41,7 +42,7 @@ public class MessageService
         if (optionalRental.isEmpty()) return null;
         Rental rental = optionalRental.get();
 
-        if (rental.getUser() != user && rental.getItem().getUser() != user)
+        if (!Objects.equals(rental.getUser().getUserId(), user.getUserId()) && !Objects.equals(rental.getItem().getUser().getUserId(), user.getUserId()))
         {
             return null;
         }

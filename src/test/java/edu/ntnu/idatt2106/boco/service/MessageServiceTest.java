@@ -85,6 +85,8 @@ public class MessageServiceTest
         user2 = userRepository.save(user2);
 
         Item item = ModelFactory.getItem(null, user1);
+        item = itemRepository.save(item);
+
         Rental rental = ModelFactory.getRental(user2, item);
         rental = rentalRepository.save(rental);
 
@@ -118,6 +120,8 @@ public class MessageServiceTest
         user2 = userRepository.save(user2);
 
         Item item = ModelFactory.getItem(null, user1);
+        item = itemRepository.save(item);
+
         Rental rental = ModelFactory.getRental(user2, item);
         rental = rentalRepository.save(rental);
 
@@ -141,6 +145,7 @@ public class MessageServiceTest
         user2 = userRepository.save(user2);
 
         Item item = ModelFactory.getItem(null, user1);
+        item = itemRepository.save(item);
 
         Rental rental = ModelFactory.getRental(user2, item);
         rental = rentalRepository.save(rental);
@@ -178,6 +183,7 @@ public class MessageServiceTest
         user2 = userRepository.save(user2);
 
         Item item = ModelFactory.getItem(null, user1);
+        item = itemRepository.save(item);
 
         Rental rental = ModelFactory.getRental(user2, item);
         rental = rentalRepository.save(rental);
@@ -191,7 +197,7 @@ public class MessageServiceTest
     @Test
     public void getChatWrongRentalId()
     {
-        ChatResponse chatResponse = messageService.getChat(1L);
+        ChatResponse chatResponse = messageService.getChat(0L);
 
         assertThat(chatResponse).isNull();
     }
