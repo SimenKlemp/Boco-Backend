@@ -76,7 +76,6 @@ public class NotificationService {
 
         notification.setPressed(true);
 
-
         notification = notificationRepository.save(notification);
         return Mapper.ToNotificationResponse(notification);
     }

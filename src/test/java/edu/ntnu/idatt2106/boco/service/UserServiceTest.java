@@ -17,8 +17,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.not;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = BocoApplication.class)
@@ -41,6 +43,12 @@ public class UserServiceTest
 
     @Autowired
     private FeedbackWebPageRepository feedbackWebPageRepository;
+
+    @Autowired
+    private RatingRepository ratingRepository;
+
+    @Autowired
+    private NotificationRepository notificationRepository;
 
     @Before
     public void before()
@@ -177,95 +185,6 @@ public class UserServiceTest
     }
 
     @Test
-    public void deleteWithoutAnything()
-    {
-        User user = ModelFactory.getUser(null);
-        user = userRepository.save(user);
-
-        boolean success = userService.delete(user.getUserId());
-
-        assertThat(success).isTrue();
-        assertThat(userRepository.findById(user.getUserId()).isEmpty()).isTrue();
-    }
-
-    @Test
-    public void deleteWithImage()
-    {
-        Image image = ModelFactory.getImage();
-        image = imageRepository.save(image);
-
-        User user = ModelFactory.getUser(image);
-        user = userRepository.save(user);
-
-        boolean success = userService.delete(user.getUserId());
-
-        assertThat(success).isTrue();
-        assertThat(userRepository.findById(user.getUserId()).isEmpty()).isTrue();
-        assertThat(imageRepository.findById(image.getImageId()).isEmpty()).isTrue();
-    }
-
-    @Test
-    public void deleteWithItem()
-    {
-        User user = ModelFactory.getUser(null);
-        user = userRepository.save(user);
-
-        Item item = ModelFactory.getItem(null, user);
-        item = itemRepository.save(item);
-
-        boolean success = userService.delete(user.getUserId());
-
-        assertThat(success).isTrue();
-        assertThat(userRepository.findById(user.getUserId()).isEmpty()).isTrue();
-        assertThat(itemRepository.findById(item.getItemId()).isEmpty()).isTrue();
-    }
-
-    @Test
-    public void deleteWithRental()
-    {
-        User otherUser = ModelFactory.getUser(null);
-        otherUser = userRepository.save(otherUser);
-
-        Item item = ModelFactory.getItem(null, otherUser);
-        item = itemRepository.save(item);
-
-        User user = ModelFactory.getUser(null);
-        user = userRepository.save(user);
-
-        Rental rental = ModelFactory.getRental(user, item);
-        rental = rentalRepository.save(rental);
-
-        boolean success = userService.delete(user.getUserId());
-
-        assertThat(success).isTrue();
-        assertThat(userRepository.findById(user.getUserId()).isEmpty()).isTrue();
-        assertThat(rentalRepository.findById(rental.getRentalId()).isEmpty()).isTrue();
-    }
-
-    @Test
-    public void deleteWithFeedback()
-    {
-        User user = ModelFactory.getUser(null);
-        user = userRepository.save(user);
-
-        FeedbackWebPage feedback = ModelFactory.getFeedbackWebPage(user);
-        feedback = feedbackWebPageRepository.save(feedback);
-
-        boolean success = userService.delete(user.getUserId());
-
-        assertThat(success).isTrue();
-        assertThat(userRepository.findById(user.getUserId()).isEmpty()).isTrue();
-        assertThat(feedbackWebPageRepository.findById(feedback.getFeedbackId()).isEmpty()).isTrue();
-    }
-
-    @Test
-    public void deleteWrongUserId()
-    {
-        boolean success = userService.delete(0L);
-        assertThat(success).isFalse();
-    }
-
-    @Test
     public void updateAll()
     {
         Image oldImage = ModelFactory.getImage();
@@ -396,4 +315,157 @@ public class UserServiceTest
 
         assertThat(responses.size()).isZero();
     }
+
+    @Test
+    public void deleteWithoutAnything()
+    {
+        User user = ModelFactory.getUser(null);
+        user = userRepository.save(user);
+
+        boolean success = userService.delete(user.getUserId());
+        Optional<User> optionalUser = userRepository.findById(user.getUserId());
+
+        assertThat(success).isTrue();
+        assertThat(optionalUser.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void deleteWithRating()
+    {
+        User otherUser = ModelFactory.getUser(null);
+        otherUser = userRepository.save(otherUser);
+
+        Item item = ModelFactory.getItem(null, otherUser);
+        item = itemRepository.save(item);
+
+        User user = ModelFactory.getUser(null);
+        user = userRepository.save(user);
+
+        Rental rental = ModelFactory.getRental(user, item);
+        rental = rentalRepository.save(rental);
+
+        Rating rating = ModelFactory.getRating(rental, user);
+        rating = ratingRepository.save(rating);
+
+        boolean success = userService.delete(user.getUserId());
+        Optional<User> optionalUser = userRepository.findById(user.getUserId());
+        Optional<Rating> optionalRating = ratingRepository.findById(rating.getRatingId());
+
+        assertThat(success).isTrue();
+        assertThat(optionalUser.isEmpty()).isTrue();
+        assertThat(optionalRating.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void deleteWithItem()
+    {
+        User user = ModelFactory.getUser(null);
+        user = userRepository.save(user);
+
+        Item item = ModelFactory.getItem(null, user);
+        item = itemRepository.save(item);
+
+        boolean success = userService.delete(user.getUserId());
+        Optional<User> optionalUser = userRepository.findById(user.getUserId());
+        Optional<Item> optionalItem = itemRepository.findById(item.getItemId());
+
+        assertThat(success).isTrue();
+        assertThat(optionalUser.isEmpty()).isTrue();
+        assertThat(optionalItem.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void deleteWithRental()
+    {
+        User otherUser = ModelFactory.getUser(null);
+        otherUser = userRepository.save(otherUser);
+
+        Item item = ModelFactory.getItem(null, otherUser);
+        item = itemRepository.save(item);
+
+        User user = ModelFactory.getUser(null);
+        user = userRepository.save(user);
+
+        Rental rental = ModelFactory.getRental(user, item);
+        rental = rentalRepository.save(rental);
+
+        boolean success = userService.delete(user.getUserId());
+        Optional<User> optionalUser = userRepository.findById(user.getUserId());
+        Optional<Rental> optionalRental = rentalRepository.findById(rental.getRentalId());
+
+        assertThat(success).isTrue();
+        assertThat(optionalUser.isEmpty()).isTrue();
+        assertThat(optionalRental.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void deleteWithFeedback()
+    {
+        User user = ModelFactory.getUser(null);
+        user = userRepository.save(user);
+
+        FeedbackWebPage feedback = ModelFactory.getFeedbackWebPage(user);
+        feedback = feedbackWebPageRepository.save(feedback);
+
+        boolean success = userService.delete(user.getUserId());
+        Optional<User> optionalUser = userRepository.findById(user.getUserId());
+        Optional<FeedbackWebPage> optionalFeedbackWebPage = feedbackWebPageRepository.findById(feedback.getFeedbackId());
+
+        assertThat(success).isTrue();
+        assertThat(optionalUser.isEmpty()).isTrue();
+        assertThat(optionalFeedbackWebPage.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void deleteWithNotification()
+    {
+        User otherUser = ModelFactory.getUser(null);
+        otherUser = userRepository.save(otherUser);
+
+        Item item = ModelFactory.getItem(null, otherUser);
+        item = itemRepository.save(item);
+
+        User user = ModelFactory.getUser(null);
+        user = userRepository.save(user);
+
+        Rental rental = ModelFactory.getRental(user, item);
+        rental = rentalRepository.save(rental);
+
+        Notification notification = ModelFactory.getNotification(rental, user);
+        notification = notificationRepository.save(notification);
+
+        boolean success = userService.delete(user.getUserId());
+        Optional<User> optionalUser = userRepository.findById(user.getUserId());
+        Optional<Notification> optionalRental = notificationRepository.findById(notification.getNotificationId());
+
+        assertThat(success).isTrue();
+        assertThat(optionalUser.isEmpty()).isTrue();
+        assertThat(optionalRental.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void deleteWithImage()
+    {
+        Image image = ModelFactory.getImage();
+        image = imageRepository.save(image);
+
+        User user = ModelFactory.getUser(image);
+        user = userRepository.save(user);
+
+        boolean success = userService.delete(user.getUserId());
+        Optional<User> optionalUser = userRepository.findById(user.getUserId());
+        Optional<Image> optionalImage = imageRepository.findById(image.getImageId());
+
+        assertThat(success).isTrue();
+        assertThat(optionalUser.isEmpty()).isTrue();
+        assertThat(optionalImage.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void deleteWrongUserId()
+    {
+        boolean success = userService.delete(0L);
+        assertThat(success).isFalse();
+    }
+
 }

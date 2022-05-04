@@ -80,4 +80,24 @@ public abstract class ModelFactory
                 rental
         );
     }
+
+    public static Notification getNotification(Rental rental, User user)
+    {
+        return new Notification(
+                "notificationStatus",
+                false,
+                rental,
+                user
+        );
+    }
+
+    public static Rating getRating(Rental rental, User user)
+    {
+        return new Rating(
+                5,
+                "feedback",
+                rental,
+                user
+        );
+    }
 }

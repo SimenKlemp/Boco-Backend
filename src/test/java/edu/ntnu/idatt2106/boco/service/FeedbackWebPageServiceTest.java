@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -102,5 +103,28 @@ public class FeedbackWebPageServiceTest
     {
         List<FeedbackWebPageResponse> responses = feedbackWebPageService.getAll();
         assertThat(responses.size()).isZero();
+    }
+
+    @Test
+    public void deleteCorrect()
+    {
+        User user = ModelFactory.getUser(null);
+        user = userRepository.save(user);
+
+        FeedbackWebPage feedbackWebPage = ModelFactory.getFeedbackWebPage(user);
+        feedbackWebPage = feedbackWebPageRepository.save(feedbackWebPage);
+
+        boolean success = feedbackWebPageService.delete(feedbackWebPage.getFeedbackId());
+        Optional<FeedbackWebPage> optionalFeedbackWebPage = feedbackWebPageRepository.findById(feedbackWebPage.getFeedbackId());
+
+        assertThat(success).isTrue();
+        assertThat(optionalFeedbackWebPage.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void deleteWrongFeedbackId()
+    {
+        boolean success = feedbackWebPageService.delete(0L);
+        assertThat(success).isFalse();
     }
 }

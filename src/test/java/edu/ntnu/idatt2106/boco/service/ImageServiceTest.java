@@ -3,6 +3,7 @@ package edu.ntnu.idatt2106.boco.service;
 import edu.ntnu.idatt2106.boco.BocoApplication;
 import edu.ntnu.idatt2106.boco.models.Image;
 import edu.ntnu.idatt2106.boco.models.Item;
+import edu.ntnu.idatt2106.boco.models.User;
 import edu.ntnu.idatt2106.boco.repository.ImageRepository;
 import edu.ntnu.idatt2106.boco.util.ModelFactory;
 import edu.ntnu.idatt2106.boco.util.RequestFactory;
@@ -14,6 +15,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -71,5 +74,25 @@ public class ImageServiceTest
         Resource resource = imageService.getImage(1L);
 
         assertThat(resource).isNull();
+    }
+
+    @Test
+    public void deleteCorrect()
+    {
+        Image image = ModelFactory.getImage();
+        image = imageRepository.save(image);
+
+        boolean success = imageService.delete(image.getImageId());
+        Optional<Image> optionalImage = imageRepository.findById(image.getImageId());
+
+        assertThat(success).isTrue();
+        assertThat(optionalImage.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void deleteWrongImageId()
+    {
+        boolean success = imageService.delete(0L);
+        assertThat(success).isFalse();
     }
 }

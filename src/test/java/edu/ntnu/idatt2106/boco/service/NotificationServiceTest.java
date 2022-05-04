@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -108,4 +110,35 @@ public class NotificationServiceTest {
         assertThat(notification.getRental().getUser().getUserId()).isEqualTo(response.getRental().getUser().getUserId());
     }
 
+    @Test
+    public void deleteCorrect()
+    {
+        User user1 = ModelFactory.getUser(null);
+        user1 = userRepository.save(user1);
+
+        User user2 = ModelFactory.getUser(null);
+        user2 = userRepository.save(user2);
+
+        Item item = ModelFactory.getItem(null, user1);
+        item = itemRepository.save(item);
+
+        Rental rental = ModelFactory.getRental(user2, item);
+        rental = rentalRepository.save(rental);
+
+        Notification notification = ModelFactory.getNotification(rental, user2);
+        notification = notificationRepository.save(notification);
+
+        boolean success = notificationService.delete(notification.getNotificationId());
+        Optional<Notification> optionalMessage = notificationRepository.findById(notification.getNotificationId());
+
+        assertThat(success).isTrue();
+        assertThat(optionalMessage.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void deleteWrongNotificationId()
+    {
+        boolean success = notificationService.delete(0L);
+        assertThat(success).isFalse();
+    }
 }

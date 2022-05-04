@@ -18,6 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -201,4 +203,37 @@ public class MessageServiceTest
 
         assertThat(chatResponse).isNull();
     }
+
+    @Test
+    public void deleteCorrect()
+    {
+        User user1 = ModelFactory.getUser(null);
+        user1 = userRepository.save(user1);
+
+        User user2 = ModelFactory.getUser(null);
+        user2 = userRepository.save(user2);
+
+        Item item = ModelFactory.getItem(null, user1);
+        item = itemRepository.save(item);
+
+        Rental rental = ModelFactory.getRental(user2, item);
+        rental = rentalRepository.save(rental);
+
+        Message message = ModelFactory.getMessage(user2, rental);
+        message = messageRepository.save(message);
+
+        boolean success = messageService.delete(message.getMessageId());
+        Optional<Message> optionalMessage = messageRepository.findById(message.getMessageId());
+
+        assertThat(success).isTrue();
+        assertThat(optionalMessage.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void deleteWrongMessageId()
+    {
+        boolean success = messageService.delete(0L);
+        assertThat(success).isFalse();
+    }
+
 }
