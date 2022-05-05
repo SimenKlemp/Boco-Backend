@@ -129,11 +129,12 @@ public class ItemService
      * @param request the data that is being renewed
      * @return returns the updated Item as an ItemResponse
      */
-    public ItemResponse update(long itemId, UpdateItemRequest request)
-    {
+    public ItemResponse update(long itemId, UpdateItemRequest request) throws Exception {
+
         Optional<Item> optionalItem = itemRepository.findById(itemId);
         if(optionalItem.isEmpty()) return null;
         Item item = optionalItem.get();
+
 
         if (request.getStreetAddress() != null) item.setStreetAddress(request.getStreetAddress());
         if (request.getPostalCode() != null) item.setPostalCode(request.getPostalCode());
@@ -144,6 +145,11 @@ public class ItemService
         if (request.getTitle() != null) item.setTitle(request.getTitle());
         if (request.getIsPickupable() != null) item.setIsPickupable(request.getIsPickupable());
         if (request.getIsDeliverable() != null) item.setIsDeliverable(request.getIsDeliverable());
+
+        double[] latLng = itemController.getGeocodeGoogle(item.getStreetAddress());
+
+        item.setLat((float)latLng[0]);
+        item.setLng((float)latLng[1]);
 
         if (request.getImageId() != null)
         {

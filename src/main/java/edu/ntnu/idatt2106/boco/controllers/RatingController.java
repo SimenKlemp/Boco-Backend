@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * A class that represents a ItemController
+ * A class that represents a RatingController
  */
 
 @RestController

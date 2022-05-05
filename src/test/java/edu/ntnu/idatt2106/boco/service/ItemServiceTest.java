@@ -205,8 +205,7 @@ public class ItemServiceTest
     }
 
     @Test
-    public void updateAll()
-    {
+    public void updateAll() throws Exception {
         User user = ModelFactory.getUser(null);
         user = userRepository.save(user);
 
@@ -237,8 +236,7 @@ public class ItemServiceTest
     }
 
     @Test
-    public void updateNothing()
-    {
+    public void updateNothing() throws Exception {
         User user = ModelFactory.getUser(null);
         user = userRepository.save(user);
 
@@ -268,8 +266,7 @@ public class ItemServiceTest
     }
 
     @Test
-    public void updateWrongItemId()
-    {
+    public void updateWrongItemId() throws Exception {
         UpdateItemRequest request = RequestFactory.getUpdateItemRequest(null);
 
         ItemResponse response = itemService.update(0L, request);
