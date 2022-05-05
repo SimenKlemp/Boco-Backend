@@ -2,12 +2,12 @@ package edu.ntnu.idatt2106.boco.service;
 
 import edu.ntnu.idatt2106.boco.BocoApplication;
 import edu.ntnu.idatt2106.boco.models.*;
-import edu.ntnu.idatt2106.boco.payload.request.UpdateUserRequest;
-import edu.ntnu.idatt2106.boco.repository.*;
-import edu.ntnu.idatt2106.boco.util.ModelFactory;
 import edu.ntnu.idatt2106.boco.payload.request.LoginRequest;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterUserRequest;
+import edu.ntnu.idatt2106.boco.payload.request.UpdateUserRequest;
 import edu.ntnu.idatt2106.boco.payload.response.UserResponse;
+import edu.ntnu.idatt2106.boco.repository.*;
+import edu.ntnu.idatt2106.boco.util.ModelFactory;
 import edu.ntnu.idatt2106.boco.util.RequestFactory;
 import org.junit.Before;
 import org.junit.Test;

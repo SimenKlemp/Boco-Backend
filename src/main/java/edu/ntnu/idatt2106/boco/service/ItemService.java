@@ -19,7 +19,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * A class that represents an ItemService
@@ -51,6 +54,7 @@ public class ItemService
 
     /**
      * A method for posting an item to database
+     *
      * @param request the item that is being stored
      * @return returns an ItemResponse
      */
@@ -96,7 +100,8 @@ public class ItemService
 
     /**
      * A method for retrieving all the items that is stored in database
-     * @param page the page nr
+     *
+     * @param page     the page nr
      * @param pageSize number of items per page
      * @return returns an item List
      */
@@ -111,6 +116,7 @@ public class ItemService
 
     /**
      * A method for retrieving all items to a specific user on userId
+     *
      * @param userId the userId the items belongs to
      * @return returns a list of items as a itemResponse
      */
@@ -125,14 +131,16 @@ public class ItemService
     /**
      * A method for updating a specific Item on itemId
      * Finds the item from database and then assigns new values to the columns
-     * @param itemId the itemId that that is being updated
+     *
+     * @param itemId  the itemId that that is being updated
      * @param request the data that is being renewed
      * @return returns the updated Item as an ItemResponse
      */
-    public ItemResponse update(long itemId, UpdateItemRequest request) throws Exception {
+    public ItemResponse update(long itemId, UpdateItemRequest request) throws Exception
+    {
 
         Optional<Item> optionalItem = itemRepository.findById(itemId);
-        if(optionalItem.isEmpty()) return null;
+        if (optionalItem.isEmpty()) return null;
         Item item = optionalItem.get();
 
 
@@ -148,8 +156,8 @@ public class ItemService
 
         double[] latLng = itemController.getGeocodeGoogle(item.getStreetAddress());
 
-        item.setLat((float)latLng[0]);
-        item.setLng((float)latLng[1]);
+        item.setLat((float) latLng[0]);
+        item.setLng((float) latLng[1]);
 
         if (request.getImageId() != null)
         {
@@ -171,6 +179,7 @@ public class ItemService
 
     /**
      * A method for retrieving all items fulfilling search demands
+     *
      * @param request The search data
      * @return returns a list of Items belonging to a search
      */
@@ -183,20 +192,21 @@ public class ItemService
     public ItemResponse getItem(long itemId)
     {
         Optional<Item> optionalItem = itemRepository.findById(itemId);
-        if(optionalItem.isEmpty()) return null;
+        if (optionalItem.isEmpty()) return null;
         return Mapper.ToItemResponse(optionalItem.get());
     }
 
 
     /**
      * A method for deleting a specific item in database
+     *
      * @param itemId the item that is being deleted
      * @return returns a status boolean
      */
     public boolean delete(Long itemId)
     {
         Optional<Item> optionalItem = itemRepository.findById(itemId);
-        if(optionalItem.isEmpty()) return false;
+        if (optionalItem.isEmpty()) return false;
         Item item = optionalItem.get();
 
         for (Rental rental : rentalRepository.findAllByItem(item))

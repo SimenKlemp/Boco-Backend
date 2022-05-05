@@ -11,7 +11,8 @@ import javax.validation.constraints.NotBlank;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class NotificationRequest {
+public class NotificationRequest
+{
     @NotBlank
     private String notificationStatus;
 

@@ -1,9 +1,15 @@
 package edu.ntnu.idatt2106.boco.service;
 
 import edu.ntnu.idatt2106.boco.BocoApplication;
-import edu.ntnu.idatt2106.boco.models.*;
+import edu.ntnu.idatt2106.boco.models.Item;
+import edu.ntnu.idatt2106.boco.models.Notification;
+import edu.ntnu.idatt2106.boco.models.Rental;
+import edu.ntnu.idatt2106.boco.models.User;
 import edu.ntnu.idatt2106.boco.payload.response.NotificationResponse;
-import edu.ntnu.idatt2106.boco.repository.*;
+import edu.ntnu.idatt2106.boco.repository.ItemRepository;
+import edu.ntnu.idatt2106.boco.repository.NotificationRepository;
+import edu.ntnu.idatt2106.boco.repository.RentalRepository;
+import edu.ntnu.idatt2106.boco.repository.UserRepository;
 import edu.ntnu.idatt2106.boco.util.ModelFactory;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +25,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = BocoApplication.class)
-public class NotificationServiceTest {
+public class NotificationServiceTest
+{
 
     @Autowired
     private NotificationService notificationService;

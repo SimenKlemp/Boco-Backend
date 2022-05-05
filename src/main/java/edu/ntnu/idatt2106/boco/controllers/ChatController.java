@@ -1,8 +1,8 @@
 package edu.ntnu.idatt2106.boco.controllers;
 
 import edu.ntnu.idatt2106.boco.payload.request.RegisterMessageRequest;
-import edu.ntnu.idatt2106.boco.payload.response.MessageResponse;
 import edu.ntnu.idatt2106.boco.payload.response.ChatResponse;
+import edu.ntnu.idatt2106.boco.payload.response.MessageResponse;
 import edu.ntnu.idatt2106.boco.payload.response.RentalResponse;
 import edu.ntnu.idatt2106.boco.service.MessageService;
 import edu.ntnu.idatt2106.boco.service.RentalService;
@@ -28,24 +28,20 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 public class ChatController
 {
+    Logger logger = LoggerFactory.getLogger(ChatController.class);
     @Autowired
     private MessageService messageService;
-
     @Autowired
     private RentalService rentalService;
-
     @Autowired
     private TokenComponent tokenComponent;
-
     @Autowired
     private SimpMessagingTemplate simpMessagingTemplate;
-
-    Logger logger = LoggerFactory.getLogger(ChatController.class);
-
 
     /**
      * A method that handles incoming chat-messages
      * converts the message and sends it back as response
+     *
      * @param request the message that is being sent
      */
     @MessageMapping("/chat-incoming")
@@ -60,7 +56,7 @@ public class ChatController
                 throw new NullPointerException("chatService.handleMessage return null");
             }
 
-            simpMessagingTemplate.convertAndSend( "/chat-outgoing/" + request.getRentalId(), response);
+            simpMessagingTemplate.convertAndSend("/chat-outgoing/" + request.getRentalId(), response);
         }
         catch (Exception e)
         {
@@ -70,6 +66,7 @@ public class ChatController
 
     /**
      * A method for retrieving all messages belonging to a specific rentalId
+     *
      * @param rentalId the rentalId the chat is being retrieved from
      * @return returns ResponseEntity status
      */
@@ -95,10 +92,10 @@ public class ChatController
             }
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             e.printStackTrace();
-            return new ResponseEntity("Error",HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity("Error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

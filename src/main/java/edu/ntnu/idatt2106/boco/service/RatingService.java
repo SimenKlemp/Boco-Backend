@@ -1,14 +1,21 @@
 package edu.ntnu.idatt2106.boco.service;
 
-import edu.ntnu.idatt2106.boco.models.*;
+import edu.ntnu.idatt2106.boco.models.Rating;
+import edu.ntnu.idatt2106.boco.models.Rental;
+import edu.ntnu.idatt2106.boco.models.User;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterRatingRequest;
 import edu.ntnu.idatt2106.boco.payload.response.RatingResponse;
-import edu.ntnu.idatt2106.boco.repository.*;
+import edu.ntnu.idatt2106.boco.repository.RatingRepository;
+import edu.ntnu.idatt2106.boco.repository.RentalRepository;
+import edu.ntnu.idatt2106.boco.repository.UserRepository;
 import edu.ntnu.idatt2106.boco.util.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class RatingService
@@ -32,7 +39,7 @@ public class RatingService
         Rental rental = optionalRental.get();
 
         Rating rating;
-        if(Objects.equals(request.getUserId(), rental.getItem().getUser().getUserId()))
+        if (Objects.equals(request.getUserId(), rental.getItem().getUser().getUserId()))
         {
             Optional<User> optionalUser = userRepository.findById(rental.getUser().getUserId());
             if (optionalUser.isEmpty()) return null;
@@ -108,15 +115,17 @@ public class RatingService
     public List<RatingResponse> getRatingsSent(long userId, long rentalId)
     {
         Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
-        if(optionalRental.isEmpty()) return null;
+        if (optionalRental.isEmpty()) return null;
 
         List<Rating> allRatings = ratingRepository.findAllByRental(optionalRental.get());
-        if(allRatings.isEmpty()) return  null;
+        if (allRatings.isEmpty()) return null;
 
         ArrayList<Rating> ratings = new ArrayList<>();
 
-        for (Rating allRating : allRatings) {
-            if (allRating.getUser().getUserId() != userId ) {
+        for (Rating allRating : allRatings)
+        {
+            if (allRating.getUser().getUserId() != userId)
+            {
                 ratings.add(allRating);
             }
         }

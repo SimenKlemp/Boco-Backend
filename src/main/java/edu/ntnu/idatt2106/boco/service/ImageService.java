@@ -8,10 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.Optional;
 
 /**
@@ -27,6 +25,7 @@ public class ImageService
 
     /**
      * A method for storing an image to database
+     *
      * @param file the MultipartFile that is being stored
      * @return returns a long status
      */
@@ -49,6 +48,7 @@ public class ImageService
 
     /**
      * A method for retrieving an image based on the id
+     *
      * @param imageId the imageId thar is being fetched
      * @return returns a Resource with the image info
      */

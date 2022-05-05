@@ -9,7 +9,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class NotificationResponse {
+public class NotificationResponse
+{
     private Long notificationId;
     private String notificationStatus;
     private boolean isPressed;

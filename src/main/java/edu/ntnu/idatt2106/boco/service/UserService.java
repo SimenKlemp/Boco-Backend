@@ -18,46 +18,33 @@ import java.util.Optional;
 @Service
 public class UserService
 {
+    private final BCryptPasswordEncoder encoder;
     @Autowired
     UserRepository userRepository;
-
     @Autowired
     ImageService imageService;
-
     @Autowired
     ImageRepository imageRepository;
-
     @Autowired
     ItemService itemService;
-
     @Autowired
     ItemRepository itemRepository;
-
     @Autowired
     RentalService rentalService;
-
     @Autowired
     RentalRepository rentalRepository;
-
     @Autowired
     RatingService ratingService;
-
     @Autowired
     RatingRepository ratingRepository;
-
     @Autowired
     FeedbackWebPageService feedbackWebPageService;
-
     @Autowired
     FeedbackWebPageRepository feedbackWebPageRepository;
-
     @Autowired
     NotificationService notificationService;
-
     @Autowired
     NotificationRepository notificationRepository;
-
-    private final BCryptPasswordEncoder encoder;
 
     public UserService()
     {
@@ -66,6 +53,7 @@ public class UserService
 
     /**
      * A method for checking if login credentials are correct
+     *
      * @param request user info
      * @return returns the user if the credentials match
      */
@@ -85,6 +73,7 @@ public class UserService
 
     /**
      * A method for registering a new user
+     *
      * @param request user info
      * @return returns the newly created user
      */
@@ -162,10 +151,12 @@ public class UserService
         if (optionalUser.isEmpty()) return null;
         User user = optionalUser.get();
 
-        if (user.getRole().equals("USER")){
+        if (user.getRole().equals("USER"))
+        {
             user.setRole("ADMIN");
         }
-        else {
+        else
+        {
             user.setRole("USER");
         }
 
@@ -182,7 +173,7 @@ public class UserService
     public boolean delete(Long userId)
     {
         Optional<User> optionalUser = userRepository.findById(userId);
-        if(optionalUser.isEmpty()) return false;
+        if (optionalUser.isEmpty()) return false;
         User user = optionalUser.get();
 
         for (Rating rating : ratingRepository.findAllByUser(user))

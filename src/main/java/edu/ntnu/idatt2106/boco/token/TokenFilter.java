@@ -7,11 +7,13 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,14 +23,14 @@ public class TokenFilter extends OncePerRequestFilter
 {
     private final String HEADER = "Authorization";
 
-    private String jwtSecret = "TODO: gjor_denne_hemmelig TODO: gjor_denne_hemmelig TODO: gjor_denne_hemmelig TODO: gjor_denne_hemmelig";
+    private final String jwtSecret = "TODO: gjor_denne_hemmelig TODO: gjor_denne_hemmelig TODO: gjor_denne_hemmelig TODO: gjor_denne_hemmelig";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException
     {
         try
         {
-            Key key = Keys.hmacShaKeyFor(jwtSecret.getBytes("UTF-8"));
+            Key key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
 
             // expects JWT in the header
             String authenticationHeader = request.getHeader(HEADER);
@@ -64,7 +66,7 @@ public class TokenFilter extends OncePerRequestFilter
         catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException e)
         {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            ((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
         }
     }
 }

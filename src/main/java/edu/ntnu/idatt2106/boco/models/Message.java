@@ -3,10 +3,8 @@ package edu.ntnu.idatt2106.boco.models;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
 @Getter
@@ -31,11 +29,11 @@ public class Message
     private Date date;
 
     @ManyToOne
-    @JoinColumn(name="userId")
+    @JoinColumn(name = "userId")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name="rentalId")
+    @JoinColumn(name = "rentalId")
     private Rental rental;
 
     public Message(String text, Boolean isByUser, Date date, User user, Rental rental)

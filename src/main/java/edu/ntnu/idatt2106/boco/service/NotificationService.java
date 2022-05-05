@@ -1,6 +1,8 @@
 package edu.ntnu.idatt2106.boco.service;
 
-import edu.ntnu.idatt2106.boco.models.*;
+import edu.ntnu.idatt2106.boco.models.Notification;
+import edu.ntnu.idatt2106.boco.models.Rental;
+import edu.ntnu.idatt2106.boco.models.User;
 import edu.ntnu.idatt2106.boco.payload.response.NotificationResponse;
 import edu.ntnu.idatt2106.boco.repository.NotificationRepository;
 import edu.ntnu.idatt2106.boco.repository.RentalRepository;
@@ -13,8 +15,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class NotificationService {
-
+public class NotificationService
+{
     @Autowired
     NotificationRepository notificationRepository;
 
@@ -31,7 +33,8 @@ public class NotificationService {
         Rental rental = optionalRental.get();
 
         User user = null;
-        switch(notificationStatus) {
+        switch (notificationStatus)
+        {
 
             case "REQUEST":
             case "CANCELED":
@@ -73,7 +76,7 @@ public class NotificationService {
     public NotificationResponse updateNotificationIsPressed(long notificationId)
     {
         Optional<Notification> optionalNotification = notificationRepository.findById(notificationId);
-        if(optionalNotification.isEmpty()) return null;
+        if (optionalNotification.isEmpty()) return null;
         Notification notification = optionalNotification.get();
 
         notification.setPressed(true);
@@ -85,7 +88,7 @@ public class NotificationService {
     public boolean delete(Long notificationId)
     {
         Optional<Notification> optionalNotification = notificationRepository.findById(notificationId);
-        if(optionalNotification.isEmpty()) return false;
+        if (optionalNotification.isEmpty()) return false;
         Notification notification = optionalNotification.get();
 
         notificationRepository.delete(notification);

@@ -1,10 +1,7 @@
 package edu.ntnu.idatt2106.boco.util;
 
 import edu.ntnu.idatt2106.boco.models.*;
-import edu.ntnu.idatt2106.boco.payload.response.MessageResponse;
 import edu.ntnu.idatt2106.boco.payload.response.*;
-import edu.ntnu.idatt2106.boco.service.RatingService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 import java.util.List;
@@ -79,7 +76,7 @@ public abstract class Mapper
         List<Message> messages = rental.getMessages();
         if (messages != null && !messages.isEmpty())
         {
-            lastMessage = messages.get(messages.size()-1);
+            lastMessage = messages.get(messages.size() - 1);
         }
 
         return new RentalResponse(
@@ -99,7 +96,8 @@ public abstract class Mapper
         return rentals.stream().map(Mapper::ToRentalResponse).collect(Collectors.toList());
     }
 
-    public static FeedbackWebPageResponse ToFeedbackWebPageResponse(FeedbackWebPage feedbackWebPage) {
+    public static FeedbackWebPageResponse ToFeedbackWebPageResponse(FeedbackWebPage feedbackWebPage)
+    {
         return new FeedbackWebPageResponse(
                 feedbackWebPage.getFeedbackId(),
                 feedbackWebPage.getMessage(),
@@ -107,6 +105,7 @@ public abstract class Mapper
         );
 
     }
+
     public static List<FeedbackWebPageResponse> ToFeedbackWebPageResponses(List<FeedbackWebPage> feedbacks)
     {
         return feedbacks.stream().map(Mapper::ToFeedbackWebPageResponse).collect(Collectors.toList());
@@ -153,6 +152,7 @@ public abstract class Mapper
                 ToRentalResponse(rating.getRental())
         );
     }
+
     public static List<RatingResponse> ToRatingResponses(List<Rating> ratings)
     {
         return ratings.stream().map(Mapper::ToRatingResponse).collect(Collectors.toList());

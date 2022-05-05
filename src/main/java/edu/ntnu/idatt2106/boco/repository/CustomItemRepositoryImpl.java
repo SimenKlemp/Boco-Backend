@@ -19,13 +19,13 @@ import java.util.List;
 
 public class CustomItemRepositoryImpl implements CustomItemRepository
 {
+    private final Logger logger = LoggerFactory.getLogger(CustomItemRepositoryImpl.class);
     @PersistenceContext
     private EntityManager entityManager;
 
-    private final Logger logger = LoggerFactory.getLogger(CustomItemRepositoryImpl.class);
-
     /**
      * A method for retrieving all items connected to a search
+     *
      * @param request what is being searched for
      * @return returns a list of Items belonging to a search
      */
@@ -43,13 +43,15 @@ public class CustomItemRepositoryImpl implements CustomItemRepository
 
         BooleanJunction junction = getQueryBuilder().bool();
 
-        if(request.getText() != null && !request.getText().isEmpty()){
+        if (request.getText() != null && !request.getText().isEmpty())
+        {
             junction = mustMatchText(junction, request.getText());
         }
         junction = mustHavePriceInRange(junction, request.getMinPrice(), request.getMaxPrice());
         if (request.isMustBePickupable()) junction = mustBePickupable(junction);
         if (request.isMustBeDeliverable()) junction = mustBeDeliverable(junction);
-        if (request.getCategory() != null && !request.getCategory().isEmpty()) junction = mustBeCategory(junction, request.getCategory());
+        if (request.getCategory() != null && !request.getCategory().isEmpty())
+            junction = mustBeCategory(junction, request.getCategory());
         logger.info(request.getCategory());
 
         Query keywordQuery = junction.createQuery();
@@ -87,21 +89,21 @@ public class CustomItemRepositoryImpl implements CustomItemRepository
         );
     }
 
-    private BooleanJunction mustHavePriceInRange (BooleanJunction junction, float min, float max)
+    private BooleanJunction mustHavePriceInRange(BooleanJunction junction, float min, float max)
     {
         return junction
                 .must(getQueryBuilder()
-                    .range()
-                    .onField("price")
-                    .above(min)
-                    .createQuery()
-            )
-            .must(getQueryBuilder()
-                    .range()
-                    .onField("price")
-                    .below(max)
-                    .createQuery()
-            );
+                        .range()
+                        .onField("price")
+                        .above(min)
+                        .createQuery()
+                )
+                .must(getQueryBuilder()
+                        .range()
+                        .onField("price")
+                        .below(max)
+                        .createQuery()
+                );
     }
 
     private BooleanJunction mustBePickupable(BooleanJunction junction)
@@ -114,17 +116,17 @@ public class CustomItemRepositoryImpl implements CustomItemRepository
         );
     }
 
-    private BooleanJunction mustBeDeliverable (BooleanJunction junction)
+    private BooleanJunction mustBeDeliverable(BooleanJunction junction)
     {
         return junction.must(getQueryBuilder()
-            .keyword()
-            .onField("isDeliverable")
-            .matching(Boolean.TRUE)
-            .createQuery()
+                .keyword()
+                .onField("isDeliverable")
+                .matching(Boolean.TRUE)
+                .createQuery()
         );
     }
 
-    private BooleanJunction mustBeCategory (BooleanJunction junction, String category)
+    private BooleanJunction mustBeCategory(BooleanJunction junction, String category)
     {
         return junction.must(getQueryBuilder()
                 .keyword()
@@ -134,14 +136,16 @@ public class CustomItemRepositoryImpl implements CustomItemRepository
         );
     }
 
-    private FullTextQuery getJpaQuery(Query luceneQuery) {
+    private FullTextQuery getJpaQuery(Query luceneQuery)
+    {
 
         FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager);
 
         return fullTextEntityManager.createFullTextQuery(luceneQuery, Item.class);
     }
 
-    private QueryBuilder getQueryBuilder() {
+    private QueryBuilder getQueryBuilder()
+    {
 
         FullTextEntityManager fullTextEntityManager = Search.getFullTextEntityManager(entityManager);
 

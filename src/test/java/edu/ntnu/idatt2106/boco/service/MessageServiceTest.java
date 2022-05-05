@@ -1,7 +1,10 @@
 package edu.ntnu.idatt2106.boco.service;
 
 import edu.ntnu.idatt2106.boco.BocoApplication;
-import edu.ntnu.idatt2106.boco.models.*;
+import edu.ntnu.idatt2106.boco.models.Item;
+import edu.ntnu.idatt2106.boco.models.Message;
+import edu.ntnu.idatt2106.boco.models.Rental;
+import edu.ntnu.idatt2106.boco.models.User;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterMessageRequest;
 import edu.ntnu.idatt2106.boco.payload.response.ChatResponse;
 import edu.ntnu.idatt2106.boco.payload.response.MessageResponse;

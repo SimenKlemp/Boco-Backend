@@ -34,6 +34,7 @@ public class MessageService
 
     /**
      * A method for storing messages in database
+     *
      * @param request the message that is being sent
      * @return returns a MessageResponse
      */
@@ -60,6 +61,7 @@ public class MessageService
 
     /**
      * A method for retrieving all messages belonging a rentalId
+     *
      * @param rentalId the rentalId that the messages belong to
      * @return returns a ChatResponse which contains information about both rental and message object.
      */

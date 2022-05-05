@@ -7,7 +7,10 @@ import edu.ntnu.idatt2106.boco.models.Rental;
 import edu.ntnu.idatt2106.boco.models.User;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterRatingRequest;
 import edu.ntnu.idatt2106.boco.payload.response.RatingResponse;
-import edu.ntnu.idatt2106.boco.repository.*;
+import edu.ntnu.idatt2106.boco.repository.ItemRepository;
+import edu.ntnu.idatt2106.boco.repository.RatingRepository;
+import edu.ntnu.idatt2106.boco.repository.RentalRepository;
+import edu.ntnu.idatt2106.boco.repository.UserRepository;
 import edu.ntnu.idatt2106.boco.util.ModelFactory;
 import edu.ntnu.idatt2106.boco.util.RequestFactory;
 import org.junit.Before;
@@ -186,7 +189,7 @@ public class RatingServiceTest
         Rating rating2 = ModelFactory.getRating(rental, user1);
         rating2 = ratingRepository.save(rating2);
 
-        Rating[] ratings = { rating1, rating2 };
+        Rating[] ratings = {rating1, rating2};
 
         List<RatingResponse> responses = ratingService.getRatingsOwner(user1.getUserId());
 
@@ -254,7 +257,7 @@ public class RatingServiceTest
         Rating rating2 = ModelFactory.getRating(rental, user2);
         rating2 = ratingRepository.save(rating2);
 
-        Rating[] ratings = { rating1, rating2 };
+        Rating[] ratings = {rating1, rating2};
 
         List<RatingResponse> responses = ratingService.getRatingsUser(user2.getUserId());
 

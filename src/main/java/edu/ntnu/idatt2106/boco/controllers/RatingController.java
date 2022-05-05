@@ -1,13 +1,10 @@
 package edu.ntnu.idatt2106.boco.controllers;
 
-import edu.ntnu.idatt2106.boco.payload.response.*;
-
 import edu.ntnu.idatt2106.boco.payload.request.RegisterRatingRequest;
-
 import edu.ntnu.idatt2106.boco.payload.response.RatingResponse;
+import edu.ntnu.idatt2106.boco.payload.response.RentalResponse;
 import edu.ntnu.idatt2106.boco.service.RatingService;
 import edu.ntnu.idatt2106.boco.service.RentalService;
-import edu.ntnu.idatt2106.boco.service.UserService;
 import edu.ntnu.idatt2106.boco.token.TokenComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,21 +25,16 @@ import java.util.List;
 @RequestMapping(value = "/rating")
 @EnableAutoConfiguration
 @CrossOrigin
-public class RatingController {
-
-    @Autowired
-    private RatingService ratingService;
-
-    @Autowired
-    private RentalService rentalService;
-
-    @Autowired
-    private UserService userService;
-
-    @Autowired
-    private TokenComponent tokenComponent;
+public class RatingController
+{
 
     Logger logger = LoggerFactory.getLogger(RentalController.class);
+    @Autowired
+    private RatingService ratingService;
+    @Autowired
+    private RentalService rentalService;
+    @Autowired
+    private TokenComponent tokenComponent;
 
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<RatingResponse> registerRate(@RequestBody RegisterRatingRequest request)
@@ -56,10 +48,10 @@ public class RatingController {
             }
             return new ResponseEntity<>(rating, HttpStatus.CREATED);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             e.printStackTrace();
-            return new ResponseEntity("Error: Cannot create a new rating ",HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity("Error: Cannot create a new rating ", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -82,10 +74,10 @@ public class RatingController {
             }
             return new ResponseEntity<>(ratings, HttpStatus.OK);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             e.printStackTrace();
-            return new ResponseEntity("Error",HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity("Error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -108,10 +100,10 @@ public class RatingController {
             }
             return new ResponseEntity<>(ratings, HttpStatus.OK);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             e.printStackTrace();
-            return new ResponseEntity("Error",HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity("Error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -137,10 +129,10 @@ public class RatingController {
             }
             return new ResponseEntity<>(ratings, HttpStatus.OK);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             e.printStackTrace();
-            return new ResponseEntity("Error",HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity("Error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -158,7 +150,8 @@ public class RatingController {
              */
             return new ResponseEntity<>(ratingService.getMeanRating(userId), HttpStatus.OK);
         }
-        catch (Exception e){
+        catch (Exception e)
+        {
             e.printStackTrace();
             return new ResponseEntity("Error", HttpStatus.INTERNAL_SERVER_ERROR);
         }

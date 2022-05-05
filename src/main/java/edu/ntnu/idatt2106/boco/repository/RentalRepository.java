@@ -15,7 +15,7 @@ public interface RentalRepository extends JpaRepository<Rental, Long>
 
     List<Rental> findAllByUser(User user);
 
-    List<Rental> findAllByStatusOrStatus(Rental.Status status1,Rental.Status status2 );
+    List<Rental> findAllByStatusOrStatus(Rental.Status status1, Rental.Status status2);
 
     List<Rental> findAllByUserAndStatusOrStatus(User user, Rental.Status status1, Rental.Status status2);
 }

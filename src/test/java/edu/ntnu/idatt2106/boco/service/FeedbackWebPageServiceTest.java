@@ -2,11 +2,11 @@ package edu.ntnu.idatt2106.boco.service;
 
 import edu.ntnu.idatt2106.boco.BocoApplication;
 import edu.ntnu.idatt2106.boco.models.FeedbackWebPage;
-import edu.ntnu.idatt2106.boco.models.Image;
 import edu.ntnu.idatt2106.boco.models.User;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterFeedbackWebPageRequest;
 import edu.ntnu.idatt2106.boco.payload.response.FeedbackWebPageResponse;
-import edu.ntnu.idatt2106.boco.repository.*;
+import edu.ntnu.idatt2106.boco.repository.FeedbackWebPageRepository;
+import edu.ntnu.idatt2106.boco.repository.UserRepository;
 import edu.ntnu.idatt2106.boco.util.ModelFactory;
 import edu.ntnu.idatt2106.boco.util.RequestFactory;
 import org.junit.Before;

@@ -8,7 +8,10 @@ import edu.ntnu.idatt2106.boco.models.User;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterItemRequest;
 import edu.ntnu.idatt2106.boco.payload.request.UpdateItemRequest;
 import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
-import edu.ntnu.idatt2106.boco.repository.*;
+import edu.ntnu.idatt2106.boco.repository.ImageRepository;
+import edu.ntnu.idatt2106.boco.repository.ItemRepository;
+import edu.ntnu.idatt2106.boco.repository.RentalRepository;
+import edu.ntnu.idatt2106.boco.repository.UserRepository;
 import edu.ntnu.idatt2106.boco.util.ModelFactory;
 import edu.ntnu.idatt2106.boco.util.RequestFactory;
 import org.junit.Before;
@@ -205,7 +208,8 @@ public class ItemServiceTest
     }
 
     @Test
-    public void updateAll() throws Exception {
+    public void updateAll() throws Exception
+    {
         User user = ModelFactory.getUser(null);
         user = userRepository.save(user);
 
@@ -236,7 +240,8 @@ public class ItemServiceTest
     }
 
     @Test
-    public void updateNothing() throws Exception {
+    public void updateNothing() throws Exception
+    {
         User user = ModelFactory.getUser(null);
         user = userRepository.save(user);
 
@@ -266,7 +271,8 @@ public class ItemServiceTest
     }
 
     @Test
-    public void updateWrongItemId() throws Exception {
+    public void updateWrongItemId() throws Exception
+    {
         UpdateItemRequest request = RequestFactory.getUpdateItemRequest(null);
 
         ItemResponse response = itemService.update(0L, request);

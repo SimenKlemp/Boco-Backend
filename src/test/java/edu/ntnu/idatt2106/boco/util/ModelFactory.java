@@ -1,7 +1,6 @@
 package edu.ntnu.idatt2106.boco.util;
 
 import edu.ntnu.idatt2106.boco.models.*;
-import org.junit.jupiter.api.MethodOrderer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Date;

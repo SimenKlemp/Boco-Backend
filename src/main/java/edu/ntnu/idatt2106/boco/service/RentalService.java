@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -54,7 +53,7 @@ public class RentalService
      *
      * @param request the rental request that is being stored to database
      * @return returns a status int
-     * */
+     */
     public RentalResponse register(RegisterRentalRequest request)
     {
         Optional<User> optionalUser = userRepository.findById(request.getUserId());
@@ -142,7 +141,7 @@ public class RentalService
         if (optionalUser.isEmpty()) return null;
 
         List<Rental> rentals;
-        if(status == Rental.Status.CANCELED || status == Rental.Status.REJECTED)
+        if (status == Rental.Status.CANCELED || status == Rental.Status.REJECTED)
         {
             rentals = rentalRepository.findAllByStatusOrStatus(Rental.Status.REJECTED, Rental.Status.CANCELED);
         }

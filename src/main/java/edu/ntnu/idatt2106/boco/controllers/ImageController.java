@@ -27,6 +27,7 @@ class ImageController
 
     /**
      * A method for retrieving an image based on the id
+     *
      * @param imageId the imageId that is being retrieved
      * @return returns a Resource
      */
@@ -38,6 +39,7 @@ class ImageController
 
     /**
      * A method for uploading an image
+     *
      * @param image a MultipartFile that is being stored
      * @return returns a long status
      */
