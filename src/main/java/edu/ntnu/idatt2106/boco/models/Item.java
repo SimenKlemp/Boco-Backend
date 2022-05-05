@@ -3,6 +3,7 @@ package edu.ntnu.idatt2106.boco.models;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.search.annotations.*;
 
 import javax.persistence.*;
@@ -13,6 +14,7 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
+@SuperBuilder
 @Indexed
 @Entity
 @Table(name = "item", uniqueConstraints = { @UniqueConstraint(columnNames = "itemId") })
