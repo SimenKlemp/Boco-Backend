@@ -1,9 +1,7 @@
 package edu.ntnu.idatt2106.boco.controllers;
 
-import edu.ntnu.idatt2106.boco.payload.request.NotificationRequest;
 import edu.ntnu.idatt2106.boco.payload.response.*;
 
-import edu.ntnu.idatt2106.boco.service.NotificationService;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterRatingRequest;
 
 import edu.ntnu.idatt2106.boco.payload.response.RatingResponse;

@@ -112,7 +112,7 @@ public class UserService
                 encoder.encode(request.getPassword()),
                 "USER",
                 image
-                );
+        );
 
         user = userRepository.save(user);
         return Mapper.ToUserResponse(user);
@@ -148,7 +148,7 @@ public class UserService
 
             if (prevImage != null && !Objects.equals(request.getImageId(), prevImage.getImageId()))
             {
-                imageRepository.delete(prevImage);
+                imageService.delete(prevImage.getImageId());
             }
         }
 
