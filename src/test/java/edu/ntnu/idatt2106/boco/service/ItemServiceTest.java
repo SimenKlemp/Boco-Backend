@@ -343,7 +343,7 @@ public class ItemServiceTest
     }
 
     @Test
-    public void should_not_return_item_with_wrong_itemid()
+    public void should_not_return_item_with_wrong_itemId()
     {
 
         ItemResponse item=itemService.getItem(3L);
