@@ -6,6 +6,7 @@ import com.google.gson.GsonBuilder;
 import com.google.maps.GeoApiContext;
 import com.google.maps.GeocodingApi;
 import com.google.maps.model.GeocodingResult;
+import com.google.maps.model.LatLng;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterItemRequest;
 import edu.ntnu.idatt2106.boco.payload.request.SearchRequest;
 import edu.ntnu.idatt2106.boco.payload.request.UpdateItemRequest;
@@ -57,30 +58,32 @@ public class ItemController
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ItemResponse> registerItem(@RequestBody RegisterItemRequest request)
     {
-        try
-        {
-            if (!tokenComponent.haveAccessTo(request.getUserId()))
-            {
-                return new ResponseEntity(HttpStatus.FORBIDDEN);
-            }
+       try
+       {
+           if (!tokenComponent.haveAccessTo(request.getUserId()))
+           {
+               return new ResponseEntity(HttpStatus.FORBIDDEN);
+           }
 
-            ItemResponse item = itemService.registerItem(request);
-            if (item == null)
-            {
-                return new ResponseEntity("Error: User can not be found ", HttpStatus.NO_CONTENT);
-            }
-            return new ResponseEntity<>(item, HttpStatus.CREATED);
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-            return new ResponseEntity("Error: Cannot create a new item ",HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+           ItemResponse item = itemService.register(request);
+           if (item == null)
+           {
+               return new ResponseEntity("Error: User can not be found ", HttpStatus.NO_CONTENT);
+           }
+           return new ResponseEntity<>(item, HttpStatus.CREATED);
+       }
+       catch(Exception e)
+       {
+           e.printStackTrace();
+           return new ResponseEntity("Error: Cannot create a new item ",HttpStatus.INTERNAL_SERVER_ERROR);
+       }
     }
 
     /**
      * A method for retrieving all items posts that is stored in database
-     * @return Returns a list of items
+     * @param page the page
+     * @param pageSize how many items that is retrieved
+     * @return Returns a list of items as a ResponseEntity
      */
     @GetMapping("/all/{page}/{pageSize}")
     public ResponseEntity<List<ItemResponse>> getAllItems(@PathVariable("page") int page, @PathVariable("pageSize") int pageSize)
@@ -88,7 +91,7 @@ public class ItemController
         logger.info("Fetching all items...");
         try
         {
-            List<ItemResponse> items = itemService.getAllItems(page, pageSize);
+            List<ItemResponse> items = itemService.getAll(page, pageSize);
             if (items == null || items.isEmpty())
             {
                 return new ResponseEntity(HttpStatus.NO_CONTENT);
@@ -105,7 +108,8 @@ public class ItemController
     /**
      * A method for retrieving all items that is registered on a user
      * method for MyItems page frontend
-     * @return returns a List of Items
+     * @param userId the userId the items belong to
+     * @return returns a List of Items as a ResponseEntity
      */
     @GetMapping("/get-my/{userId}")
     public ResponseEntity<List<ItemResponse>> getMyItems(@PathVariable("userId") long userId)
@@ -119,7 +123,7 @@ public class ItemController
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            List<ItemResponse> items = itemService.getMyItems(userId);
+            List<ItemResponse> items = itemService.getAllMy(userId);
             if (items == null || items.isEmpty())
             {
                 return new ResponseEntity(HttpStatus.NO_CONTENT);
@@ -147,12 +151,14 @@ public class ItemController
     {
         try
         {
-            if (!tokenComponent.haveAccessTo(request.getUserId()))
+            ItemResponse item = itemService.getItem(itemId);
+
+            if (!tokenComponent.haveAccessTo(item.getUser().getUserId()))
             {
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            ItemResponse item = itemService.updateItem(itemId, request);
+            item = itemService.update(itemId, request);
             if(item == null)
             {
                 return new ResponseEntity("Can not find item ", HttpStatus.NOT_FOUND);
@@ -188,7 +194,7 @@ public class ItemController
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            boolean success = itemService.deleteItem(itemId);
+            boolean success = itemService.delete(itemId);
             if (!success)
             {
                 return new ResponseEntity<>("Item can not be found ", HttpStatus.NOT_FOUND);
@@ -203,14 +209,14 @@ public class ItemController
     }
 
     /**
-     * A method for retrieving all items connected to a search
+     * A method for retrieving all items fulfilling search demands
      * @param request The search request
-     * @return returns a list of items belonging to a search
+     * @return returns a list of items as a ResponseEntity
      */
     @PutMapping("/search")
     public ResponseEntity<List<ItemResponse>> search(@RequestBody SearchRequest request)
     {
-        logger.info("Fetching all items connected to a search ...");
+        logger.info("Fetching all items fulfilling search demand ...");
         try
         {
             List<ItemResponse> items = itemService.search(request);
@@ -229,63 +235,29 @@ public class ItemController
         }
     }
 
-
-    /*
-    @GetMapping("getAllSearchedItemsTest/{searchWord}/{greaterThan}/{lessThan}")
-    public ResponseEntity<List<ItemResponse>> getAllSearchedItemsTest(@PathVariable("searchWord") String searchWord, @PathVariable("greaterThan") float greaterThan, @PathVariable("lessThan") float lessThan )
-    {
-        logger.info("Fetching all items connected to a search ...");
-        try
-        {
-            List<ItemResponse> items = itemService.getAllSearchedItemsTest(searchWord, greaterThan, lessThan);
-
-            if (items.isEmpty())
-            {
-                return new ResponseEntity(0, HttpStatus.NO_CONTENT);
-            }
-            return new ResponseEntity(items, HttpStatus.OK);
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-            return new ResponseEntity("Error", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
+    /**
+     * A method for geocoding an address
+     * @param address The address that is being geocoded
+     * @return Returns a String of geocoded address
+     * @throws Exception The exception that is thrown
      */
 
-    @GetMapping(path = "/geocode/{address}")
-    public String getGeocodeRapid(@PathVariable("address") String address) throws IOException {
-        OkHttpClient client = new OkHttpClient();
-        String encodedAddress = URLEncoder.encode(address, "UTF-8");
-        Request request = new Request.Builder()
-                .url("https://google-maps-geocoding.p.rapidapi.com/geocode/json?language=en&address=" + encodedAddress)
-                .get()
-                .addHeader("x-rapidapi-host", "google-maps-geocoding.p.rapidapi.com")
-                .addHeader("x-rapidapi-key", "f76cf3ca46mshf06ed29fd3472dcp13cfe2jsn42d7b5504ace")
-                .build();
-        ResponseBody responseBody = client.newCall(request).execute().body();
-        return responseBody.string();
-    }
-
     @GetMapping(path = "/geocodeGoogle/{address}")
-    public String getGeocodeGoogle(@PathVariable("address") String address) throws Exception {
+    public double[] getGeocodeGoogle(@PathVariable("address") String address) throws Exception
+    {
         GeoApiContext context = new GeoApiContext.Builder()
                 .apiKey("AIzaSyC3ODA_2JmqfmDOMPBV4nJhBgma3gFRSCc")
                 .build();
         GeocodingResult[] results =  GeocodingApi.geocode(context,
                 address).await();
+
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         context.shutdown();
-        System.out.println(results[0].geometry.location);
-        return gson.toJson(results[0].geometry.location.lat + "," + results[0].geometry.location.lng);
 
+        if (results.length == 0) return new double[] {0, 0};
 
+        LatLng location = results[0].geometry.location;
 
+        return new double[]{location.lat, location.lng};
     }
-
-
-
-
-
 }

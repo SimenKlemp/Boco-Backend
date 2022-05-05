@@ -3,7 +3,6 @@ package edu.ntnu.idatt2106.boco.models;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;;
 import java.util.Date;
@@ -13,8 +12,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @Entity
-@SuperBuilder
-@Table(name = "rental", uniqueConstraints = { @UniqueConstraint(columnNames = "itemId") })
+@Table(name = "rental")
 public class Rental
 {
     @Id

@@ -1,9 +1,11 @@
 package edu.ntnu.idatt2106.boco.util;
 
 import edu.ntnu.idatt2106.boco.models.*;
+import org.junit.jupiter.api.MethodOrderer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Date;
+import java.util.Random;
 
 public abstract class ModelFactory
 {
@@ -15,7 +17,7 @@ public abstract class ModelFactory
                 "streetAddress",
                 "postalCode",
                 "postOffice",
-                "email",
+                "email" + new Random().nextInt() + "@email.com",
                 new BCryptPasswordEncoder().encode("password"),
                 "USER",
                 image
@@ -26,7 +28,7 @@ public abstract class ModelFactory
     {
         return new Image(
                 "name",
-                null
+                new byte[5]
         );
     }
 
@@ -66,6 +68,37 @@ public abstract class ModelFactory
     {
         return new FeedbackWebPage(
                 "message",
+                user
+        );
+    }
+
+    public static Message getMessage(User user, Rental rental)
+    {
+        return new Message(
+                "text",
+                true,
+                new Date(),
+                user,
+                rental
+        );
+    }
+
+    public static Notification getNotification(Rental rental, User user)
+    {
+        return new Notification(
+                "notificationStatus",
+                false,
+                rental,
+                user
+        );
+    }
+
+    public static Rating getRating(Rental rental, User user)
+    {
+        return new Rating(
+                5,
+                "feedback",
+                rental,
                 user
         );
     }

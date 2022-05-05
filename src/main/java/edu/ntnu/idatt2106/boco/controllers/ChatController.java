@@ -1,10 +1,10 @@
 package edu.ntnu.idatt2106.boco.controllers;
 
-import edu.ntnu.idatt2106.boco.payload.request.MessageRequest;
+import edu.ntnu.idatt2106.boco.payload.request.RegisterMessageRequest;
 import edu.ntnu.idatt2106.boco.payload.response.MessageResponse;
 import edu.ntnu.idatt2106.boco.payload.response.ChatResponse;
 import edu.ntnu.idatt2106.boco.payload.response.RentalResponse;
-import edu.ntnu.idatt2106.boco.service.ChatService;
+import edu.ntnu.idatt2106.boco.service.MessageService;
 import edu.ntnu.idatt2106.boco.service.RentalService;
 import edu.ntnu.idatt2106.boco.token.TokenComponent;
 import org.slf4j.Logger;
@@ -18,6 +18,10 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * A class that represents a ChatController endpoint
+ */
+
 @RestController
 @RequestMapping(value = "/chat")
 @EnableAutoConfiguration
@@ -25,7 +29,7 @@ import org.springframework.web.bind.annotation.*;
 public class ChatController
 {
     @Autowired
-    private ChatService chatService;
+    private MessageService messageService;
 
     @Autowired
     private RentalService rentalService;
@@ -38,12 +42,18 @@ public class ChatController
 
     Logger logger = LoggerFactory.getLogger(ChatController.class);
 
+
+    /**
+     * A method that handles incoming chat-messages
+     * converts the message and sends it back as response
+     * @param request the message that is being sent
+     */
     @MessageMapping("/chat-incoming")
-    public void handleMessage(@Payload MessageRequest request)
+    public void handleMessage(@Payload RegisterMessageRequest request)
     {
         try
         {
-            MessageResponse response = chatService.handleMessage(request);
+            MessageResponse response = messageService.register(request);
 
             if (response == null)
             {
@@ -57,6 +67,12 @@ public class ChatController
             e.printStackTrace();
         }
     }
+
+    /**
+     * A method for retrieving all messages belonging to a specific rentalId
+     * @param rentalId the rentalId the chat is being retrieved from
+     * @return returns ResponseEntity status
+     */
 
     @GetMapping("/get/{rentalId}")
     public ResponseEntity<ChatResponse> getChat(@PathVariable("rentalId") long rentalId)
@@ -72,7 +88,7 @@ public class ChatController
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            ChatResponse response = chatService.getChat(rentalId);
+            ChatResponse response = messageService.getChat(rentalId);
             if (response == null)
             {
                 return new ResponseEntity(HttpStatus.NO_CONTENT);

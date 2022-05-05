@@ -1,22 +1,13 @@
 package edu.ntnu.idatt2106.boco.controllers;
 
-import edu.ntnu.idatt2106.boco.models.Rental;
-import edu.ntnu.idatt2106.boco.models.User;
-import edu.ntnu.idatt2106.boco.payload.request.NotificationRequest;
-import edu.ntnu.idatt2106.boco.payload.request.RegisterItemRequest;
-import edu.ntnu.idatt2106.boco.payload.request.UpdateItemRequest;
-import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
 import edu.ntnu.idatt2106.boco.payload.response.NotificationResponse;
-import edu.ntnu.idatt2106.boco.service.ItemService;
 import edu.ntnu.idatt2106.boco.service.NotificationService;
-import edu.ntnu.idatt2106.boco.service.RentalService;
 import edu.ntnu.idatt2106.boco.token.TokenComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -74,7 +65,7 @@ public class NotificationController {
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            List<NotificationResponse> notifications = notificationService.getNotifications(userId);
+            List<NotificationResponse> notifications = notificationService.getAllMy(userId);
             if (notifications == null || notifications.isEmpty())
             {
                 return new ResponseEntity(HttpStatus.NO_CONTENT);

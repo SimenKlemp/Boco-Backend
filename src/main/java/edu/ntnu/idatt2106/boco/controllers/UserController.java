@@ -107,7 +107,7 @@ public class UserController
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            boolean success = userService.deleteUser(userId);
+            boolean success = userService.delete(userId);
             if(!success)
             {
                 return new ResponseEntity<>("Error: User not found", HttpStatus.NO_CONTENT);
@@ -130,7 +130,7 @@ public class UserController
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            UserResponse user = userService.updateUser(userId, request);
+            UserResponse user = userService.update(userId, request);
             if (user == null)
             {
                 return new ResponseEntity("Error: User not found", HttpStatus.OK);
@@ -172,7 +172,7 @@ public class UserController
     {
         try
         {
-            List<UserResponse> users = userService.getAllUsers();
+            List<UserResponse> users = userService.getAll();
             if (users == null || users.isEmpty())
             {
                 return new ResponseEntity(HttpStatus.NO_CONTENT);

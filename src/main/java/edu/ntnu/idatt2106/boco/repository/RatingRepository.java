@@ -13,10 +13,9 @@ import java.util.List;
 public interface RatingRepository extends JpaRepository<Rating, Long> {
     List<Rating> findAllByUser(User user);
 
-    @Query("SELECT AVG(r.rate) FROM rating r WHERE r.user.userId= ?1")
-    float getMeanRating(long userId);
-
     List<Rating> findAllByRental(Rental rental);
 
+    @Query("SELECT AVG(r.rate) FROM rating r WHERE r.user.userId= ?1")
+    float getMeanRating(long userId);
 }
 

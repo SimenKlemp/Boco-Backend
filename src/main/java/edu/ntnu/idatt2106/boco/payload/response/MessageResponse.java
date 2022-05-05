@@ -13,6 +13,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class MessageResponse
 {
+    private Long messageId;
     private String text;
     private Boolean isByUser;
     private Long userId;

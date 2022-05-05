@@ -3,7 +3,6 @@ package edu.ntnu.idatt2106.boco.controllers;
 import edu.ntnu.idatt2106.boco.models.Rental;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterRentalRequest;
 import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
-import edu.ntnu.idatt2106.boco.payload.response.NotificationResponse;
 import edu.ntnu.idatt2106.boco.payload.response.RentalResponse;
 import edu.ntnu.idatt2106.boco.service.ItemService;
 import edu.ntnu.idatt2106.boco.service.NotificationService;
@@ -61,9 +60,9 @@ public class RentalController
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            RentalResponse rental = rentalService.registerRental(request);
+            RentalResponse rental = rentalService.register(request);
 
-            notificationService.registerNotification("REQUEST", rental.getRentalId());
+            notificationService.register("REQUEST", rental.getRentalId());
 
             if (rental == null)
             {
@@ -95,8 +94,8 @@ public class RentalController
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            rental = rentalService.acceptRental(rentalId);
-            notificationService.registerNotification("ACCEPTED", rentalId);
+            rental = rentalService.accept(rentalId);
+            notificationService.register("ACCEPTED", rentalId);
             if (rental == null)
             {
                 return new ResponseEntity("Error: Cannot find User or Item", HttpStatus.NO_CONTENT);
@@ -127,8 +126,8 @@ public class RentalController
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            rental = rentalService.rejectRental(rentalId);
-            notificationService.registerNotification("REJECTED", rentalId);
+            rental = rentalService.reject(rentalId);
+            notificationService.register("REJECTED", rentalId);
             if (rental == null)
             {
                 return new ResponseEntity("Error: Cannot find User or Item", HttpStatus.NO_CONTENT);
@@ -159,8 +158,8 @@ public class RentalController
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            rental = rentalService.cancelRental(rentalId);
-            notificationService.registerNotification("CANCELED", rentalId);
+            rental = rentalService.cancel(rentalId);
+            notificationService.register("CANCELED", rentalId);
             if (rental == null)
             {
                 return new ResponseEntity("Error: Cannot find User or Item", HttpStatus.NO_CONTENT);
@@ -196,7 +195,7 @@ public class RentalController
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            List<RentalResponse> rentals = rentalService.getAllRentalsForItem(itemId);
+            List<RentalResponse> rentals = rentalService.getAllForItem(itemId);
             //logger.info(rentals.get(0).getStartDate() + " " + rentals.get(0).getEndDate());
             if (rentals == null || rentals.isEmpty())
             {
@@ -210,35 +209,9 @@ public class RentalController
             return new ResponseEntity("Could not fetch all rentals", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @GetMapping("/get-my-all/{userId}")
-    public ResponseEntity<List<RentalResponse>> getAllRentals(@PathVariable("userId") long userId)
-    {
-        logger.info("Fetching all rentals for user " + userId);
-
-        try
-        {
-            if (!tokenComponent.haveAccessTo(userId))
-            {
-                return new ResponseEntity(HttpStatus.FORBIDDEN);
-            }
-
-            List<RentalResponse> rentals = rentalService.getAllRentals(userId);
-            if (rentals == null || rentals.isEmpty())
-            {
-                return new ResponseEntity(HttpStatus.NO_CONTENT);
-            }
-            return new ResponseEntity<>(rentals, HttpStatus.OK);
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-            return new ResponseEntity("Error",HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
 
     @GetMapping("/get-my/{userId}/{status}")
-    public ResponseEntity<List<RentalResponse>> getAllRentalsUser(@PathVariable("userId") long userId, @PathVariable("status") Rental.Status status)
+    public ResponseEntity<List<RentalResponse>> getAllRentalsWhereUser(@PathVariable("userId") long userId, @PathVariable("status") Rental.Status status)
     {
         logger.info("Fetching all rentals for user " + userId + " and status " + status);
 
@@ -249,7 +222,7 @@ public class RentalController
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            List<RentalResponse> rentals = rentalService.getAllRentalsUser(userId, status);
+            List<RentalResponse> rentals = rentalService.getAllWhereUser(userId, status);
             if (rentals == null || rentals.isEmpty())
             {
                 return new ResponseEntity(HttpStatus.NO_CONTENT);
@@ -262,7 +235,6 @@ public class RentalController
             return new ResponseEntity("Error",HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 
     @GetMapping("/get-my-owner/{userId}/{status}")
     public ResponseEntity<List<RentalResponse>> getAllRentalsOwner(@PathVariable("userId") long userId,@PathVariable("status") Rental.Status status)
@@ -276,7 +248,7 @@ public class RentalController
                 return new ResponseEntity(HttpStatus.FORBIDDEN);
             }
 
-            List<RentalResponse> rentals = rentalService.getAllRentalsOwner(userId,status);
+            List<RentalResponse> rentals = rentalService.getAllWhereOwner(userId, status);
             if (rentals == null || rentals.isEmpty())
             {
                 return new ResponseEntity(HttpStatus.NO_CONTENT);

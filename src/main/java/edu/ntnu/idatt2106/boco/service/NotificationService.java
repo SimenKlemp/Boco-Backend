@@ -1,23 +1,15 @@
 package edu.ntnu.idatt2106.boco.service;
 
 import edu.ntnu.idatt2106.boco.models.*;
-import edu.ntnu.idatt2106.boco.payload.request.NotificationRequest;
-import edu.ntnu.idatt2106.boco.payload.request.RegisterItemRequest;
-import edu.ntnu.idatt2106.boco.payload.request.UpdateItemRequest;
-import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
 import edu.ntnu.idatt2106.boco.payload.response.NotificationResponse;
-import edu.ntnu.idatt2106.boco.repository.ItemRepository;
 import edu.ntnu.idatt2106.boco.repository.NotificationRepository;
 import edu.ntnu.idatt2106.boco.repository.RentalRepository;
 import edu.ntnu.idatt2106.boco.repository.UserRepository;
 import edu.ntnu.idatt2106.boco.util.Mapper;
-import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -32,7 +24,7 @@ public class NotificationService {
     @Autowired
     UserRepository userRepository;
 
-    public NotificationResponse registerNotification(String notificationStatus, Long rentalId)
+    public NotificationResponse register(String notificationStatus, Long rentalId)
     {
         Optional<Rental> optionalRental = rentalRepository.findById(rentalId);
         if (optionalRental.isEmpty()) return null;
@@ -68,11 +60,13 @@ public class NotificationService {
         return Mapper.ToNotificationResponse(notification);
     }
 
-    public List<NotificationResponse> getNotifications(long userId)
+    public List<NotificationResponse> getAllMy(long userId)
     {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) return null;
-        List<Notification> notifications = notificationRepository.findAllByUser(optionalUser.get());
+        User user = optionalUser.get();
+
+        List<Notification> notifications = notificationRepository.findAllByUser(user);
         return Mapper.ToNotificationResponses(notifications);
     }
 
@@ -84,10 +78,17 @@ public class NotificationService {
 
         notification.setPressed(true);
 
-
         notification = notificationRepository.save(notification);
         return Mapper.ToNotificationResponse(notification);
     }
 
+    public boolean delete(Long notificationId)
+    {
+        Optional<Notification> optionalNotification = notificationRepository.findById(notificationId);
+        if(optionalNotification.isEmpty()) return false;
+        Notification notification = optionalNotification.get();
 
+        notificationRepository.delete(notification);
+        return true;
+    }
 }

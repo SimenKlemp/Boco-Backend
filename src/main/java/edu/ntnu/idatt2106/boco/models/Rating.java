@@ -15,7 +15,8 @@ import javax.validation.constraints.NotBlank;
 @Indexed
 @Entity(name = "rating")
 @Table(name = "rating", uniqueConstraints = { @UniqueConstraint(columnNames = "ratingId") })
-public class Rating {
+public class Rating
+{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ratingId")
@@ -36,7 +37,8 @@ public class Rating {
     private User user;
 
 
-    public Rating(double rate, String feedback, Rental rental, User user){
+    public Rating(double rate, String feedback, Rental rental, User user)
+    {
         this.rate = rate;
         this.feedback = feedback;
         this.rental = rental;
