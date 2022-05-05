@@ -15,4 +15,6 @@ public interface RentalRepository extends JpaRepository<Rental, Long>
     List<Rental> findAllByItem(Item item);
 
     List<Rental> findAllByUser(User user);
+
+    List<Rental> findALlByItemAndEndDateAfter(Item item, Date date);
 }
