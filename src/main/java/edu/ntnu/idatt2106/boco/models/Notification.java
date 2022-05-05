@@ -42,7 +42,5 @@ public class Notification {
         this.isPressed = isPressed;
         this.rental = rental;
         this.user = user;
-
     }
-
 }
