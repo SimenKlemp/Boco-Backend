@@ -112,7 +112,7 @@ public class UserService
                 encoder.encode(request.getPassword()),
                 "USER",
                 image
-                );
+        );
 
         user = userRepository.save(user);
         return Mapper.ToUserResponse(user);
