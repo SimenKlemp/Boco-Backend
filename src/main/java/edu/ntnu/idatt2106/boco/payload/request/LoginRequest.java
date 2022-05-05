@@ -13,7 +13,6 @@ import javax.validation.constraints.NotBlank;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder
 public class LoginRequest
 {
     @NotBlank

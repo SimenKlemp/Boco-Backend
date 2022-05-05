@@ -10,7 +10,6 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder
 public class UpdateItemRequest
 {
     private String streetAddress;

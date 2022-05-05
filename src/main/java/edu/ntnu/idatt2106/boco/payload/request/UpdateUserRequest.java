@@ -12,7 +12,6 @@ import javax.validation.constraints.Email;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder
 public class UpdateUserRequest
 {
     private String name;

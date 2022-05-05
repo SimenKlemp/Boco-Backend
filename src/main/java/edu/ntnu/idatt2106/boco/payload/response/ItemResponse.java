@@ -12,8 +12,6 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder
-
 public class ItemResponse
 {
     private Long itemId;

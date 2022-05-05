@@ -10,8 +10,6 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder
-
 public class SearchRequest
 {
     private String text;
