@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -118,19 +119,32 @@ public class RentalService
     {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) return null;
+        User user = optionalUser.get();
 
-        List<Rental> rentals;
+        List<Rental> rentals = rentalRepository.findAllByUser(user);
 
+        return filterByStatus(status, rentals);
+    }
+
+    private List<RentalResponse> filterByStatus(Rental.Status status, List<Rental> rentals)
+    {
         if (status == Rental.Status.CANCELED || status == Rental.Status.REJECTED)
         {
-            rentals = rentalRepository.findAllByStatusOrStatus(Rental.Status.REJECTED, Rental.Status.CANCELED);
+            rentals = rentals.stream().filter(r -> {
+                Rental.Status rentalStatus = r.getStatus();
+                boolean rejectedOrCanceled = rentalStatus == Rental.Status.REJECTED || rentalStatus == Rental.Status.CANCELED;
+                boolean finished = rentalStatus == Rental.Status.ACCEPTED && r.getEndDate().before(new Date());
+
+                return rejectedOrCanceled || finished;
+            }).collect(Collectors.toList());
         }
         else
         {
-            rentals = rentalRepository.findAllByStatusOrStatus(Rental.Status.ACCEPTED, Rental.Status.PENDING);
+            rentals = rentals.stream().filter(r -> {
+                Rental.Status rentalStatus = r.getStatus();
+                return rentalStatus == Rental.Status.ACCEPTED || rentalStatus == Rental.Status.PENDING;
+            }).collect(Collectors.toList());
         }
-
-        rentals = rentals.stream().filter(r -> r.getUser().getUserId() == userId).collect(Collectors.toList());
 
         return Mapper.ToRentalResponses(rentals);
     }
@@ -139,20 +153,19 @@ public class RentalService
     {
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()) return null;
+        User user = optionalUser.get();
 
-        List<Rental> rentals;
-        if (status == Rental.Status.CANCELED || status == Rental.Status.REJECTED)
+        List<Item> items = itemRepository.findAllByUser(user);
+
+        List<Rental> rentals = new ArrayList<>();
+        for (Item item : items)
         {
-            rentals = rentalRepository.findAllByStatusOrStatus(Rental.Status.REJECTED, Rental.Status.CANCELED);
-        }
-        else
-        {
-            rentals = rentalRepository.findAllByStatusOrStatus(Rental.Status.ACCEPTED, Rental.Status.PENDING);
+            rentals.addAll(
+                    rentalRepository.findAllByItem(item)
+            );
         }
 
-        rentals = rentals.stream().filter(r -> r.getItem().getUser().getUserId() == userId).collect(Collectors.toList());
-
-        return Mapper.ToRentalResponses(rentals);
+        return filterByStatus(status, rentals);
     }
 
     /**
