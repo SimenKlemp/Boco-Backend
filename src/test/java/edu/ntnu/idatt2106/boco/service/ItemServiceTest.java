@@ -6,6 +6,7 @@ import edu.ntnu.idatt2106.boco.models.Item;
 import edu.ntnu.idatt2106.boco.models.Rental;
 import edu.ntnu.idatt2106.boco.models.User;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterItemRequest;
+import edu.ntnu.idatt2106.boco.payload.request.SearchRequest;
 import edu.ntnu.idatt2106.boco.payload.request.UpdateItemRequest;
 import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
 import edu.ntnu.idatt2106.boco.repository.ImageRepository;
@@ -277,6 +278,27 @@ public class ItemServiceTest
 
         ItemResponse response = itemService.update(0L, request);
         assertThat(response).isNull();
+    }
+
+    @Test
+    public void searchCorrect()
+    {
+        User user = ModelFactory.getUser(null);
+        user = userRepository.save(user);
+
+        Item item1 = ModelFactory.getItem(null, user);
+        item1 = itemRepository.save(item1);
+
+        Item item2 = ModelFactory.getItem(null, user);
+        item2 = itemRepository.save(item2);
+
+        Item[] items = {item1, item2};
+
+        SearchRequest request = RequestFactory.getSearchRequest();
+
+        List<ItemResponse> responses = itemService.search(request);
+
+        assertThat(items.length).isEqualTo(responses.size());
     }
 
     @Test

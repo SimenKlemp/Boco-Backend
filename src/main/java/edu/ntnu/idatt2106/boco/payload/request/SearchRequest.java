@@ -15,7 +15,6 @@ import lombok.experimental.SuperBuilder;
 public class SearchRequest
 {
     private String text;
-
     private int page = 0;
     private int pageSize = 0;
 

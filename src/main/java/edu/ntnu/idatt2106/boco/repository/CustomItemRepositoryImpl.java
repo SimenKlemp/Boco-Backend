@@ -12,6 +12,7 @@ import org.hibernate.search.query.dsl.BooleanJunction;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -30,6 +31,7 @@ public class CustomItemRepositoryImpl implements CustomItemRepository
      * @return returns a list of Items belonging to a search
      */
     @Override
+    @Transactional
     public List<Item> search(SearchRequest request)
     {
         try
