@@ -261,7 +261,7 @@ public class ItemController
     }
 
     @GetMapping("/get-occupied-dates/{itemId}")
-    public ResponseEntity<List<LocalDate>> getAllRentalsOwner(@PathVariable("itemId") long itemId)
+    public ResponseEntity<List<LocalDate>> getAllOccupiedDatesForItem(@PathVariable("itemId") long itemId)
     {
         try
         {
