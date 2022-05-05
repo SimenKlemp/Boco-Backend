@@ -128,12 +128,14 @@ public class RentalService
 
     private List<RentalResponse> filterByStatus(Rental.Status status, List<Rental> rentals)
     {
+        Date today = new Date();
+
         if (status == Rental.Status.CANCELED || status == Rental.Status.REJECTED)
         {
             rentals = rentals.stream().filter(r -> {
                 Rental.Status rentalStatus = r.getStatus();
                 boolean rejectedOrCanceled = rentalStatus == Rental.Status.REJECTED || rentalStatus == Rental.Status.CANCELED;
-                boolean finished = rentalStatus == Rental.Status.ACCEPTED && r.getEndDate().before(new Date());
+                boolean finished = rentalStatus == Rental.Status.ACCEPTED && r.getEndDate().before(today);
 
                 return rejectedOrCanceled || finished;
             }).collect(Collectors.toList());
@@ -142,7 +144,9 @@ public class RentalService
         {
             rentals = rentals.stream().filter(r -> {
                 Rental.Status rentalStatus = r.getStatus();
-                return rentalStatus == Rental.Status.ACCEPTED || rentalStatus == Rental.Status.PENDING;
+                boolean acceptedOrPending = rentalStatus == Rental.Status.ACCEPTED || rentalStatus == Rental.Status.PENDING;
+                boolean finished = rentalStatus == Rental.Status.ACCEPTED && r.getEndDate().before(today);
+                return acceptedOrPending && !finished;
             }).collect(Collectors.toList());
         }
 
