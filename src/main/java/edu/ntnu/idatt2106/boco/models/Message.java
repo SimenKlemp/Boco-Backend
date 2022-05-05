@@ -3,6 +3,7 @@ package edu.ntnu.idatt2106.boco.models;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -11,6 +12,7 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
+@SuperBuilder
 @Entity
 @Table(name = "message")
 public class Message

@@ -3,6 +3,7 @@ package edu.ntnu.idatt2106.boco.models;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -12,6 +13,7 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 @NoArgsConstructor
+@SuperBuilder
 @Entity
 @Table(name = "users", uniqueConstraints = { @UniqueConstraint(columnNames = "email") })
 public class User
@@ -59,8 +61,11 @@ public class User
     private Image image;
 
 
-    public User(String name, Boolean isPerson, String streetAddress, String postalCode, String postOffice, String email, String password, String role, Image image)
-    {
+    @Column(name = "reset_password_token")
+    private String resetPasswordToken;
+
+
+    public User(String name, Boolean isPerson, String streetAddress, String postalCode, String postOffice, String email, String password, String role, Image image) {
         this.name = name;
         this.isPerson = isPerson;
         this.streetAddress = streetAddress;
@@ -69,6 +74,6 @@ public class User
         this.email = email;
         this.password = password;
         this.role = role;
-        this.image = image;
     }
+
 }
