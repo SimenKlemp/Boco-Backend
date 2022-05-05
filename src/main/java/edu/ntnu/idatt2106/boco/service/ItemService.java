@@ -19,10 +19,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * A class that represents an ItemService
@@ -196,6 +196,44 @@ public class ItemService
         return Mapper.ToItemResponse(optionalItem.get());
     }
 
+    public List<LocalDate> getAllOccupiedDatesForItem(Long itemId)
+    {
+        Optional<Item> optionalItem = itemRepository.findById(itemId);
+        if (optionalItem.isEmpty()) return null;
+        Item item = optionalItem.get();
+
+        List<Rental> rentals = rentalRepository.findALlByItemAndEndDateAfter(item, new Date());
+        Set<LocalDate> occupiedDatesSet = new HashSet<>();
+
+        LocalDate today = new Date().toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+
+        for (Rental rental : rentals)
+        {
+            LocalDate startDate = rental.getStartDate().toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+
+            LocalDate endDate = rental.getEndDate().toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+
+            if (startDate.isBefore(today)) startDate = today;
+            endDate = endDate.plusDays(1);
+
+            for (LocalDate date = startDate; date.isBefore(endDate); date = date.plusDays(1))
+            {
+                occupiedDatesSet.add(date);
+            }
+        }
+
+        List<LocalDate> occupiedDates = new ArrayList<>(occupiedDatesSet);
+
+        occupiedDates.sort(LocalDate::compareTo);
+
+        return occupiedDates;
+    }
 
     /**
      * A method for deleting a specific item in database

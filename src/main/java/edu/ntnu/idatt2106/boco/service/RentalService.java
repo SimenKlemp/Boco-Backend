@@ -126,33 +126,6 @@ public class RentalService
         return filterByStatus(status, rentals);
     }
 
-    private List<RentalResponse> filterByStatus(Rental.Status status, List<Rental> rentals)
-    {
-        Date today = new Date();
-
-        if (status == Rental.Status.CANCELED || status == Rental.Status.REJECTED)
-        {
-            rentals = rentals.stream().filter(r -> {
-                Rental.Status rentalStatus = r.getStatus();
-                boolean rejectedOrCanceled = rentalStatus == Rental.Status.REJECTED || rentalStatus == Rental.Status.CANCELED;
-                boolean finished = rentalStatus == Rental.Status.ACCEPTED && r.getEndDate().before(today);
-
-                return rejectedOrCanceled || finished;
-            }).collect(Collectors.toList());
-        }
-        else
-        {
-            rentals = rentals.stream().filter(r -> {
-                Rental.Status rentalStatus = r.getStatus();
-                boolean acceptedOrPending = rentalStatus == Rental.Status.ACCEPTED || rentalStatus == Rental.Status.PENDING;
-                boolean finished = rentalStatus == Rental.Status.ACCEPTED && r.getEndDate().before(today);
-                return acceptedOrPending && !finished;
-            }).collect(Collectors.toList());
-        }
-
-        return Mapper.ToRentalResponses(rentals);
-    }
-
     public List<RentalResponse> getAllWhereOwner(long userId, Rental.Status status)
     {
         Optional<User> optionalUser = userRepository.findById(userId);
@@ -171,6 +144,36 @@ public class RentalService
 
         return filterByStatus(status, rentals);
     }
+
+    private List<RentalResponse> filterByStatus(Rental.Status status, List<Rental> rentals)
+    {
+        Date today = new Date();
+
+        if (status == Rental.Status.CANCELED || status == Rental.Status.REJECTED)
+        {
+            rentals = rentals.stream().filter(r ->
+            {
+                Rental.Status rentalStatus = r.getStatus();
+                boolean rejectedOrCanceled = rentalStatus == Rental.Status.REJECTED || rentalStatus == Rental.Status.CANCELED;
+                boolean finished = rentalStatus == Rental.Status.ACCEPTED && r.getEndDate().before(today);
+
+                return rejectedOrCanceled || finished;
+            }).collect(Collectors.toList());
+        }
+        else
+        {
+            rentals = rentals.stream().filter(r ->
+            {
+                Rental.Status rentalStatus = r.getStatus();
+                boolean acceptedOrPending = rentalStatus == Rental.Status.ACCEPTED || rentalStatus == Rental.Status.PENDING;
+                boolean finished = rentalStatus == Rental.Status.ACCEPTED && r.getEndDate().before(today);
+                return acceptedOrPending && !finished;
+            }).collect(Collectors.toList());
+        }
+
+        return Mapper.ToRentalResponses(rentals);
+    }
+
 
     /**
      * A method for accepting a rental request based on rentalId

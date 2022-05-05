@@ -11,6 +11,7 @@ import edu.ntnu.idatt2106.boco.payload.request.RegisterItemRequest;
 import edu.ntnu.idatt2106.boco.payload.request.SearchRequest;
 import edu.ntnu.idatt2106.boco.payload.request.UpdateItemRequest;
 import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
+import edu.ntnu.idatt2106.boco.payload.response.RentalResponse;
 import edu.ntnu.idatt2106.boco.service.ItemService;
 import edu.ntnu.idatt2106.boco.token.TokenComponent;
 import org.slf4j.Logger;
@@ -22,6 +23,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -256,5 +258,24 @@ public class ItemController
         LatLng location = results[0].geometry.location;
 
         return new double[]{location.lat, location.lng};
+    }
+
+    @GetMapping("/get-occupied-dates/{itemId}")
+    public ResponseEntity<List<LocalDate>> getAllRentalsOwner(@PathVariable("itemId") long itemId)
+    {
+        try
+        {
+            List<LocalDate> occupiedDates = itemService.getAllOccupiedDatesForItem(itemId);
+            if (occupiedDates == null || occupiedDates.isEmpty())
+            {
+                return new ResponseEntity(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(occupiedDates, HttpStatus.OK);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return new ResponseEntity("Error", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
