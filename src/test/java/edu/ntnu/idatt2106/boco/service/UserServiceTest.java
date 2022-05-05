@@ -9,8 +9,8 @@ import edu.ntnu.idatt2106.boco.payload.response.UserResponse;
 import edu.ntnu.idatt2106.boco.repository.*;
 import edu.ntnu.idatt2106.boco.util.ModelFactory;
 import edu.ntnu.idatt2106.boco.util.RequestFactory;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -49,8 +49,8 @@ public class UserServiceTest
     @Autowired
     private NotificationRepository notificationRepository;
 
-    @Before
-    public void before()
+    @BeforeEach
+    public void beforeEach()
     {
         for (User user : userRepository.findAll())
         {

@@ -13,8 +13,8 @@ import edu.ntnu.idatt2106.boco.repository.RentalRepository;
 import edu.ntnu.idatt2106.boco.repository.UserRepository;
 import edu.ntnu.idatt2106.boco.util.ModelFactory;
 import edu.ntnu.idatt2106.boco.util.RequestFactory;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -44,8 +44,8 @@ public class RatingServiceTest
     @Autowired
     private RatingRepository ratingRepository;
 
-    @Before
-    public void before()
+    @BeforeEach
+    public void beforeEach()
     {
         for (Rating rating : ratingRepository.findAll())
         {

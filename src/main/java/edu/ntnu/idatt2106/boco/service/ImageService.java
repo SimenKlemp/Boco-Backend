@@ -33,8 +33,6 @@ public class ImageService
     {
         try
         {
-            logger.info("Image file size: " + file.getBytes().length);
-
             Image image = new Image(file.getName(), file.getBytes());
             image = imageRepository.save(image);
             return image.getImageId();
