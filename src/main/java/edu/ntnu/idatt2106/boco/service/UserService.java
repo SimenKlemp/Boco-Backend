@@ -148,7 +148,7 @@ public class UserService
 
             if (prevImage != null && !Objects.equals(request.getImageId(), prevImage.getImageId()))
             {
-                imageRepository.delete(prevImage);
+                imageService.delete(prevImage.getImageId());
             }
         }
 

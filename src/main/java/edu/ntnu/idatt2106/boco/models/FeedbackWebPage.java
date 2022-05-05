@@ -12,7 +12,6 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 @NoArgsConstructor
-@SuperBuilder
 @Entity
 @Table(name = "feedback",
         uniqueConstraints = {

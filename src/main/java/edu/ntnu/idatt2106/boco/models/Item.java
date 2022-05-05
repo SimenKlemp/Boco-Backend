@@ -14,7 +14,6 @@ import java.util.Date;
 @Getter
 @Setter
 @NoArgsConstructor
-@SuperBuilder
 @Indexed
 @Entity
 @Table(name = "item", uniqueConstraints = { @UniqueConstraint(columnNames = "itemId") })

@@ -85,8 +85,8 @@ public class UserServiceTest
         RegisterUserRequest request = RequestFactory.getRegisterUserRequest(image.getImageId());
 
         UserResponse response = userService.register(request);
-
         User user = userRepository.findById(response.getUserId()).orElseThrow();
+
         assertThat(user.getName()).isEqualTo(response.getName()).isEqualTo(request.getName());
         assertThat(user.getIsPerson()).isEqualTo(response.getIsPerson()).isEqualTo(request.getIsPerson());
         assertThat(user.getStreetAddress()).isEqualTo(response.getStreetAddress()).isEqualTo(request.getStreetAddress());
