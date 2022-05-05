@@ -7,6 +7,7 @@ import edu.ntnu.idatt2106.boco.payload.request.RegisterRatingRequest;
 import edu.ntnu.idatt2106.boco.payload.response.RatingResponse;
 import edu.ntnu.idatt2106.boco.service.RatingService;
 import edu.ntnu.idatt2106.boco.service.RentalService;
+import edu.ntnu.idatt2106.boco.service.UserService;
 import edu.ntnu.idatt2106.boco.token.TokenComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
