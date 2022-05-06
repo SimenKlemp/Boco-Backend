@@ -14,4 +14,6 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
     List<Notification> findAllByUser(User user);
 
     List<Notification> findAllByRental(Rental rental);
+
+    boolean existsByNotificationStatusAndRental(String status, Rental rental);
 }
