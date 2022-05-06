@@ -17,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -28,24 +29,20 @@ import java.util.List;
 @CrossOrigin
 public class RentalController
 {
+    Logger logger = LoggerFactory.getLogger(RentalController.class);
     @Autowired
     private RentalService rentalService;
-
     @Autowired
     private ItemService itemService;
-
     @Autowired
     private NotificationService notificationService;
-
     @Autowired
     private TokenComponent tokenComponent;
-
-    Logger logger = LoggerFactory.getLogger(RentalController.class);
-
 
     /**
      * A method for creating a rental request
      * status is set later, when owner of item is responding to the request
+     *
      * @param request the rental request that is beeing stored
      * @return returns a status int
      */
@@ -70,7 +67,7 @@ public class RentalController
             }
             return new ResponseEntity<>(rental, HttpStatus.CREATED);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             e.printStackTrace();
             return new ResponseEntity("Error: Cannot create a new rental ", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -79,6 +76,7 @@ public class RentalController
 
     /**
      * A method for accepting a rental
+     *
      * @param rentalId the rentalId that is being updated
      * @return returns the updated rental object
      */
@@ -102,7 +100,7 @@ public class RentalController
             }
             return new ResponseEntity<>(rental, HttpStatus.OK);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             e.printStackTrace();
             return new ResponseEntity("Error: Cannot update rental ", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -111,6 +109,7 @@ public class RentalController
 
     /**
      * A method for rejecting a rental
+     *
      * @param rentalId the rentalId that is being updated
      * @return returns the updated rental object
      */
@@ -134,7 +133,7 @@ public class RentalController
             }
             return new ResponseEntity<>(rental, HttpStatus.OK);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             e.printStackTrace();
             return new ResponseEntity("Error: Cannot update rental ", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -143,6 +142,7 @@ public class RentalController
 
     /**
      * A method for rejecting a rental
+     *
      * @param rentalId the rentalId that is being updated
      * @return returns the updated rental object
      */
@@ -166,7 +166,7 @@ public class RentalController
             }
             return new ResponseEntity<>(rental, HttpStatus.OK);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             e.printStackTrace();
             return new ResponseEntity("Error: Cannot update rental ", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -203,7 +203,7 @@ public class RentalController
             }
             return new ResponseEntity<>(rentals, HttpStatus.OK);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             e.printStackTrace();
             return new ResponseEntity("Could not fetch all rentals", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -229,15 +229,15 @@ public class RentalController
             }
             return new ResponseEntity<>(rentals, HttpStatus.OK);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             e.printStackTrace();
-            return new ResponseEntity("Error",HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity("Error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping("/get-my-owner/{userId}/{status}")
-    public ResponseEntity<List<RentalResponse>> getAllRentalsOwner(@PathVariable("userId") long userId,@PathVariable("status") Rental.Status status)
+    public ResponseEntity<List<RentalResponse>> getAllRentalsOwner(@PathVariable("userId") long userId, @PathVariable("status") Rental.Status status)
     {
         logger.info("Fetching all rentals for user " + userId);
 
@@ -255,12 +255,10 @@ public class RentalController
             }
             return new ResponseEntity<>(rentals, HttpStatus.OK);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             e.printStackTrace();
-            return new ResponseEntity("Error",HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity("Error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-
 }

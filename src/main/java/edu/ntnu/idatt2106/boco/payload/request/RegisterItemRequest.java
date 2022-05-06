@@ -12,7 +12,6 @@ import javax.validation.constraints.NotBlank;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder
 public class RegisterItemRequest
 {
     @NotBlank

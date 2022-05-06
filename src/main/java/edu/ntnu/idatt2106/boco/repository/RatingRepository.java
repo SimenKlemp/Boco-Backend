@@ -10,7 +10,8 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface RatingRepository extends JpaRepository<Rating, Long> {
+public interface RatingRepository extends JpaRepository<Rating, Long>
+{
     List<Rating> findAllByUser(User user);
 
     List<Rating> findAllByRental(Rental rental);

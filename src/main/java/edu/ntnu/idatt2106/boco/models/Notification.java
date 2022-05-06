@@ -14,8 +14,9 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @Indexed
 @Entity
-@Table(name = "notification", uniqueConstraints = { @UniqueConstraint(columnNames = "notificationId") })
-public class Notification {
+@Table(name = "notification", uniqueConstraints = {@UniqueConstraint(columnNames = "notificationId")})
+public class Notification
+{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "notificationId")
@@ -29,20 +30,19 @@ public class Notification {
     private boolean isPressed;
 
     @ManyToOne
-    @JoinColumn(name="rentalId")
+    @JoinColumn(name = "rentalId")
     private Rental rental;
 
     @ManyToOne
-    @JoinColumn(name="userId")
+    @JoinColumn(name = "userId")
     private User user;
 
 
-    public Notification(String notificationStatus, boolean isPressed, Rental rental, User user){
+    public Notification(String notificationStatus, boolean isPressed, Rental rental, User user)
+    {
         this.notificationStatus = notificationStatus;
         this.isPressed = isPressed;
         this.rental = rental;
         this.user = user;
-
     }
-
 }

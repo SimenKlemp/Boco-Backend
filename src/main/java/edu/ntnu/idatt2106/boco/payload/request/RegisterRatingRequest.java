@@ -25,5 +25,4 @@ public class RegisterRatingRequest
     private Long userId;
 
 
-
 }

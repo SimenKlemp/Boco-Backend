@@ -7,14 +7,13 @@ import lombok.Setter;
 import org.hibernate.search.annotations.Indexed;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @Indexed
 @Entity(name = "rating")
-@Table(name = "rating", uniqueConstraints = { @UniqueConstraint(columnNames = "ratingId") })
+@Table(name = "rating", uniqueConstraints = {@UniqueConstraint(columnNames = "ratingId")})
 public class Rating
 {
     @Id
@@ -29,11 +28,11 @@ public class Rating
     private String feedback;
 
     @ManyToOne
-    @JoinColumn(name="rentalId")
+    @JoinColumn(name = "rentalId")
     private Rental rental;
 
     @ManyToOne
-    @JoinColumn(name="userId")
+    @JoinColumn(name = "userId")
     private User user;
 
 

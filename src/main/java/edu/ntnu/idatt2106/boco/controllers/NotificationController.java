@@ -21,15 +21,14 @@ import java.util.List;
 @RequestMapping(value = "/notification")
 @EnableAutoConfiguration
 @CrossOrigin
-public class NotificationController {
-
-    @Autowired
-    private NotificationService notificationService;
-
-    @Autowired
-    private TokenComponent tokenComponent;
+public class NotificationController
+{
 
     Logger logger = LoggerFactory.getLogger(RentalController.class);
+    @Autowired
+    private NotificationService notificationService;
+    @Autowired
+    private TokenComponent tokenComponent;
 
     /*
     @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -72,10 +71,10 @@ public class NotificationController {
             }
             return new ResponseEntity<>(notifications, HttpStatus.OK);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             e.printStackTrace();
-            return new ResponseEntity("Error",HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity("Error", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -86,13 +85,13 @@ public class NotificationController {
         try
         {
             NotificationResponse notificationResponse = notificationService.updateNotificationIsPressed(notificationId);
-            if(notificationResponse == null)
+            if (notificationResponse == null)
             {
                 return new ResponseEntity("Can not find notification ", HttpStatus.NOT_FOUND);
             }
             return new ResponseEntity<>(notificationResponse, HttpStatus.OK);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             e.printStackTrace();
             return new ResponseEntity("Error: Can not update", HttpStatus.INTERNAL_SERVER_ERROR);

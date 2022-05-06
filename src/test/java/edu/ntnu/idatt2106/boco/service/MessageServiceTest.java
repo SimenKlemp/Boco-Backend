@@ -1,7 +1,10 @@
 package edu.ntnu.idatt2106.boco.service;
 
 import edu.ntnu.idatt2106.boco.BocoApplication;
-import edu.ntnu.idatt2106.boco.models.*;
+import edu.ntnu.idatt2106.boco.models.Item;
+import edu.ntnu.idatt2106.boco.models.Message;
+import edu.ntnu.idatt2106.boco.models.Rental;
+import edu.ntnu.idatt2106.boco.models.User;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterMessageRequest;
 import edu.ntnu.idatt2106.boco.payload.response.ChatResponse;
 import edu.ntnu.idatt2106.boco.payload.response.MessageResponse;
@@ -11,8 +14,8 @@ import edu.ntnu.idatt2106.boco.repository.RentalRepository;
 import edu.ntnu.idatt2106.boco.repository.UserRepository;
 import edu.ntnu.idatt2106.boco.util.ModelFactory;
 import edu.ntnu.idatt2106.boco.util.RequestFactory;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -41,8 +44,8 @@ public class MessageServiceTest
     @Autowired
     private RentalRepository rentalRepository;
 
-    @Before
-    public void before()
+    @BeforeEach
+    public void beforeEach()
     {
         for (Message message : messageRepository.findAll())
         {

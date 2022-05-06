@@ -114,4 +114,20 @@ public abstract class RequestFactory
                 Rental.DeliverInfo.PICKUP
         );
     }
+
+    public static SearchRequest getSearchRequest()
+    {
+        return new SearchRequest(
+                "title",
+                0,
+                Integer.MAX_VALUE,
+                SearchRequest.SortField.RELEVANCE,
+                true,
+                0f,
+                Float.POSITIVE_INFINITY,
+                true,
+                true,
+                "category"
+        );
+    }
 }

@@ -19,7 +19,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * A class that represents an ItemService
@@ -51,6 +54,7 @@ public class ItemService
 
     /**
      * A method for posting an item to database
+     *
      * @param request the item that is being stored
      * @return returns an ItemResponse
      */
@@ -96,7 +100,8 @@ public class ItemService
 
     /**
      * A method for retrieving all the items that is stored in database
-     * @param page the page nr
+     *
+     * @param page     the page nr
      * @param pageSize number of items per page
      * @return returns an item List
      */
@@ -111,6 +116,7 @@ public class ItemService
 
     /**
      * A method for retrieving all items to a specific user on userId
+     *
      * @param userId the userId the items belongs to
      * @return returns a list of items as a itemResponse
      */
@@ -125,15 +131,18 @@ public class ItemService
     /**
      * A method for updating a specific Item on itemId
      * Finds the item from database and then assigns new values to the columns
-     * @param itemId the itemId that that is being updated
+     *
+     * @param itemId  the itemId that that is being updated
      * @param request the data that is being renewed
      * @return returns the updated Item as an ItemResponse
      */
-    public ItemResponse update(long itemId, UpdateItemRequest request)
+    public ItemResponse update(long itemId, UpdateItemRequest request) throws Exception
     {
+
         Optional<Item> optionalItem = itemRepository.findById(itemId);
-        if(optionalItem.isEmpty()) return null;
+        if (optionalItem.isEmpty()) return null;
         Item item = optionalItem.get();
+
 
         if (request.getStreetAddress() != null) item.setStreetAddress(request.getStreetAddress());
         if (request.getPostalCode() != null) item.setPostalCode(request.getPostalCode());
@@ -144,6 +153,11 @@ public class ItemService
         if (request.getTitle() != null) item.setTitle(request.getTitle());
         if (request.getIsPickupable() != null) item.setIsPickupable(request.getIsPickupable());
         if (request.getIsDeliverable() != null) item.setIsDeliverable(request.getIsDeliverable());
+
+        double[] latLng = itemController.getGeocodeGoogle(item.getStreetAddress());
+
+        item.setLat((float) latLng[0]);
+        item.setLng((float) latLng[1]);
 
         if (request.getImageId() != null)
         {
@@ -165,6 +179,7 @@ public class ItemService
 
     /**
      * A method for retrieving all items fulfilling search demands
+     *
      * @param request The search data
      * @return returns a list of Items belonging to a search
      */
@@ -177,20 +192,59 @@ public class ItemService
     public ItemResponse getItem(long itemId)
     {
         Optional<Item> optionalItem = itemRepository.findById(itemId);
-        if(optionalItem.isEmpty()) return null;
+        if (optionalItem.isEmpty()) return null;
         return Mapper.ToItemResponse(optionalItem.get());
     }
 
+    public List<LocalDate> getAllOccupiedDatesForItem(Long itemId)
+    {
+        Optional<Item> optionalItem = itemRepository.findById(itemId);
+        if (optionalItem.isEmpty()) return null;
+        Item item = optionalItem.get();
+
+        List<Rental> rentals = rentalRepository.findALlByItemAndEndDateAfter(item, new Date());
+        Set<LocalDate> occupiedDatesSet = new HashSet<>();
+
+        LocalDate today = new Date().toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+
+        for (Rental rental : rentals)
+        {
+            LocalDate startDate = rental.getStartDate().toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+
+            LocalDate endDate = rental.getEndDate().toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate();
+
+            if (startDate.isBefore(today)) startDate = today;
+            endDate = endDate.plusDays(1);
+
+            for (LocalDate date = startDate; date.isBefore(endDate); date = date.plusDays(1))
+            {
+                occupiedDatesSet.add(date);
+            }
+        }
+
+        List<LocalDate> occupiedDates = new ArrayList<>(occupiedDatesSet);
+
+        occupiedDates.sort(LocalDate::compareTo);
+
+        return occupiedDates;
+    }
 
     /**
      * A method for deleting a specific item in database
+     *
      * @param itemId the item that is being deleted
      * @return returns a status boolean
      */
     public boolean delete(Long itemId)
     {
         Optional<Item> optionalItem = itemRepository.findById(itemId);
-        if(optionalItem.isEmpty()) return false;
+        if (optionalItem.isEmpty()) return false;
         Item item = optionalItem.get();
 
         for (Rental rental : rentalRepository.findAllByItem(item))

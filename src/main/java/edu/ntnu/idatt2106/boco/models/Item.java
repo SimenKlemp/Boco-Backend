@@ -3,21 +3,18 @@ package edu.ntnu.idatt2106.boco.models;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.experimental.SuperBuilder;
 import org.hibernate.search.annotations.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import java.util.Date;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@SuperBuilder
 @Indexed
 @Entity
-@Table(name = "item", uniqueConstraints = { @UniqueConstraint(columnNames = "itemId") })
+@Table(name = "item", uniqueConstraints = {@UniqueConstraint(columnNames = "itemId")})
 public class Item
 {
     @Id
@@ -43,7 +40,7 @@ public class Item
 
     @Column(name = "lng")
     @Longitude
-    private float lng ;
+    private float lng;
 
 
     @Field
@@ -71,11 +68,11 @@ public class Item
     @Column(name = "publicityDate")
     private Date publicityDate;
 
-    @Field(analyze=Analyze.NO)
+    @Field(analyze = Analyze.NO)
     @Column(name = "isPickupable")
     private Boolean isPickupable;
 
-    @Field(analyze= Analyze.NO)
+    @Field(analyze = Analyze.NO)
     @Column(name = "isDeliverable")
     private Boolean isDeliverable;
 
@@ -84,10 +81,11 @@ public class Item
     private Image image;
 
     @ManyToOne
-    @JoinColumn(name="userId")
+    @JoinColumn(name = "userId")
     private User user;
 
-    public Item(String streetAddress, String postalCode, String postOffice, float lat, float lng, float price, String description, String category, String title, Date publicityDate, Boolean isPickupable, Boolean isDeliverable, Image image, User user){
+    public Item(String streetAddress, String postalCode, String postOffice, float lat, float lng, float price, String description, String category, String title, Date publicityDate, Boolean isPickupable, Boolean isDeliverable, Image image, User user)
+    {
         this.streetAddress = streetAddress;
         this.postalCode = postalCode;
         this.postOffice = postOffice;

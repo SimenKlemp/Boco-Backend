@@ -18,7 +18,8 @@ import java.util.Optional;
  */
 
 @Service
-public class FeedbackWebPageService {
+public class FeedbackWebPageService
+{
 
     @Autowired
     FeedbackWebPageRepository feedBackWebPageRepository;
@@ -28,6 +29,7 @@ public class FeedbackWebPageService {
 
     /**
      * A method for registration of a feedback for the webpage
+     *
      * @param registerFeedbackWebPageRequest the feedback that is posted
      * @return returns status int
      */
@@ -35,7 +37,7 @@ public class FeedbackWebPageService {
     public FeedbackWebPageResponse register(RegisterFeedbackWebPageRequest registerFeedbackWebPageRequest)
     {
         Optional<User> optionalUser = userRepository.findById(registerFeedbackWebPageRequest.getUserId());
-        if(optionalUser.isEmpty()) return null;
+        if (optionalUser.isEmpty()) return null;
         User user = optionalUser.get();
 
         FeedbackWebPage feedbackWebPage = new FeedbackWebPage(registerFeedbackWebPageRequest.getMessage(), user);
@@ -46,6 +48,7 @@ public class FeedbackWebPageService {
 
     /**
      * A method for retrieving all feedbacks for the web page from users
+     *
      * @return returns a list of feedbacks of the web page
      */
     public List<FeedbackWebPageResponse> getAll()

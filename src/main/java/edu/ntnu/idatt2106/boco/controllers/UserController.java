@@ -1,18 +1,17 @@
 package edu.ntnu.idatt2106.boco.controllers;
 
+import edu.ntnu.idatt2106.boco.payload.request.LoginRequest;
+import edu.ntnu.idatt2106.boco.payload.request.RegisterUserRequest;
 import edu.ntnu.idatt2106.boco.payload.request.UpdateUserRequest;
+import edu.ntnu.idatt2106.boco.payload.response.LoginResponse;
 import edu.ntnu.idatt2106.boco.payload.response.UserResponse;
-import edu.ntnu.idatt2106.boco.token.TokenComponent;
 import edu.ntnu.idatt2106.boco.service.UserService;
+import edu.ntnu.idatt2106.boco.token.TokenComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import edu.ntnu.idatt2106.boco.payload.request.LoginRequest;
-import edu.ntnu.idatt2106.boco.payload.request.RegisterUserRequest;
-import edu.ntnu.idatt2106.boco.payload.response.LoginResponse;
 
 import java.util.List;
 
@@ -31,6 +30,7 @@ public class UserController
 
     /**
      * A method for login and returning token in login response
+     *
      * @param request Email and password
      * @return returns a LoginResponse containing token and user info
      */
@@ -59,6 +59,7 @@ public class UserController
 
     /**
      * A method for registering a new user and returning token in login response
+     *
      * @param request user info
      * @return returns a LoginResponse containing token and user info
      */
@@ -85,8 +86,9 @@ public class UserController
         }
     }
 
-    @DeleteMapping(value="/delete/{userId}")
-    public ResponseEntity<String> deleteUser(@PathVariable long userId){
+    @DeleteMapping(value = "/delete/{userId}")
+    public ResponseEntity<String> deleteUser(@PathVariable long userId)
+    {
         try
         {
             if (!tokenComponent.haveAccessTo(userId))
@@ -95,7 +97,7 @@ public class UserController
             }
 
             boolean success = userService.delete(userId);
-            if(!success)
+            if (!success)
             {
                 return new ResponseEntity<>("Error: User not found", HttpStatus.NO_CONTENT);
             }
@@ -104,12 +106,13 @@ public class UserController
         catch (Exception e)
         {
             e.printStackTrace();
-            return new ResponseEntity<>("Error: Can not delete ",HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Error: Can not delete ", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @PutMapping (value="/update/{userId}")
-    public ResponseEntity<UserResponse> updateUser(@PathVariable("userId") long userId, @RequestBody UpdateUserRequest request) {
+    @PutMapping(value = "/update/{userId}")
+    public ResponseEntity<UserResponse> updateUser(@PathVariable("userId") long userId, @RequestBody UpdateUserRequest request)
+    {
         try
         {
             if (!tokenComponent.haveAccessTo(userId))
@@ -122,7 +125,7 @@ public class UserController
             {
                 return new ResponseEntity("Error: User not found", HttpStatus.OK);
             }
-            return new ResponseEntity<>(user,HttpStatus.OK);
+            return new ResponseEntity<>(user, HttpStatus.OK);
         }
         catch (Exception e)
         {
@@ -131,8 +134,9 @@ public class UserController
         }
     }
 
-    @PutMapping (value="/updateUserAdmin/{userId}")
-    public ResponseEntity<UserResponse> updateUserRoleAdmin(@PathVariable("userId") long userId) {
+    @PutMapping(value = "/updateUserAdmin/{userId}")
+    public ResponseEntity<UserResponse> updateUserRoleAdmin(@PathVariable("userId") long userId)
+    {
         try
         {
             if (!tokenComponent.isAdmin())
@@ -145,7 +149,7 @@ public class UserController
             {
                 return new ResponseEntity("Error: User not found", HttpStatus.OK);
             }
-            return new ResponseEntity<>(user,HttpStatus.OK);
+            return new ResponseEntity<>(user, HttpStatus.OK);
         }
         catch (Exception e)
         {
@@ -166,16 +170,12 @@ public class UserController
             }
             return new ResponseEntity<>(users, HttpStatus.OK);
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             e.printStackTrace();
             return new ResponseEntity("Could not fetch all users", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-
-
-
 
 
 }

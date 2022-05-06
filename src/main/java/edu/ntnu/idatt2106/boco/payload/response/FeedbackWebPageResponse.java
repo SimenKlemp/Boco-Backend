@@ -10,8 +10,8 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@SuperBuilder
-public class FeedbackWebPageResponse {
+public class FeedbackWebPageResponse
+{
     private Long feedbackId;
     private String message;
     private UserResponse user;

@@ -6,18 +6,26 @@ import edu.ntnu.idatt2106.boco.models.Item;
 import edu.ntnu.idatt2106.boco.models.Rental;
 import edu.ntnu.idatt2106.boco.models.User;
 import edu.ntnu.idatt2106.boco.payload.request.RegisterItemRequest;
+import edu.ntnu.idatt2106.boco.payload.request.SearchRequest;
 import edu.ntnu.idatt2106.boco.payload.request.UpdateItemRequest;
 import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
-import edu.ntnu.idatt2106.boco.repository.*;
+import edu.ntnu.idatt2106.boco.repository.ImageRepository;
+import edu.ntnu.idatt2106.boco.repository.ItemRepository;
+import edu.ntnu.idatt2106.boco.repository.RentalRepository;
+import edu.ntnu.idatt2106.boco.repository.UserRepository;
 import edu.ntnu.idatt2106.boco.util.ModelFactory;
 import edu.ntnu.idatt2106.boco.util.RequestFactory;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,8 +50,8 @@ public class ItemServiceTest
     @Autowired
     private RentalRepository rentalRepository;
 
-    @Before
-    public void before()
+    @BeforeEach
+    public void beforeEach()
     {
         for (Item item : itemRepository.findAll())
         {
@@ -205,7 +213,7 @@ public class ItemServiceTest
     }
 
     @Test
-    public void updateAll()
+    public void updateAll() throws Exception
     {
         User user = ModelFactory.getUser(null);
         user = userRepository.save(user);
@@ -237,7 +245,7 @@ public class ItemServiceTest
     }
 
     @Test
-    public void updateNothing()
+    public void updateNothing() throws Exception
     {
         User user = ModelFactory.getUser(null);
         user = userRepository.save(user);
@@ -268,12 +276,33 @@ public class ItemServiceTest
     }
 
     @Test
-    public void updateWrongItemId()
+    public void updateWrongItemId() throws Exception
     {
         UpdateItemRequest request = RequestFactory.getUpdateItemRequest(null);
 
         ItemResponse response = itemService.update(0L, request);
         assertThat(response).isNull();
+    }
+
+    @Test
+    public void searchCorrect()
+    {
+        User user = ModelFactory.getUser(null);
+        user = userRepository.save(user);
+
+        Item item1 = ModelFactory.getItem(null, user);
+        item1 = itemRepository.save(item1);
+
+        Item item2 = ModelFactory.getItem(null, user);
+        item2 = itemRepository.save(item2);
+
+        Item[] items = {item1, item2};
+
+        SearchRequest request = RequestFactory.getSearchRequest();
+
+        List<ItemResponse> responses = itemService.search(request);
+
+        assertThat(items.length).isEqualTo(responses.size());
     }
 
     @Test
@@ -303,6 +332,72 @@ public class ItemServiceTest
     {
         ItemResponse response = itemService.getItem(0L);
         assertThat(response).isNull();
+    }
+
+    @Test
+    public void getAllOccupiedDatesForItemWithRental()
+    {
+        User user1 = ModelFactory.getUser(null);
+        user1 = userRepository.save(user1);
+
+        User user2 = ModelFactory.getUser(null);
+        user2 = userRepository.save(user2);
+
+        Item item = ModelFactory.getItem(null, user1);
+        item = itemRepository.save(item);
+
+        LocalDate today = new Date().toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+
+        Rental rental1 = ModelFactory.getRental(user2, item);
+        rental1.setStartDate(
+                Date.from(today.minusDays(10).atStartOfDay(ZoneOffset.systemDefault()).toInstant())
+        );
+        rental1.setEndDate(
+            Date.from(today.plusDays(10).atStartOfDay(ZoneOffset.systemDefault()).toInstant())
+        );
+        rental1 = rentalRepository.save(rental1);
+
+        Rental rental2 = ModelFactory.getRental(user2, item);
+        rental2.setStartDate(
+                Date.from(today.plusDays(15).atStartOfDay(ZoneOffset.systemDefault()).toInstant())
+        );
+        rental2.setEndDate(
+                Date.from(today.plusDays(15).atStartOfDay(ZoneOffset.systemDefault()).toInstant())
+        );
+        rental2 = rentalRepository.save(rental2);
+
+        List<LocalDate> occupiedDates = itemService.getAllOccupiedDatesForItem(item.getItemId());
+
+        assertThat(occupiedDates.size()).isEqualTo(12);
+        for (int i = 0; i <= 10; i++)
+        {
+            assertThat(occupiedDates.get(i)).isEqualTo(today.plusDays(i));
+        }
+
+        assertThat(occupiedDates.get(11)).isEqualTo(today.plusDays(15));
+    }
+
+    @Test
+    public void getAllOccupiedDatesForItemEmpty()
+    {
+        User user1 = ModelFactory.getUser(null);
+        user1 = userRepository.save(user1);
+
+        Item item = ModelFactory.getItem(null, user1);
+        item = itemRepository.save(item);
+
+        List<LocalDate> occupiedDates = itemService.getAllOccupiedDatesForItem(item.getItemId());
+
+        assertThat(occupiedDates.isEmpty()).isTrue();
+    }
+
+    @Test
+    public void getAllOccupiedDatesForItemWrongItemId()
+    {
+        List<LocalDate> occupiedDates = itemService.getAllOccupiedDatesForItem(0L);
+        assertThat(occupiedDates).isNull();
     }
 
     @Test
