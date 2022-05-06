@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 
 @Getter
 @Setter
@@ -24,7 +25,7 @@ public class FeedbackWebPage
     private Long feedbackId;
 
 
-    @Column(name = "message")
+    @Column(name = "message", length = 200)
     private String message;
 
     @ManyToOne

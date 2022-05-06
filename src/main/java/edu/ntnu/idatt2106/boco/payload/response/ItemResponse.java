@@ -1,5 +1,6 @@
 package edu.ntnu.idatt2106.boco.payload.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,7 @@ public class ItemResponse
     private String category;
     private String title;
     private Long imageId;
+    @JsonFormat(timezone = "GMT+02:00")
     private Date publicityDate;
     private Boolean isPickupable;
     private Boolean isDeliverable;

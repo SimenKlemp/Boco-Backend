@@ -21,7 +21,7 @@ public class User
     private Long userId;
 
     @NotBlank
-    @Column(name = "name")
+    @Column(name = "name", length = 50)
     private String name;
 
 
@@ -29,28 +29,28 @@ public class User
     private Boolean isPerson;
 
     @NotBlank
-    @Column(name = "streetAddress")
+    @Column(name = "streetAddress", length = 200)
     private String streetAddress;
 
     @NotBlank
-    @Column(name = "postalCode")
+    @Column(name = "postalCode", length = 50)
     private String postalCode;
 
     @NotBlank
-    @Column(name = "postOffice")
+    @Column(name = "postOffice", length = 50)
     private String postOffice;
 
     @NotBlank
-    @Column(name = "email")
+    @Column(name = "email", length = 50)
     @Email
     private String email;
 
     @NotBlank
-    @Column(name = "password")
+    @Column(name = "password", length = 256)
     private String password;
 
     @NotBlank
-    @Column(name = "role")
+    @Column(name = "role", length = 30)
     private String role;
 
     @JoinColumn(name = "imageId")

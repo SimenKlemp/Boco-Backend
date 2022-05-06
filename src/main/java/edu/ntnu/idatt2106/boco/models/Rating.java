@@ -24,7 +24,7 @@ public class Rating
     @Column(name = "rate")
     private double rate;
 
-    @Column(name = "feedback")
+    @Column(name = "feedback", length = 300)
     private String feedback;
 
     @ManyToOne

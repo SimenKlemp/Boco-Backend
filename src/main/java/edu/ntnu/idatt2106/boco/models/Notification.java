@@ -23,7 +23,7 @@ public class Notification
     private Long notificationId;
 
     @NotBlank
-    @Column(name = "notificationStatus")
+    @Column(name = "notificationStatus", length = 50)
     private String notificationStatus;
 
     @Column(name = "isPressed")

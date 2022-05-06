@@ -132,12 +132,16 @@ public class UserService
             Image prevImage = user.getImage();
 
             Optional<Image> optionalImage = imageRepository.findById(request.getImageId());
-            if (optionalImage.isPresent()) user.setImage(optionalImage.get());
-            user = userRepository.save(user);
-
-            if (prevImage != null && !Objects.equals(request.getImageId(), prevImage.getImageId()))
+            if (optionalImage.isPresent())
             {
-                imageService.delete(prevImage.getImageId());
+                Image image = optionalImage.get();
+                user.setImage(image);
+                user = userRepository.save(user);
+
+                if (prevImage != null && !Objects.equals(image.getImageId(), prevImage.getImageId()))
+                {
+                    imageRepository.delete(prevImage);
+                }
             }
         }
 

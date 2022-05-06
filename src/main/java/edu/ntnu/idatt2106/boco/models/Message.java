@@ -19,7 +19,7 @@ public class Message
     @Column(name = "messageId")
     private Long messageId;
 
-    @Column(name = "text")
+    @Column(name = "text", length = 300)
     private String text;
 
     @Column(name = "isByUser")

@@ -138,11 +138,9 @@ public class ItemService
      */
     public ItemResponse update(long itemId, UpdateItemRequest request) throws Exception
     {
-
         Optional<Item> optionalItem = itemRepository.findById(itemId);
         if (optionalItem.isEmpty()) return null;
         Item item = optionalItem.get();
-
 
         if (request.getStreetAddress() != null) item.setStreetAddress(request.getStreetAddress());
         if (request.getPostalCode() != null) item.setPostalCode(request.getPostalCode());
@@ -164,12 +162,16 @@ public class ItemService
             Image prevImage = item.getImage();
 
             Optional<Image> optionalImage = imageRepository.findById(request.getImageId());
-            if (optionalImage.isPresent()) item.setImage(optionalImage.get());
-            item = itemRepository.save(item);
-
-            if (prevImage != null && !Objects.equals(request.getImageId(), prevImage.getImageId()))
+            if (optionalImage.isPresent())
             {
-                imageRepository.delete(prevImage);
+                Image image = optionalImage.get();
+                item.setImage(image);
+                item = itemRepository.save(item);
+
+                if (prevImage != null && !Objects.equals(image.getImageId(), prevImage.getImageId()))
+                {
+                    imageRepository.delete(prevImage);
+                }
             }
         }
 

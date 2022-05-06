@@ -23,15 +23,15 @@ public class Item
     private Long itemId;
 
     @NotBlank
-    @Column(name = "streetAddress")
+    @Column(name = "streetAddress", length = 200)
     private String streetAddress;
 
     @NotBlank
-    @Column(name = "postalCode")
+    @Column(name = "postalCode", length = 50)
     private String postalCode;
 
     @NotBlank
-    @Column(name = "postOffice")
+    @Column(name = "postOffice", length = 50)
     private String postOffice;
 
     @Column(name = "lat")
@@ -50,17 +50,17 @@ public class Item
 
     @NotBlank
     @Field
-    @Column(name = "description")
+    @Column(name = "description", length = 200)
     private String description;
 
     @NotBlank
     @Field(analyze = Analyze.NO)
-    @Column(name = "category")
+    @Column(name = "category", length = 50)
     private String category;
 
     @NotBlank
     @Field
-    @Column(name = "title")
+    @Column(name = "title", length = 50)
     private String title;
 
     @Field(analyze = Analyze.NO)

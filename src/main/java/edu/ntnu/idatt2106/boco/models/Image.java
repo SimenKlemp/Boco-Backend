@@ -20,7 +20,7 @@ public class Image
     private Long imageId;
 
     @NotBlank
-    @Column(name = "name")
+    @Column(name = "name", length = 50)
     private String name;
 
     @Column(name = "content")
