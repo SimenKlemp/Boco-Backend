@@ -355,7 +355,7 @@ public class ItemServiceTest
                 Date.from(today.minusDays(10).atStartOfDay(ZoneOffset.systemDefault()).toInstant())
         );
         rental1.setEndDate(
-            Date.from(today.plusDays(10).atStartOfDay(ZoneOffset.systemDefault()).toInstant())
+                Date.from(today.plusDays(10).atStartOfDay(ZoneOffset.systemDefault()).toInstant())
         );
         rental1 = rentalRepository.save(rental1);
 

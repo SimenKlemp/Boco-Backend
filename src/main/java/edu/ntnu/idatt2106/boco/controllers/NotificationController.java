@@ -30,27 +30,6 @@ public class NotificationController
     @Autowired
     private TokenComponent tokenComponent;
 
-    /*
-    @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<NotificationResponse> registerNotification(@RequestBody NotificationRequest request)
-    {
-        try
-        {
-            NotificationResponse notification = notificationService.registerNotification(request);
-            if (notification == null)
-            {
-                return new ResponseEntity("Error: Notification can not be found ", HttpStatus.NO_CONTENT);
-            }
-            return new ResponseEntity<>(notification, HttpStatus.CREATED);
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-            return new ResponseEntity("Error: Cannot create a new notification ",HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
-     */
 
     @GetMapping("/get-my/{userId}")
     public ResponseEntity<List<NotificationResponse>> getNotifications(@PathVariable("userId") long userId)

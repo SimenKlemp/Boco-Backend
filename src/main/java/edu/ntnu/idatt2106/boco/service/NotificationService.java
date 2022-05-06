@@ -13,7 +13,10 @@ import edu.ntnu.idatt2106.boco.util.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class NotificationService
@@ -37,7 +40,8 @@ public class NotificationService
         if (optionalRental.isEmpty()) return null;
         Rental rental = optionalRental.get();
 
-        if(notificationRepository.existsByNotificationStatusAndRental(notificationStatus, rental)){
+        if (notificationRepository.existsByNotificationStatusAndRental(notificationStatus, rental))
+        {
             return null;
         }
 
@@ -63,7 +67,6 @@ public class NotificationService
         }
 
 
-
         Notification notification = new Notification(
                 notificationStatus,
                 false,
@@ -82,8 +85,10 @@ public class NotificationService
         List<Rental> rentalsUser = rentalRepository.findAllByUser(user);
 
         Date today = new Date();
-        for (Rental rental : rentalsUser) {
-            if (rental.getStatus() == Rental.Status.ACCEPTED) {
+        for (Rental rental : rentalsUser)
+        {
+            if (rental.getStatus() == Rental.Status.ACCEPTED)
+            {
                 if (rental.getEndDate().before(today))
                 {
                     register("SEND_RATING_USER", rental.getRentalId());
@@ -100,8 +105,10 @@ public class NotificationService
                     rentalRepository.findAllByItem(item)
             );
         }
-        for (Rental rental : rentalsOwner) {
-            if (rental.getStatus() == Rental.Status.ACCEPTED) {
+        for (Rental rental : rentalsOwner)
+        {
+            if (rental.getStatus() == Rental.Status.ACCEPTED)
+            {
                 if (rental.getEndDate().before(today))
                 {
                     register("SEND_RATING_OWNER", rental.getRentalId());

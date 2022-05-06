@@ -2,8 +2,6 @@ package edu.ntnu.idatt2106.boco.util;
 
 import edu.ntnu.idatt2106.boco.models.*;
 import edu.ntnu.idatt2106.boco.payload.response.*;
-import edu.ntnu.idatt2106.boco.service.NotificationService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 import java.util.List;

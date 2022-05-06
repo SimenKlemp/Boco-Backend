@@ -11,7 +11,6 @@ import edu.ntnu.idatt2106.boco.payload.request.RegisterItemRequest;
 import edu.ntnu.idatt2106.boco.payload.request.SearchRequest;
 import edu.ntnu.idatt2106.boco.payload.request.UpdateItemRequest;
 import edu.ntnu.idatt2106.boco.payload.response.ItemResponse;
-import edu.ntnu.idatt2106.boco.payload.response.RentalResponse;
 import edu.ntnu.idatt2106.boco.service.ItemService;
 import edu.ntnu.idatt2106.boco.token.TokenComponent;
 import org.slf4j.Logger;
